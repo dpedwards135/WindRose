@@ -8,18 +8,9 @@
     tools:context="com.davidparkeredwards.windrosecustomer.MainCustomerActivity"
     tools:showIn="@layout/app_bar_main_customer">
 
-    <LinearLayout
+    <Spinner
+        android:id="@+id/trip_type_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter Origin" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter Destination"/>
-    </LinearLayout>
-
+        android:layout_height="wrap_content"></Spinner>
+    
 </android.support.constraint.ConstraintLayout>
