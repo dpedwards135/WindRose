@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "windrose-739d4",
+  "private_key_id": "6857a46cd3b62cb5e464a8b53e24586cf93a45df",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDWFJhEJ9pa5z8i\nc3nysmzH67sxN0wxMVIbKD/V9bVOIukFt5G9Bse+MneYDqIc20DBGAmmB8FruIeI\nVlmB0Hi3EZ3N0xx/6zPtAboYpN/CB9JF9+x2aniN7k39STBfeYy7bz70eoX7Fj2D\nw/epogLnT0F/oZ7dxLcQBmlFQGMed+1lXzvSH+XkEsb5YwVgcFjqxJ2YYLf2UihT\nx4BKD1+wZvRqBWZIJxhtwjeUSTGV4CsxbKPMSe8yhXHfaKa6cg8DXgC6AMQl+Ngx\nvAVbfZL0FVolIn+T8OC/sM3YYNn+43tkXRsy7WgOlbqZjrmRkOPEeXodcpk5ilPd\nF6WrTETtAgMBAAECggEAEDoEZpoct2oyw2I8WpSCoU6xZCQcXtgtsIhG+mlC4lbM\nEdZdshW6+yQpI3nseMJ3sIspZA/PbeJRR5i/9RJ/q+SmcOzxCpMh3vOUDv0kRrlA\nC3Sk1D7yv1NSTwIGrB3y+FwQygglcqg3Zm7qrU1t6el8ffeaqpWYCJtrzEd6m9r4\nolJ7vxT35wiRFISv0PVKHbn92PoBnA7actsg13QVHj3nQF7ad41MlAM+x0AVhFhB\nt1AXLUsCy05YyFP4eCEDQOk/furhUZkX5LE9vECVRtK8WDivCHaMGFT2OenRN8s9\nWTg2BH0VdwSb6Uc37MyHrCxa5aFzN2bKm8DuBCJtoQKBgQD+wAi9DBfJ3FrwVXCY\nBIiNPO4OwJL+2k73eFhgsNVFeSCeMA6y71MiQ9VazgC6EL2BLZcrGfA6CiL00WBC\n4zlmlOfiB2eTkWUTuy4OgCpx40vE0It0lSan4aDdemNZE8zcP22RXqwF6EQ3nlxf\nJYtz5xDb/xq0Red1DDYQbGnhUQKBgQDXIXrFtUWQ1YZOtmiUY6fwoPl+sDt2XknR\ntnrCmXZ40UKZ04G5fAnVrkAaJyZwpNC4aljPE0ctI/86QahkCq4Ph/icfGpvdETx\n9CoEE2d1TehDhVc0KgYNHta7a+BuXCiF0SMCdlPjCI2a5jccFuneAqrCWS2rV98Q\nDieAhngi3QKBgQCBNDZ6Y2LBT9CTqlHT2CDFuYxn0QX82g5I9zGjwKw6cye281rR\nKA67Bzpztp2pwQnMNapBAwPS/AcksfinlAUt4QIGoojG0Gw6aKoAUsK0RnrMVJUW\nSPt1FDt5eTRgHmm9nzHcE+8dg+LtbpUc8Lbczum/GpCZtAajV9En3USKMQKBgE8R\nUAVQTYQg5l8Rrbg0NGo9T9WfQguMNgds0QuqyZ84Egllcj1Q+HBfvdGe6ALooInX\nFFLvW+6cV1b7AL/cKQMuT1J8a8YQ7rIaskKTOygi/SWr4VQbyeOSnQt/Z5pIJuCf\n8AUcplJAN4Nh74lUZpohUs9hZWafQi2tdhlH0unFAoGAXqwFSsNdkQJWdMXVlnoy\nQGxNzpOmJo/91Sm0u3K7hM9oiupUhf2sJbK+9Of6L66yaA12eQuf2kdJeSd1brXY\n3BJ7WTo/QWP+99Ic9M3FV1ALyk0j2F6qj+BfFSZmktwL1yhhmKSL30w8yOeUfLjH\noNTjuN8gPsfyYZc5jttOeG4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "windrose-servlet@windrose-739d4.iam.gserviceaccount.com",
+  "client_id": "111851249337813492436",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/windrose-servlet%40windrose-739d4.iam.gserviceaccount.com"
+}
