@@ -1,0 +1,117 @@
+{
+  "project_info": {
+    "project_number": "431794912345",
+    "firebase_url": "https://windrose-739d4.firebaseio.com",
+    "project_id": "windrose-739d4",
+    "storage_bucket": "windrose-739d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431794912345:android:ea7fa2488342964e",
+        "android_client_info": {
+          "package_name": "com.davidparkeredwards.windrose"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431794912345-osk6k3iki35qctom6pkdnf56nr70csj3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.davidparkeredwards.windrose",
+            "certificate_hash": "1ae0c25db9729b108734dde3e1f2e0f75b5526b3"
+          }
+        },
+        {
+          "client_id": "431794912345-qt6r6kf2acjqdl98k42l27es95b4imrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxkSgS6b83e3y9UFimQp1uzuhXeU2ei6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431794912345-qt6r6kf2acjqdl98k42l27es95b4imrd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431794912345:android:f7155b0ea824eb51",
+        "android_client_info": {
+          "package_name": "com.davidparkeredwards.windrosecustomer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431794912345-qt6r6kf2acjqdl98k42l27es95b4imrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxkSgS6b83e3y9UFimQp1uzuhXeU2ei6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431794912345:android:e41047ed6864ee49",
+        "android_client_info": {
+          "package_name": "com.davidparkeredwards.windrosetools"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431794912345-qt6r6kf2acjqdl98k42l27es95b4imrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxkSgS6b83e3y9UFimQp1uzuhXeU2ei6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

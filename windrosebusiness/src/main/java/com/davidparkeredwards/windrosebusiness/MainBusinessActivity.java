@@ -1,94 +1,28 @@
-package com.davidparkeredwards.windrosecustomer;
+package com.davidparkeredwards.windrosebusiness;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.davidparkeredwards.windrosetools.WindroseApplication;
-import com.firebase.ui.auth.AuthUI;
-
-public class MainCustomerActivity extends AppCompatActivity
+public class MainBusinessActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static final String TAG = MainCustomerActivity.class.getSimpleName();
-
-    private String currentUser;
-
-    /*
-    Spinner tripTypeSpinner;
-    ArrayAdapter tripTypeSpinnerAdapter;
-    ArrayList<String> tripTypeArrayList;
-    private FirebaseAuth auth;
-    private String currentUser;
-    private static final int RC_SIGN_IN = 123;
-    String companyName;
-    FirebaseDatabase database;
-    DatabaseReference baseDbReference;
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.wloginactivity);
-
-        //Move all login info to separate activity so that Main Activity is only reached when everything else is done.
-
-        //AUTHORIZATION INITIALIZATION
-        if (WindroseCustomerApplication.auth.getCurrentUser() != null) {
-            Log.i(TAG, "onCreate: User is signed in as "
-                    + WindroseCustomerApplication.auth.getCurrentUser().getDisplayName());
-            currentUser = WindroseCustomerApplication.auth.getCurrentUser().getDisplayName().toString();
-        } else {
-            Log.i(TAG, "onCreate: User is not signed in");
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), WindroseApplication.RC_SIGN_IN);
-        }
-        /*
-        FirebaseApp.initializeApp(this);
-        auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            Log.i(TAG, "onCreate: User is signed in as " + auth.getCurrentUser().getDisplayName());
-            currentUser = auth.getCurrentUser().getDisplayName().toString();
-        } else {
-            Log.i(TAG, "onCreate: User is not signed in");
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
-        }
-
-
-        //COMPANY INITIALIZATION
-        companyName = "Example Company";
-
-        //DB INITIALIZATION
-        database = FirebaseDatabase.getInstance();
-        baseDbReference = database.getReference("/" + companyName + "/");
-
-        */
-        //INITIALIZE ACTIVITY LAYOUT
-
+        setContentView(R.layout.activity_main_business);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Order Shuttle");
         setSupportActionBar(toolbar);
 
-        /*
-        //Initialize Spinner, SpinnerAdapter, and tripTypeArrayList and setItineraryView
-        tripTypeArrayList = new ArrayList<>();
-        tripTypeArrayList.add("Trip1"); //Fix to download tripTypes from Firebase
-        tripTypeArrayList.add("Trip2");
-        tripTypeSpinner = (Spinner) findViewById(R.id.trip_type_spinner);
-        tripTypeSpinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item);
-        tripTypeSpinnerAdapter.addAll(tripTypeArrayList);
-        tripTypeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        tripTypeSpinner.setAdapter(tripTypeSpinnerAdapter);
-        */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +55,7 @@ public class MainCustomerActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_customer, menu);
+        getMenuInflater().inflate(R.menu.main_business, menu);
         return true;
     }
 

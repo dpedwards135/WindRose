@@ -1,0 +1,75 @@
+apply plugin: 'com.android.library'
+
+
+android {
+
+    publishNonDefault true
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //Flavor dimension definitions
+    def STANDARD = "standard"
+    flavorDimensions STANDARD
+
+    productFlavors {
+
+        def BOOLEAN = "boolean"
+        def STRING = "String"
+        def INT = "int"
+        def TRUE = "true"
+        def FALSE = "false"
+        def MAIN_ACTIVITY = "MAIN_ACTIVITY"
+        def USER_FOCUS = "USER_FOCUS"
+        def IS_MULTI_COMPANY_APP = "IS_MULTI_COMPANY_APP"
+        def COMPANY_ID = "COMPANY_ID"
+
+        //Variable Definitions - As defined in WindroseApplication
+        def MAIN_ACTIVITY_PATH = "/WindRose/windrosecustomer/src/main/java/com/davidparkeredwards/windrosecustomer/MainCustomerActivity.java"
+        def MULTI_COMPANY = "1"
+        def SINGLE_COMPANY = "2"
+        def CUSTOMER_FOCUS = "1"
+        def BUSINESS_FOCUS = "2"
+        def COMPANY = ""
+
+        windroseBasicCustomer {
+            dimension STANDARD
+            buildConfigField STRING, MAIN_ACTIVITY, MAIN_ACTIVITY_PATH
+            buildConfigField INT, USER_FOCUS, CUSTOMER_FOCUS
+            buildConfigField INT, IS_MULTI_COMPANY_APP, MULTI_COMPANY
+            buildConfigField STRING, COMPANY_ID, COMPANY
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    testCompile 'junit:junit:4.12'
+    //FIREBASE
+    compile 'com.firebaseui:firebase-ui:1.2.0'
+    compile 'com.google.firebase:firebase-database:10.2.4'
+    compile 'com.google.firebase:firebase-auth:10.2.4'
+}
+
+apply plugin: 'com.google.gms.google-services'

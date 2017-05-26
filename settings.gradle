@@ -1,1 +1,1 @@
-include ':app', ':backend', ':windrosecustomer'
+include ':app', ':backend', ':windrosecustomer', ':windrosetools', ':windrosebusiness'
