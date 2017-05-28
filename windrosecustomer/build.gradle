@@ -29,12 +29,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "standard"
+    def STANDARD = "standard"
+    flavorDimensions STANDARD
 
     productFlavors {
 
-        windrose {
-            dimension "standard"
+        windroseBasicCustomer {
+            dimension STANDARD
         }
     }
 }
@@ -51,9 +52,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     compile project(':windrosetools')
-    windroseDebugCompile project(path: ':windrosetools', configuration: 'windroseBasicCustomer')
-
-
 }
 
 apply plugin: 'com.google.gms.google-services'

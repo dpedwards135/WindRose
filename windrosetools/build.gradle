@@ -17,8 +17,19 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -35,22 +46,21 @@ android {
         def INT = "int"
         def TRUE = "true"
         def FALSE = "false"
-        def MAIN_ACTIVITY = "MAIN_ACTIVITY"
         def USER_FOCUS = "USER_FOCUS"
         def IS_MULTI_COMPANY_APP = "IS_MULTI_COMPANY_APP"
         def COMPANY_ID = "COMPANY_ID"
 
-        //Variable Definitions - As defined in WindroseApplication
-        def MAIN_ACTIVITY_PATH = "/WindRose/windrosecustomer/src/main/java/com/davidparkeredwards/windrosecustomer/MainCustomerActivity.java"
-        def MULTI_COMPANY = "1"
-        def SINGLE_COMPANY = "2"
-        def CUSTOMER_FOCUS = "1"
-        def BUSINESS_FOCUS = "2"
-        def COMPANY = ""
 
         windroseBasicCustomer {
+
+            //Variable Definitions - As defined in WindroseApplication
+            def MULTI_COMPANY = "1"
+            def SINGLE_COMPANY = "2"
+            def CUSTOMER_FOCUS = "1"
+            def BUSINESS_FOCUS = "2"
+            def COMPANY = "\"Undefined\""
+
             dimension STANDARD
-            buildConfigField STRING, MAIN_ACTIVITY, MAIN_ACTIVITY_PATH
             buildConfigField INT, USER_FOCUS, CUSTOMER_FOCUS
             buildConfigField INT, IS_MULTI_COMPANY_APP, MULTI_COMPANY
             buildConfigField STRING, COMPANY_ID, COMPANY
@@ -59,17 +69,24 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
     //FIREBASE
     compile 'com.firebaseui:firebase-ui:1.2.0'
     compile 'com.google.firebase:firebase-database:10.2.4'
     compile 'com.google.firebase:firebase-auth:10.2.4'
+
+
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.github.frangsierra:rx2firebase:1.1.3'
 }
+
+
 
 apply plugin: 'com.google.gms.google-services'

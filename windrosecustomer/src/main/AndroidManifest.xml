@@ -3,7 +3,7 @@
     package="com.davidparkeredwards.windrosecustomer">
 
     <application
-        android:name="com.davidparkeredwards.windrosecustomer.WindroseCustomerApplication"
+        android:name="com.davidparkeredwards.windrosetools.WindroseApplication"
         android:allowBackup="true" android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true" android:theme="@style/AppTheme">
@@ -20,9 +20,16 @@
             </intent-filter>/>
         </activity>
 
+        //This Alias provides link from TOOLS to specific App
+        <activity-alias
+            android:name=".WMainActivity"
+            android:targetActivity=".MainCustomerActivity"
+            />
         <activity android:name=".MainCustomerActivity" android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        
+
     </application>
 
 </manifest>
