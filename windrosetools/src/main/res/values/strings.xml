@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">WindRose Tools</string>
+    <string name="company_continue">continue</string>
+    <string name="select_company">Please select your transportation provider: </string>
 
 </resources>

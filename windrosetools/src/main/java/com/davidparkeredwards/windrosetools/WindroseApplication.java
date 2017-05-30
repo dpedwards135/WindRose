@@ -21,6 +21,7 @@ public class WindroseApplication extends Application {
     6. Identifies the company in focus
     */
 
+
     private static String companyID;
     private static int userFocus;
     private static int multiCompanyApp;
@@ -61,5 +62,16 @@ public class WindroseApplication extends Application {
         //helper.firebaseHelperCheck();
     }
 
+    public static int getMultiCompanyApp() {
+        return multiCompanyApp;
+    }
+
+    public static String getCompanyID() {
+        return companyID;
+    }
+
+    public static void setCompanyID(String companyID) {
+        WindroseApplication.companyID = companyID;
+    }
 
 }

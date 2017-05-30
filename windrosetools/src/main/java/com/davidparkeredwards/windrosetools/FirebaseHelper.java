@@ -9,13 +9,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
-import durdinapps.rxfirebase2.RxFirebaseDatabase;
-import io.reactivex.Single;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 /**
  * Created by davidedwards on 5/27/17.
@@ -30,6 +29,29 @@ public class FirebaseHelper {
     private Context ctx;
     private String baseDbString;
 
+    public Observable<HashMap> getCompanyIdObservable() {
+        return Observable.create(new ObservableOnSubscribe<HashMap>() {
+            @Override
+            public void subscribe(ObservableEmitter<HashMap> e) throws Exception {
+                DatabaseReference ref = database.getReference(baseDbString + "companyIds");
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
+                        Log.i(TAG, "OBSERVABLE onDataChange: Value = " + value.toString());
+                        e.onNext(value);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+
+                    }
+                };
+                ref.addValueEventListener(valueEventListener);
+            }
+        });
+    }
 
     public FirebaseHelper(Context ctx) {
         this.ctx = ctx;
@@ -45,8 +67,8 @@ public class FirebaseHelper {
         Log.i(TAG, "FirebaseHelper: BaseString: " + baseDbString + " " + database.getApp().getName());
 
     }
-    
-    public void firebaseHelperCheck() {
+
+        public void firebaseHelperCheck() {
         DatabaseReference ref = database.getReference(baseDbString + "testNode");
         Date date = new Date();
         ref.setValue("WRTools Check on: " + date.toString());
@@ -89,47 +111,27 @@ public class FirebaseHelper {
     }
 
 
-    public ArrayList<String> getCompanyIds() {
+    public ValueEventListener getCompanyIds() {
 
         DatabaseReference ref = database.getReference(baseDbString + "companyIds");
 
 
-        RxFirebaseDatabase.observeSingleValueEvent(ref, HashMap.class)
-                .subscribe(post -> {
-                    Log.i(TAG, "getCompanyIds: " + post.toString());
-                });
-
-/*
-        Log.i(TAG, "getCompanyIds: Adding Listener");
-        ref.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
                 Log.i(TAG, "onDataChange: Value = " + value.toString());
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
                 Log.i(TAG, "onCancelled: Cancelled");
+
             }
-        });
-        */
+        };
+        ref.addValueEventListener(valueEventListener);
 
-        return new ArrayList<>();
-    }
-
-
-    Single<String> testObservable(final String string) {
-        Single<String> testObservable = Single.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-
-                return string;
-            }
-        });
-        return testObservable;
+        return valueEventListener;
     }
 
 
