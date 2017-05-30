@@ -8,11 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.firebase.ui.auth.AuthUI;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,25 +35,9 @@ public class WLoginActivity extends AppCompatActivity {
 
     Spinner companyIdSpinner;
     ArrayAdapter companySpinnerAdapter;
-    ListView companyListView;
 
     private HashMap<String, String> companyIDList;
-    private List<StringWithTag> companyNameList;
-
-    public class StringWithTag {
-        public String string;
-        public Object tag;
-
-        public StringWithTag(String stringPart, Object tagPart) {
-            string = stringPart;
-            tag = tagPart;
-        }
-
-        @Override
-        public String toString() {
-            return string;
-        }
-    }
+    private List<StringWithTag> companyNameList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +59,11 @@ public class WLoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        //Get Authorization Activity result
         Log.i(TAG, "onActivityResult: " + resultCode);
         if(resultCode == RESULT_OK) {
             initializeCompany();
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -133,10 +116,6 @@ public class WLoginActivity extends AppCompatActivity {
         }
     }
 
-    private void requestCompanyId() {
-        //Show box with company names and ids to select from, or search box
-    }
-
     private void startMainActivity() {
         Intent intent = new Intent();
         String packageName = getApplicationContext().getPackageName();
@@ -147,7 +126,6 @@ public class WLoginActivity extends AppCompatActivity {
     }
 
     private void selectCompany() {
-        //!!!!!Need to fix this so that the IDs can be mapped with names.
         Iterator it = companyIDList.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
@@ -156,7 +134,6 @@ public class WLoginActivity extends AppCompatActivity {
             it.remove(); // avoids a ConcurrentModificationException
         }
         companySpinnerAdapter = new ArrayAdapter<StringWithTag> (this, android.R.layout.simple_spinner_item, companyNameList);
-        //
         companySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         companyIdSpinner.setAdapter(companySpinnerAdapter);
         companyIdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -172,7 +149,6 @@ public class WLoginActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void setCompany(View view) {
@@ -180,7 +156,6 @@ public class WLoginActivity extends AppCompatActivity {
         Log.i(TAG, "setCompany: COMPANYID = " + companyId);
         WindroseApplication.setCompanyID(companyId);
         startMainActivity();
-
     }
 
 
