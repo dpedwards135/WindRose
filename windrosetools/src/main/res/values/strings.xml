@@ -2,6 +2,7 @@
     <string name="app_name">WindRose Tools</string>
     <string name="company_continue">continue</string>
     <string name="select_company">Please select your transportation provider: </string>
+    <string name="add_new_company">Add new company</string>
     <string name="title_activity_wnav_menu">WNavMenuActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

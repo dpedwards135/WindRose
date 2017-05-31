@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.firebase.ui.auth.AuthUI;
@@ -35,6 +36,7 @@ public class WLoginActivity extends AppCompatActivity {
 
     Spinner companyIdSpinner;
     ArrayAdapter companySpinnerAdapter;
+    Button newCompanyButton;
 
     private HashMap<String, String> companyIDList;
     private List<StringWithTag> companyNameList = new ArrayList<>();
@@ -44,6 +46,11 @@ public class WLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wloginactivity);
 
+        newCompanyButton = (Button) findViewById(R.id.new_company_button);
+        if(WindroseApplication.getMultiCompanyApp() == WindroseApplication.MULTICOMPANY_APP
+                && WindroseApplication.getUserFocus() == WindroseApplication.BUSINESS_FOCUS) {
+            newCompanyButton.setVisibility(View.VISIBLE);
+        }
         companyIdSpinner = (Spinner) findViewById(R.id.company_spinner);
 
         //AUTHORIZATION INITIALIZATION
@@ -156,6 +163,22 @@ public class WLoginActivity extends AppCompatActivity {
         Log.i(TAG, "setCompany: COMPANYID = " + companyId);
         WindroseApplication.setCompanyID(companyId);
         startMainActivity();
+    }
+
+    public void addNewCompany() {
+        /*
+        Need to create Company class and a subtype of that to be CompanyInConfiguration - one of
+        which can be saved to every user and if they have one it will be listed as an option in
+        place of Add New Company. A CompanyInConfiguration will walk the user through all the steps
+        of Configuring a new company, with steps in all of the options. There will be an option at
+        the end to Validate New Company and then to Launch New Company, which will move the companyID
+        from CompanyInConfiguration class to CompanyIdList so that customers can find it.
+        Companies/InConfiguration/UserId/CompanyID: Company
+        Companies/Launched/CompanyID: Company
+        Companies/Deactivated/CompanyId: Company
+
+        Company
+         */
     }
 
 

@@ -5,6 +5,7 @@ import android.app.Application;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 /**
  * Created by davidedwards on 5/25/17.
@@ -23,6 +24,8 @@ public class WindroseApplication extends Application {
 
 
     private static String companyID;
+
+
     private static int userFocus;
     private static int multiCompanyApp;
     private boolean isDebug;
@@ -31,8 +34,7 @@ public class WindroseApplication extends Application {
 
     //UserFocus variables:
     public static final int CUSTOMER_FOCUS = 1;
-    public static final int EMPLOYEE_FOCUS = 2;
-    public static final int MANAGEMENT_FOCUS = 3;
+    public static final int BUSINESS_FOCUS = 2;
 
     public static final int MULTICOMPANY_APP = 1;
     public static final int SINGLECOMPANY_APP = 2;
@@ -48,11 +50,14 @@ public class WindroseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        AndroidThreeTen.init(this);
+
         FirebaseApp.initializeApp(getApplicationContext());
         auth = FirebaseAuth.getInstance();
         //Define variables:
         companyID = BuildConfig.COMPANY_ID;
         userFocus = BuildConfig.USER_FOCUS;
+
         multiCompanyApp = BuildConfig.IS_MULTI_COMPANY_APP;
         isDebug = BuildConfig.DEBUG;
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -72,6 +77,10 @@ public class WindroseApplication extends Application {
 
     public static void setCompanyID(String companyID) {
         WindroseApplication.companyID = companyID;
+    }
+
+    public static int getUserFocus() {
+        return userFocus;
     }
 
 }
