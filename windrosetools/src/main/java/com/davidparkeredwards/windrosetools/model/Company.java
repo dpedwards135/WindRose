@@ -2,7 +2,7 @@ package com.davidparkeredwards.windrosetools.model;
 
 import android.location.Address;
 
-import com.davidparkeredwards.windrosetools.model.tripType.JourneyType;
+import com.davidparkeredwards.windrosetools.model.journey.JourneyType;
 
 /**
  * Created by davidedwards on 5/30/17.
