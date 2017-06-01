@@ -21,7 +21,7 @@ public class Journey {
     private GeoStop[] fixedRouteNodes;
     private String requestedDriverId;
 
-    //How is the fare calculated?
+    //How is the fare calculated? - Run everything on all of these, and only use what you need, gather the rest for data.
     private double fixedfare;
     private double preCalculatedMiles;
     private double preCalculatedTimeSeconds;

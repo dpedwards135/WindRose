@@ -84,6 +84,8 @@ public class JourneyType {
     //Payment Calculation
     private String journeyTypeLaunchDate;   //JourneyType cannot be used for trips before this date
     private String journeyTypeExpirationDate; //JourneyType cannot be used for trips after this date
+    private String afterHours; //Figure out how to apply Offset Time
+    private String peakHours; //Figure out how to apply Offset Time
 
     private ChargeRule chargeRule;
 

@@ -35,5 +35,5 @@ public class Unit {
     private String[] hsCodes;
 
     //Bulk properties
-    private String[] bulkTypesNotPermitted;
+
 }

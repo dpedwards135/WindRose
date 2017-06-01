@@ -9,8 +9,9 @@ import java.util.ArrayList;
 public class ChargeRule {
 
     //Base Charge Variables
-
+    private double totalTime;
     private double totalMiles;
+    private double additionalPassengers;
     private double additionalStops;
     private double waitTime;
 
@@ -30,9 +31,13 @@ public class ChargeRule {
     private double couponDiscountFlat;
     private double additionalPassengerFlat;
     private double afterHoursFlat;
+    private double peakFlat;
+
+    
     private double couponDiscountPercent;
     private double additionalPassengerPercent;
     private double afterHoursPercent;
+    private double peakPercent;
     private ArrayList<GeoTimeAreaChargePercent> geoTimeAreaPercent; //Journey will iterate through this list to get any that apply
     private ArrayList<GeoTimeAreaChargeFlat> geoTimeAreaFlat; //Journey will iterate through this list to get any that apply
 
