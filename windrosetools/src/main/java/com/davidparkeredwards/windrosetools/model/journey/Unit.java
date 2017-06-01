@@ -15,7 +15,8 @@ public class Unit {
     private UnitType unitType;
 
     //Person properties
-    private String name;
+    private String firstName;
+    private String lastName;
     private String phoneNumber;
     private String officialIdNumber;
 

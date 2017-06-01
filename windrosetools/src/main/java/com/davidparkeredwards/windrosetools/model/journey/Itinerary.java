@@ -8,5 +8,6 @@ public class Itinerary {
 
     private Journey[] journeysInItinerary;
     private boolean maximumColocationRequired;
+    private double totalCharge;
 
 }

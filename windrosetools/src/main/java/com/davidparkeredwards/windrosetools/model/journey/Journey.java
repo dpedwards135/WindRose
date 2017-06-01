@@ -29,8 +29,12 @@ public class Journey {
     private double meteredMiles;
     private double waitTimeSeconds;
 
+    private double preCalculatedCharge;
+    private double finalCharge;
+
     //What is being transported?
     private Unit unit;
     private Unit[] colocatedUnits;
+
 
 }
