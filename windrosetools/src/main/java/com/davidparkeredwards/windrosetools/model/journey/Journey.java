@@ -30,6 +30,7 @@ public class Journey {
     private double waitTimeSeconds;
 
     private double preCalculatedCharge;
+    private String couponCode;
     private double finalCharge;
 
     //What is being transported?

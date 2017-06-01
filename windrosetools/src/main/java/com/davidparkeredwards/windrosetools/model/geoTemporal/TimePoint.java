@@ -6,6 +6,6 @@ package com.davidparkeredwards.windrosetools.model.geoTemporal;
 
 public class TimePoint {
 
-    private String appointmentTime; //One offSetDateTime to String
+    private String appointmentTime; //need to allow for repeating, open, and single times and windows
     private int timeWindowMinutes; //TimeWindowLength.Length
 }

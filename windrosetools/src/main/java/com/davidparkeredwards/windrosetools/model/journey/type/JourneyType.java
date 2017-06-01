@@ -4,8 +4,7 @@ import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoStop;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoTimeArea;
 import com.davidparkeredwards.windrosetools.model.journey.JourneyOption;
-
-import java.util.HashMap;
+import com.davidparkeredwards.windrosetools.model.journey.charge.ChargeRule;
 
 /**
  * Created by davidedwards on 5/30/17.
@@ -86,25 +85,7 @@ public class JourneyType {
     private String journeyTypeLaunchDate;   //JourneyType cannot be used for trips before this date
     private String journeyTypeExpirationDate; //JourneyType cannot be used for trips after this date
 
-    private double pickupRateFlat;
-    private double perMileRateFlat;
-    private double couponDiscountFlat;
-    private double additionalPassengerSurchargeFlat;
-    private double additionalStopSurchargeFlat;
-    private double afterHoursSurchargeFlat;
-
-    private double tollsSurchargeFlat;
-
-    private double pickupRatePercent;
-    private double perMileRatePercent;
-    private double couponDiscountPercent;
-    private double additionalPassengerSurchargePercent;
-    private double additionalStopSurchargePercent;
-    private double afterHoursSurchargePercent;
-
-    private HashMap<GeoTimeArea, Double> geoTimeAreaSurcharges;
-
-
+    private ChargeRule chargeRule;
 
     /* Payment calculation: Calculate a pickup base rate and base rate per mile based on journeyType, then add or
      * subtract for GeoTimeAreas using either percentage bonus or fixed bonus. Additional:
