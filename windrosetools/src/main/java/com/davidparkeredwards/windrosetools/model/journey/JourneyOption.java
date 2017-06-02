@@ -11,4 +11,17 @@ public class JourneyOption {
     private String journeyOptionId;
     private String optionName;
     private double price;
+
+
+    public String getJourneyOptionId() {
+        return journeyOptionId;
+    }
+
+    public String getOptionName() {
+        return optionName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
 }

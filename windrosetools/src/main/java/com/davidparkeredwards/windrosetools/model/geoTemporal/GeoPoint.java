@@ -4,8 +4,9 @@ package com.davidparkeredwards.windrosetools.model.geoTemporal;
  * Created by davidedwards on 5/31/17.
  */
 
-public class GeoPoint {
+public class GeoPoint extends GeoArea {
 
     private String centerPoint; //Geo Coordinates to String
-    private String areaBorder; //Some way of defining border
+    //Be sure to implement Border in Constructor
+
 }

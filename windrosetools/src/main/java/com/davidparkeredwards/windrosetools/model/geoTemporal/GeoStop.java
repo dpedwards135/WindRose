@@ -6,9 +6,7 @@ package com.davidparkeredwards.windrosetools.model.geoTemporal;
 
 public class GeoStop extends GeoTimeArea {
 
-
-
-    //Set this in constructor so that Arrays can only take one object -> GeoPoint[1], TimePoint[1]
+    //Set this in constructor so that arrays are TimePoint and GeoPoint
 
 
 }

@@ -1,11 +1,11 @@
 package com.davidparkeredwards.windrosetools.model.geoTemporal;
 
 /**
- * Created by davidedwards on 5/31/17.
+ * Created by davidedwards on 6/1/17.
  */
 
-public class TimePoint {
+public class TimePoint extends TimeArea {
 
-    private String appointmentTime; //need to allow for repeating, open, and single times and windows
-    private int timeWindowMinutes; //TimeWindowLength.Length
+
+    //Time Area that only includes one OffsetTime on one Local Date -> set in constructor
 }

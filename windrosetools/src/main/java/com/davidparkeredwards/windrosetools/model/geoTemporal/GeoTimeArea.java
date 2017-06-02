@@ -6,7 +6,12 @@ package com.davidparkeredwards.windrosetools.model.geoTemporal;
 
 public class GeoTimeArea {
 
+
     private String name;
-    private TimePoint[] timePoints;
+    private TimeArea[] timePoints;
     private GeoPoint[] geoPoints;
+
+    public boolean contains(GeoStop stop) {
+
+    }
 }
