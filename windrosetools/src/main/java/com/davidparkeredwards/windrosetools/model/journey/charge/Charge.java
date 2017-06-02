@@ -1,62 +1,50 @@
 package com.davidparkeredwards.windrosetools.model.journey.charge;
 
 import com.davidparkeredwards.windrosetools.model.journey.Journey;
+import com.davidparkeredwards.windrosetools.model.journey.JourneyOption;
+import com.davidparkeredwards.windrosetools.model.journey.Toll;
 import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.CouponCode;
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.CustomCharge;
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.GeoTimeAreaCharge;
 import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.LineItemCharge;
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.UnitCharge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by davidedwards on 6/2/17.
  */
 
 public class Charge implements ChargeMethods{
-    //This is basically an invoice that could in theory be formatted, printed, and sent as receipt or invoice
+    //This is basically the charge calculation for invoice that could in theory be formatted, printed, and sent as receipt or invoice
 
+    //Base Fare variables
     private double fixedFare;
     private double mileageMultiplier;
     private double baseFlatFee;
     private double additionalStopFee;
 
-    //Coupon Code
-    private CouponCode couponCode;
-
     //Surcharge Variables - Add flats to base, add all percents then multiply by base and add to base
     private double tollsSurcharge;
     private double optionalsCharge;
 
-    private ArrayList<CustomCharge> customCharges;
-    private ArrayList<GeoTimeAreaCharge> geoTimeAreaCharges; //Journey will iterate through this list to get any that apply
-    private ArrayList<UnitCharge> unitCharges;
-
+    private ArrayList<CouponCode> couponCodes;
+    private ArrayList<LineItemCharge> appliedLineItemCharges;
+    private ArrayList<LineItemCharge> appliedCouponCodes;
 
     private double baseCharge = 0;
     private double totalFlatCharge = 0;
-    private double totalPercentCharge = 0;
+    private double surchargePercentCharge = 0;
+    private double couponPercentDiscount = 0;
+    private double couponFlatDiscount = 0;
+    private double subTotalCharge = 0;
+    private double totalDiscount = 0;
     private double totalCharge = 0;
+    private double finalChargeToCustomer = 0;
 
-    private double adminChargeOverride = NO_OVERRIDE;
-    public static final double NO_OVERRIDE = -1;
+    private double gratuity = 0;
 
-    private double gratuity = 0; //Add Gratuity permitted to rules.
+    public Charge(Journey journey, double gratuity) {
 
-
-    public Charge(Journey journey, double adminChargeOverride, double gratuity) {
-
-        this.adminChargeOverride = adminChargeOverride;
-        if(this.adminChargeOverride != NO_OVERRIDE) {
-            totalCharge = this.adminChargeOverride;
-            if(totalCharge < 0) {
-                totalCharge = 0;
-            }
-            return;
-        }
         ChargeRule chargeRule = journey.getJourneyType().getChargeRule();
-
-
 
         //Calculate Base Fare
         fixedFare = chargeRule.getFixedFare();
@@ -69,64 +57,59 @@ public class Charge implements ChargeMethods{
                 additionalStopFee;
 
         //Check and process coupon code
-        couponCode = journey.getCouponCode();
-        assignChargeToFlatOrPercent(couponCode, journey);
+        couponCodes = new ArrayList<CouponCode>(Arrays.asList(journey.getCouponCodes()));
 
         //Calculate Surcharges and Discounts
-        for(LineItemCharge charge : customCharges) {
+        for(Toll toll : journey.getMapCalculatedTolls()) {
+            tollsSurcharge += toll.getFee();
+        }
+
+        for(JourneyOption option : journey.getJourneyOptions()) {
+            optionalsCharge += option.getPrice();
+        }
+
+        for (LineItemCharge charge : journey.getCouponCodes()) {
             assignChargeToFlatOrPercent(charge, journey);
         }
-        for(LineItemCharge charge : geoTimeAreaCharges) {
-            assignChargeToFlatOrPercent(charge, journey);
-        }
-        for(LineItemCharge charge : unitCharges) {
+        for (LineItemCharge charge : chargeRule.getLineItemCharges()) {
             assignChargeToFlatOrPercent(charge, journey);
         }
 
         //Total everything up
-        totalCharge = baseCharge + totalFlatCharge + (totalPercentCharge * baseCharge);
+        subTotalCharge = (baseCharge + totalFlatCharge + (surchargePercentCharge * baseCharge));
+        totalDiscount = couponFlatDiscount + (subTotalCharge * couponPercentDiscount);
+        totalCharge = subTotalCharge - totalDiscount;
 
         //Check for negative total
-        if(totalCharge < 0) {
+        if (totalCharge < 0) {
             totalCharge = 0;
         }
+
+        if(chargeRule.isGratuityIsAccepted()) {
+            gratuity = journey.getGratuity();
+        }
+
+        finalChargeToCustomer = totalCharge + gratuity;
+
         return;
 
+
     }
-
-
-        /*
-
-        JourneyType.FareType fareType = journey.getJourneyType().getFareType();
-
-        switch(fareType) {
-            case FIXED_FARE:
-                totalCharge = chargeWithFixedFare();
-                break;
-            case METERED_FARE:
-                totalCharge = chargeWithMeteredFare();
-                break;
-            case METER_CHECKED_FARE:
-                totalCharge = chargeWithMeterCheckedFare();
-                break;
-            case MAP_CALCULATED_FARE:
-                totalCharge = chargeWithMapcalculatedFare();
-                break;
-            case MILES_PLUS_WAIT_TIME:
-                totalCharge = chargeWithMilesPlusWaitTimeFare();
-                break;
-        }
-        */
 
     public void assignChargeToFlatOrPercent(LineItemCharge charge, Journey journey) {
         if(charge.isValidChargeForJourney(journey)) {
-            totalFlatCharge += charge.getFlatCharge();
-            totalPercentCharge += charge.getPercentCharge();
+            if(charge.getClass() == CouponCode.class) {
+                couponFlatDiscount += charge.getFlatCharge();
+                couponPercentDiscount += charge.getPercentCharge();
+                appliedCouponCodes.add(charge);
+            } else {
+                totalFlatCharge += charge.getFlatCharge();
+                surchargePercentCharge += charge.getPercentCharge();
+                appliedLineItemCharges.add(charge);
+            }
+
         } else {
             return;
         }
-
     }
-
-
 }

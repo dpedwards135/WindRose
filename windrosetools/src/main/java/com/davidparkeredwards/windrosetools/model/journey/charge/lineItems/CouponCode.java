@@ -2,6 +2,7 @@ package com.davidparkeredwards.windrosetools.model.journey.charge.lineItems;
 
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoTimeArea;
 import com.davidparkeredwards.windrosetools.model.journey.Journey;
+import com.davidparkeredwards.windrosetools.model.journey.type.JourneyType;
 
 import org.threeten.bp.OffsetDateTime;
 
@@ -19,13 +20,14 @@ public class CouponCode implements LineItemCharge{
     private boolean singleUserCode;
     private String singleUserID;
     private int maxUsesPerUser;
+    private JourneyType[] applicableJourneyTypes;
 
     private double flatDiscount;
     private double percentDiscount;
 
     public CouponCode(String code, int flatOrPercent, double flatDiscount, double percentDiscount,
                       OffsetDateTime validFrom, OffsetDateTime validUntil, boolean singleUserCode,
-                      String singleUserID, int maxUsesPerUser) {
+                      String singleUserID, int maxUsesPerUser, JourneyType[] applicableJourneyTypes) {
         this.code = code;
         this.flatOrPercent = flatOrPercent;
         this.flatDiscount = 0-Math.abs(flatDiscount);
@@ -35,6 +37,7 @@ public class CouponCode implements LineItemCharge{
         this.singleUserCode = singleUserCode;
         this.singleUserID = singleUserID;
         this.maxUsesPerUser = maxUsesPerUser;
+        this.applicableJourneyTypes = applicableJourneyTypes;
     }
 
 
@@ -49,14 +52,15 @@ public class CouponCode implements LineItemCharge{
     }
 
     @Override
-    public double getFlatCharge(OffsetDateTime journeyDate) {
+    public double getFlatCharge() {
         return flatDiscount;
     }
 
     @Override
-    public double getPercentCharge(OffsetDateTime journeyDate) {
+    public double getPercentCharge() {
         return percentDiscount;
     }
+
 
     @Override
     public OffsetDateTime getStartDate() {

@@ -46,7 +46,7 @@ public class JourneyType {
 
     //How is the fare calculated?
         //Do everything in seconds for precision
-    private FareType fareType;
+
 
     //What is being transported?
     private UnitType[] unitTypesPermitted;
@@ -75,71 +75,11 @@ public class JourneyType {
     private double maxJourneyDurationInSeconds;
     private int maxStopsPerUnitOnJourney;
     private double estimatedSecondsPerStop;
-
-    //Payment Calculation
     private String journeyTypeLaunchDate;   //JourneyType cannot be used for trips before this date
     private String journeyTypeExpirationDate; //JourneyType cannot be used for trips after this date
-    private String afterHours; //Figure out how to apply Offset Time
-    private String peakHours; //Figure out how to apply Offset Time
-    private String[] paymentTypesAccepted;
 
+    //Payment Calculation
     private ChargeRule chargeRule;
-
-    /* Payment calculation: Calculate a pickup base rate and base rate per mile based on journeyType, then add or
-     * subtract for GeoTimeAreas using either percentage bonus or fixed bonus. Additional:
-     *  + or - GeoTimeAreas
-        + or - for discount codes
-        + or - for additional passengers
-        + or - for additional stops
-        + or - for different tripTypes
-     *
-     */
-
-    public enum FareType {
-
-        FIXED_FARE("fixed_fare"),
-        MAP_CALCULATED_FARE("map_calculated_fare"),
-        METERED_FARE("metered_fare"),
-        METER_CHECKED_FARE("meter_checked_fare"),
-        MILES_PLUS_WAIT_TIME("miles_plus_wait_time");
-
-
-        private String fareType;
-
-        private FareType(String fareType) {
-            this.fareType = fareType;
-        }
-
-        public String getFareType() {
-            return this.fareType;
-        }
-
-    }
-
-    public enum PaymentTypes {
-
-        CASH("cash"),
-        CREDIT_DEBIT("credit_debit"),
-        DIRECT_BILL("direct_bill"),
-        ACH("ach"),
-        CHECK("check");
-
-
-        private String paymentType;
-
-        private PaymentTypes(String paymentType) {
-            this.paymentType = paymentType;
-        }
-
-        public String getPaymentType() {
-            return this.paymentType;
-        }
-
-    }
-
-    public FareType getFareType() {
-        return fareType;
-    }
 
     public String getJourneyTypeId() {
         return journeyTypeId;
@@ -221,8 +161,16 @@ public class JourneyType {
         this.canRequestSpecificDriver = canRequestSpecificDriver;
     }
 
-    public void setFareType(FareType fareType) {
-        this.fareType = fareType;
+    public static int getNoRequest() {
+        return NO_REQUEST;
+    }
+
+    public static int getSoftRequest() {
+        return SOFT_REQUEST;
+    }
+
+    public static int getHardRequest() {
+        return HARD_REQUEST;
     }
 
     public UnitType[] getUnitTypesPermitted() {
@@ -375,30 +323,6 @@ public class JourneyType {
 
     public void setJourneyTypeExpirationDate(String journeyTypeExpirationDate) {
         this.journeyTypeExpirationDate = journeyTypeExpirationDate;
-    }
-
-    public String getAfterHours() {
-        return afterHours;
-    }
-
-    public void setAfterHours(String afterHours) {
-        this.afterHours = afterHours;
-    }
-
-    public String getPeakHours() {
-        return peakHours;
-    }
-
-    public void setPeakHours(String peakHours) {
-        this.peakHours = peakHours;
-    }
-
-    public String[] getPaymentTypesAccepted() {
-        return paymentTypesAccepted;
-    }
-
-    public void setPaymentTypesAccepted(String[] paymentTypesAccepted) {
-        this.paymentTypesAccepted = paymentTypesAccepted;
     }
 
     public ChargeRule getChargeRule() {

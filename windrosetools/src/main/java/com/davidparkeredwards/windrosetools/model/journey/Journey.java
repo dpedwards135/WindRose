@@ -36,7 +36,8 @@ public class Journey {
     private JourneyOption[] journeyOptions;
     private Toll[] mapCalculatedTolls;
     private Charge mapCalculatedCharge;
-    private CouponCode couponCode;
+    private CouponCode[] couponCodes;
+    private double gratuity;
     private Charge finalCharge;
     private String paymentType;
 
@@ -216,14 +217,6 @@ public class Journey {
         this.mapCalculatedCharge = mapCalculatedCharge;
     }
 
-    public CouponCode getCouponCode() {
-        return couponCode;
-    }
-
-    public void setCouponCode(CouponCode couponCode) {
-        this.couponCode = couponCode;
-    }
-
     public Charge getFinalCharge() {
         return finalCharge;
     }
@@ -263,5 +256,21 @@ public class Journey {
 
     public void setUnits(Unit[] units) {
         this.units = units;
+    }
+
+    public CouponCode[] getCouponCodes() {
+        return couponCodes;
+    }
+
+    public void setCouponCodes(CouponCode[] couponCodes) {
+        this.couponCodes = couponCodes;
+    }
+
+    public double getGratuity() {
+        return gratuity;
+    }
+
+    public void setGratuity(double gratuity) {
+        this.gratuity = gratuity;
     }
 }

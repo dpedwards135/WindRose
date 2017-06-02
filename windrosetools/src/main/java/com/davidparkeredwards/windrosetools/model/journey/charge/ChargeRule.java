@@ -1,8 +1,6 @@
 package com.davidparkeredwards.windrosetools.model.journey.charge;
 
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.CouponCode;
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.GeoTimeAreaCharge;
-import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.GeoTimeAreaChargePercent;
+import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.LineItemCharge;
 
 import java.util.ArrayList;
 
@@ -14,39 +12,20 @@ public class ChargeRule implements ChargeMethods{
 
     private String currency; //WCurrencyType to String
 
+    private FareType fareType;
+
     private double fixedFare;
     private double mileageMultiplier;
     private double baseFlatFee;
     private double additionalStopFee;
 
+    private ArrayList<LineItemCharge> lineItemCharges;
 
-    //Coupon Code
-    private CouponCode couponCode;
+    private boolean canUseMultipleCouponCodes;
+    private boolean gratuityIsAccepted;
 
-    //Surcharge Variables - Add flats to base, add all percents then multiply by base and add to base
-    private double tollsSurchargeFlat;
-    private double optionalsCharge;
-    private double couponDiscountFlat;
-    private double additionalPassengerFlat;
-    private double afterHoursFlat;
-    private double peakFlat;
-    private ArrayList<CustomChargeFlat> customChargeFlats;
-    private ArrayList<GeoTimeAreaCharge> geoTimeAreaFlat; //Journey will iterate through this list to get any that apply
-
-
-    private double couponDiscountPercent;
-    private double additionalPassengerPercent;
-    private double afterHoursPercent;
-    private double peakPercent;
-    private ArrayList<CustomChargePercent> customChargePercents;
-    private ArrayList<GeoTimeAreaChargePercent> geoTimeAreaPercent; //Journey will iterate through this list to get any that apply
-
-    private double baseCharge;
-    private double totalFlatCharge;
-    private double totalPercentCharge;
-    private double totalCharge;
-
-    //Black box? Calculate and it churns it out?
+    private String[] paymentTypesAccepted;
+    private int maxCouponCodesAccepted = 1; //Default is one, allows for a voucher, doesn't allow for overkill
 
     public ChargeRule() {
 
@@ -92,143 +71,71 @@ public class ChargeRule implements ChargeMethods{
         this.additionalStopFee = additionalStopFee;
     }
 
-    public CouponCode getCouponCode() {
-        return couponCode;
+    public ArrayList<LineItemCharge> getLineItemCharges() {
+        return lineItemCharges;
     }
 
-    public void setCouponCode(CouponCode couponCode) {
-        this.couponCode = couponCode;
+    public void setLineItemCharges(ArrayList<LineItemCharge> lineItemCharges) {
+        this.lineItemCharges = lineItemCharges;
     }
 
-    public double getTollsSurchargeFlat() {
-        return tollsSurchargeFlat;
+    public boolean isCanUseMultipleCouponCodes() {
+        return canUseMultipleCouponCodes;
     }
 
-    public void setTollsSurchargeFlat(double tollsSurchargeFlat) {
-        this.tollsSurchargeFlat = tollsSurchargeFlat;
+    public void setCanUseMultipleCouponCodes(boolean canUseMultipleCouponCodes) {
+        this.canUseMultipleCouponCodes = canUseMultipleCouponCodes;
     }
 
-    public double getOptionalsCharge() {
-        return optionalsCharge;
+    public boolean isGratuityIsAccepted() {
+        return gratuityIsAccepted;
     }
 
-    public void setOptionalsCharge(double optionalsCharge) {
-        this.optionalsCharge = optionalsCharge;
+    public void setGratuityIsAccepted(boolean gratuityIsAccepted) {
+        this.gratuityIsAccepted = gratuityIsAccepted;
     }
 
-    public double getCouponDiscountFlat() {
-        return couponDiscountFlat;
+    public enum FareType {
+
+        FIXED_FARE("fixed_fare"),
+        MAP_CALCULATED_FARE("map_calculated_fare"),
+        METERED_FARE("metered_fare"),
+        METER_CHECKED_FARE("meter_checked_fare"),
+        MILES_PLUS_WAIT_TIME("miles_plus_wait_time");
+
+
+        private String fareType;
+
+        private FareType(String fareType) {
+            this.fareType = fareType;
+        }
+
+        public String getFareType() {
+            return this.fareType;
+        }
+
     }
 
-    public void setCouponDiscountFlat(double couponDiscountFlat) {
-        this.couponDiscountFlat = couponDiscountFlat;
+    public enum PaymentTypes {
+
+        CASH("cash"),
+        CREDIT_DEBIT("credit_debit"),
+        DIRECT_BILL("direct_bill"),
+        ACH("ach"),
+        CHECK("check");
+
+
+        private String paymentType;
+
+        private PaymentTypes(String paymentType) {
+            this.paymentType = paymentType;
+        }
+
+        public String getPaymentType() {
+            return this.paymentType;
+        }
+
     }
-
-    public double getAdditionalPassengerFlat() {
-        return additionalPassengerFlat;
-    }
-
-    public void setAdditionalPassengerFlat(double additionalPassengerFlat) {
-        this.additionalPassengerFlat = additionalPassengerFlat;
-    }
-
-    public double getAfterHoursFlat() {
-        return afterHoursFlat;
-    }
-
-    public void setAfterHoursFlat(double afterHoursFlat) {
-        this.afterHoursFlat = afterHoursFlat;
-    }
-
-    public double getPeakFlat() {
-        return peakFlat;
-    }
-
-    public void setPeakFlat(double peakFlat) {
-        this.peakFlat = peakFlat;
-    }
-
-    public ArrayList<GeoTimeAreaCharge> getGeoTimeAreaFlat() {
-        return geoTimeAreaFlat;
-    }
-
-    public void setGeoTimeAreaFlat(ArrayList<GeoTimeAreaCharge> geoTimeAreaFlat) {
-        this.geoTimeAreaFlat = geoTimeAreaFlat;
-    }
-
-    public double getCouponDiscountPercent() {
-        return couponDiscountPercent;
-    }
-
-    public void setCouponDiscountPercent(double couponDiscountPercent) {
-        this.couponDiscountPercent = couponDiscountPercent;
-    }
-
-    public double getAdditionalPassengerPercent() {
-        return additionalPassengerPercent;
-    }
-
-    public void setAdditionalPassengerPercent(double additionalPassengerPercent) {
-        this.additionalPassengerPercent = additionalPassengerPercent;
-    }
-
-    public double getAfterHoursPercent() {
-        return afterHoursPercent;
-    }
-
-    public void setAfterHoursPercent(double afterHoursPercent) {
-        this.afterHoursPercent = afterHoursPercent;
-    }
-
-    public double getPeakPercent() {
-        return peakPercent;
-    }
-
-    public void setPeakPercent(double peakPercent) {
-        this.peakPercent = peakPercent;
-    }
-
-    public ArrayList<GeoTimeAreaChargePercent> getGeoTimeAreaPercent() {
-        return geoTimeAreaPercent;
-    }
-
-    public void setGeoTimeAreaPercent(ArrayList<GeoTimeAreaChargePercent> geoTimeAreaPercent) {
-        this.geoTimeAreaPercent = geoTimeAreaPercent;
-    }
-
-    public double getBaseCharge() {
-        return baseCharge;
-    }
-
-    public void setBaseCharge(double baseCharge) {
-        this.baseCharge = baseCharge;
-    }
-
-    public double getTotalFlatCharge() {
-        return totalFlatCharge;
-    }
-
-    public void setTotalFlatCharge(double totalFlatCharge) {
-        this.totalFlatCharge = totalFlatCharge;
-    }
-
-    public double getTotalPercentCharge() {
-        return totalPercentCharge;
-    }
-
-    public void setTotalPercentCharge(double totalPercentCharge) {
-        this.totalPercentCharge = totalPercentCharge;
-    }
-
-    public double getTotalCharge() {
-        return totalCharge;
-    }
-
-    public void setTotalCharge(double totalCharge) {
-        this.totalCharge = totalCharge;
-    }
-
-
 }
 
 
