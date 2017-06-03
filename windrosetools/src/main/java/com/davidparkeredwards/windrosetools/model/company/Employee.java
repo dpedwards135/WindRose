@@ -1,6 +1,6 @@
 package com.davidparkeredwards.windrosetools.model.company;
 
-import com.davidparkeredwards.windrosetools.model.geoTemporal.geoArea.GeoPoint;
+import com.davidparkeredwards.windrosetools.model.geoTemporal.geoArea.AddressPoint;
 
 /**
  * Created by davidedwards on 6/1/17.
@@ -19,7 +19,7 @@ public class Employee {
     static final int ADMIN = 3;
     static final int PROCESSOR = 4;
     static final int CUSTOMER_REP = 5;
-    private GeoPoint startingAddress;
-    private GeoPoint home;
+    private AddressPoint startingAddress;
+    private AddressPoint home;
 
 }

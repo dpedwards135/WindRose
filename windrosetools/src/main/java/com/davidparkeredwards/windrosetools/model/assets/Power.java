@@ -10,4 +10,14 @@ public interface Power {
 
     double getTopSpeed();
     TrailerType[] canPull();
+    PowerType getPowerType();
+
+
+    enum PowerType {
+        DRIVING,
+        PUBLIC_TRANSIT,
+        WALKING,
+        BICYCLE,
+        AIRPLANE;
+    }
 }

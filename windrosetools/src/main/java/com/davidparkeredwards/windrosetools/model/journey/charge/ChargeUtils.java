@@ -1,6 +1,5 @@
 package com.davidparkeredwards.windrosetools.model.journey.charge;
 
-import com.davidparkeredwards.windrosetools.model.journey.Journey;
 import com.davidparkeredwards.windrosetools.model.journey.charge.lineItems.LineItemCharge;
 
 import org.threeten.bp.OffsetDateTime;
@@ -22,12 +21,5 @@ public class ChargeUtils {
         } else {
             return false;
         }
-    }
-
-    public static boolean chargeAppliesToJourney(Journey journey, LineItemCharge charge) {
-        //COME BACK HERE - CHANGE ALL LINEITEM CHARGES TO GEOTIMEAREACHARGES, BUT SPECIFIC CHILDREN
-        //HAVE GEOTIMEAREA SET FOR ANYTIME OR ANYWHERE OR BOTH. THEN CHECK IF THE JOURNEY HAS ANY STOPS
-        //THAT THE GEOTIMEAREA CONTAINS AND IF THEY DO, APPLY THE CHARGE
-        if isValidForDate(journey.)
     }
 }

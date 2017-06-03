@@ -4,68 +4,31 @@ package com.davidparkeredwards.windrosetools.model.geoTemporal.geoArea;
  * Created by davidedwards on 5/31/17.
  */
 
-public class GeoPoint {
+ public interface GeoPoint {
 
-    private double longitude;
-    private double latitude;
-    private double geoFenceRadiusM;
+    double getLongitude();
 
-    private String streetAddress;
-    private String building;
-    private String floor;
-    private String room;
+    double getLatitude();
 
-    private String city;
-    private String county;
-    private String postalCode;
-    private String country;
-    private String continent;
+    double getGeoFenceRadiusM();
 
-    public double getLongitude() {
-        return longitude;
-    }
+    String getStreetAddress();
 
-    public double getLatitude() {
-        return latitude;
-    }
+    String getBuilding();
 
-    public double getGeoFenceRadiusM() {
-        return geoFenceRadiusM;
-    }
+    String getFloor();
 
-    public String getStreetAddress() {
-        return streetAddress;
-    }
+    String getRoom();
 
-    public String getBuilding() {
-        return building;
-    }
+    String getCity();
 
-    public String getFloor() {
-        return floor;
-    }
+    String getCounty();
 
-    public String getRoom() {
-        return room;
-    }
+    String getPostalCode();
 
-    public String getCity() {
-        return city;
-    }
+    String getCountry();
 
-    public String getCounty() {
-        return county;
-    }
+    String getContinent();
 
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getContinent() {
-        return continent;
-    }
+    String getRoomLocationIdentifier();
 }

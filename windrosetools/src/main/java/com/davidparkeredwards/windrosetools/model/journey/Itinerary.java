@@ -6,8 +6,11 @@ package com.davidparkeredwards.windrosetools.model.journey;
 
 public class Itinerary {
 
+    //When Windrose provides branded service consider adding TRIP class to break journeys into pieces
+    //that can be assigned to different companies.
+
+
     private Journey[] journeysInItinerary;
-    private boolean maximumColocationRequired;
     private double totalCharge;
 
 }

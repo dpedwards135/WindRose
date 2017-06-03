@@ -67,10 +67,12 @@ public class Charge implements ChargeMethods{
             for (Toll toll : journey.getMapCalculatedTolls()) {
                 tollsSurcharge += toll.getFee();
             }
+            totalFlatCharge += tollsSurcharge;
         }
         for(JourneyOption option : journey.getJourneyOptions()) {
             optionalsCharge += option.getPrice();
         }
+        totalFlatCharge += optionalsCharge;
         for (LineItemCharge charge : journey.getCouponCodes()) {
             assignChargeToFlatOrPercent(charge, journey);
         }
