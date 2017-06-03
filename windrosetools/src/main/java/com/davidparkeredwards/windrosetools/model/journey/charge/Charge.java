@@ -25,11 +25,11 @@ public class Charge implements ChargeMethods{
     //Surcharge Variables - Add flats to base, add all percents then multiply by base and add to base
     private double tollsSurcharge;
     private double optionalsCharge;
-
     private ArrayList<CouponCode> couponCodes;
     private ArrayList<LineItemCharge> appliedLineItemCharges;
     private ArrayList<LineItemCharge> appliedCouponCodes;
 
+    //Totals Calculation
     private double baseCharge = 0;
     private double totalFlatCharge = 0;
     private double surchargePercentCharge = 0;
@@ -38,11 +38,14 @@ public class Charge implements ChargeMethods{
     private double subTotalCharge = 0;
     private double totalDiscount = 0;
     private double totalCharge = 0;
-    private double finalChargeToCustomer = 0;
 
     private double gratuity = 0;
 
-    public Charge(Journey journey, double gratuity) {
+    private double finalChargeToCustomer = 0;
+
+
+
+    public Charge(Journey journey) {
 
         ChargeRule chargeRule = journey.getJourneyType().getChargeRule();
 
@@ -60,14 +63,14 @@ public class Charge implements ChargeMethods{
         couponCodes = new ArrayList<CouponCode>(Arrays.asList(journey.getCouponCodes()));
 
         //Calculate Surcharges and Discounts
-        for(Toll toll : journey.getMapCalculatedTolls()) {
-            tollsSurcharge += toll.getFee();
+        if(chargeRule.isChargeTollFees()) {
+            for (Toll toll : journey.getMapCalculatedTolls()) {
+                tollsSurcharge += toll.getFee();
+            }
         }
-
         for(JourneyOption option : journey.getJourneyOptions()) {
             optionalsCharge += option.getPrice();
         }
-
         for (LineItemCharge charge : journey.getCouponCodes()) {
             assignChargeToFlatOrPercent(charge, journey);
         }

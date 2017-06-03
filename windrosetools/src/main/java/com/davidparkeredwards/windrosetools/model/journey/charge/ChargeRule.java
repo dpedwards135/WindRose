@@ -21,14 +21,29 @@ public class ChargeRule implements ChargeMethods{
 
     private ArrayList<LineItemCharge> lineItemCharges;
 
+    private boolean chargeTollFees;
     private boolean canUseMultipleCouponCodes;
     private boolean gratuityIsAccepted;
 
     private String[] paymentTypesAccepted;
     private int maxCouponCodesAccepted = 1; //Default is one, allows for a voucher, doesn't allow for overkill
 
-    public ChargeRule() {
-
+    public ChargeRule(String currency, FareType fareType, double fixedFare, double mileageMultiplier,
+                      double baseFlatFee, double additionalStopFee, ArrayList<LineItemCharge> lineItemCharges,
+                      boolean chargeTollFees, boolean canUseMultipleCouponCodes, boolean gratuityIsAccepted,
+                      String[] paymentTypesAccepted, int maxCouponCodesAccepted) {
+        this.currency = currency;
+        this.fareType = fareType;
+        this.fixedFare = fixedFare;
+        this.mileageMultiplier = mileageMultiplier;
+        this.baseFlatFee = baseFlatFee;
+        this.additionalStopFee = additionalStopFee;
+        this.lineItemCharges = lineItemCharges;
+        this.chargeTollFees = chargeTollFees;
+        this.canUseMultipleCouponCodes = canUseMultipleCouponCodes;
+        this.gratuityIsAccepted = gratuityIsAccepted;
+        this.paymentTypesAccepted = paymentTypesAccepted;
+        this.maxCouponCodesAccepted = maxCouponCodesAccepted;
     }
 
     public String getCurrency() {
@@ -93,6 +108,10 @@ public class ChargeRule implements ChargeMethods{
 
     public void setGratuityIsAccepted(boolean gratuityIsAccepted) {
         this.gratuityIsAccepted = gratuityIsAccepted;
+    }
+
+    public boolean isChargeTollFees() {
+        return chargeTollFees;
     }
 
     public enum FareType {

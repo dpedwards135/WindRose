@@ -1,6 +1,6 @@
 package com.davidparkeredwards.windrosetools.model.company;
 
-import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoPoint;
+import com.davidparkeredwards.windrosetools.model.geoTemporal.geoArea.GeoPoint;
 
 /**
  * Created by davidedwards on 6/1/17.

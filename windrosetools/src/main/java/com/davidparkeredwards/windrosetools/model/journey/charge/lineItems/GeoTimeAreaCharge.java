@@ -3,7 +3,6 @@ package com.davidparkeredwards.windrosetools.model.journey.charge.lineItems;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoStop;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoTimeArea;
 import com.davidparkeredwards.windrosetools.model.journey.Journey;
-import com.davidparkeredwards.windrosetools.model.journey.charge.ChargeUtils;
 
 import org.threeten.bp.OffsetDateTime;
 
@@ -14,7 +13,6 @@ import org.threeten.bp.OffsetDateTime;
 public class GeoTimeAreaCharge implements LineItemCharge{
 
     private GeoTimeArea geoTimeArea;
-
     private int flatOrPercent;
     private OffsetDateTime startDate;
     private OffsetDateTime expirationDate;
@@ -42,21 +40,13 @@ public class GeoTimeAreaCharge implements LineItemCharge{
     }
 
     @Override
-    public double getFlatCharge(OffsetDateTime journeyDate) {
-        if (ChargeUtils.isValidForDate(journeyDate, this)) {
-            return flatCharge;
-        } else {
-            return 0;
-        }
+    public double getFlatCharge() {
+        return flatCharge;
     }
 
     @Override
-    public double getPercentCharge(OffsetDateTime journeyDate) {
-        if (ChargeUtils.isValidForDate(journeyDate, this)) {
-            return percentCharge;
-        } else {
-            return 0;
-        }
+    public double getPercentCharge() {
+        return percentCharge;
     }
 
     @Override
@@ -69,11 +59,12 @@ public class GeoTimeAreaCharge implements LineItemCharge{
         return expirationDate;
     }
 
+    @Override
+    public boolean isValidChargeForJourney(Journey journey) {
+        return false;
+    }
+    @Override
     public GeoTimeArea getGeoTimeArea() {
         return geoTimeArea;
-    }
-
-    public void setGeoTimeArea(GeoTimeArea geoTimeArea) {
-        this.geoTimeArea = geoTimeArea;
     }
 }
