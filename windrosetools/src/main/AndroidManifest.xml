@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".WNavMenuActivity"
+            android:name=".activity.WNavMenuActivity"
             android:label="@string/title_activity_wnav_menu"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

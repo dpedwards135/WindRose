@@ -9,7 +9,7 @@
         android:supportsRtl="true" android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.davidparkeredwards.windrosetools.WLoginActivity"
+            android:name="com.davidparkeredwards.windrosetools.activity.WLoginActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan" >
@@ -28,6 +28,10 @@
         <activity android:name=".MainCustomerActivity" android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.ConfigureCompanyActivity"
+            android:label="Configure Company"
+            android:theme="@style/AppTheme.NoActionBar"/>
         
 
     </application>

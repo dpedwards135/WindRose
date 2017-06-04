@@ -1,4 +1,4 @@
-package com.davidparkeredwards.windrosetools;
+package com.davidparkeredwards.windrosetools.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -11,6 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.davidparkeredwards.windrosetools.FirebaseHelper;
+import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.StringWithTag;
+import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.ArrayList;

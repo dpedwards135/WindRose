@@ -10,6 +10,7 @@ import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 
 public class Vehicle implements Vessel, Power {
 
+    private PowerType powerType;
     private VehicleType vehicleType;
     private String vehicleIdentifer;
     private int personCapacity;
@@ -42,6 +43,11 @@ public class Vehicle implements Vessel, Power {
     @Override
     public TrailerType[] canPull() {
         return pullableTrailerTypes;
+    }
+
+    @Override
+    public PowerType getPowerType() {
+        return null;
     }
 
     @Override

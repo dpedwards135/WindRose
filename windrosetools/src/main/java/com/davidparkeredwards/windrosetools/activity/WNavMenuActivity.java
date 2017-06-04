@@ -1,4 +1,4 @@
-package com.davidparkeredwards.windrosetools;
+package com.davidparkeredwards.windrosetools.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.WindroseApplication;
 
 public class WNavMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

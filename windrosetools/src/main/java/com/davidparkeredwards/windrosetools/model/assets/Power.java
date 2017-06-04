@@ -18,6 +18,8 @@ public interface Power {
         PUBLIC_TRANSIT,
         WALKING,
         BICYCLE,
-        AIRPLANE;
+        AIRPLANE,
+        AIR_CAR,
+        AIR_DRONE;
     }
 }
