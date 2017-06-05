@@ -6,14 +6,13 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerTextView implements WRecyclerObject {
 
+    private String fieldID;
     private String text = "Test text string";
     private int viewType = WRecyclerObject.TEXT_VIEW;
     private boolean isEditable = false;
 
-
-    public WRecyclerTextView() {}
-
-    public WRecyclerTextView(String text) {
+    public WRecyclerTextView(String fieldID, String text) {
+        this.fieldID = fieldID;
         this.text = text;
     }
 
@@ -31,4 +30,8 @@ public class WRecyclerTextView implements WRecyclerObject {
         return isEditable;
     }
 
+    @Override
+    public String getFieldID() {
+        return fieldID;
+    }
 }

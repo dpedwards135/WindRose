@@ -1,10 +1,15 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -13,6 +18,8 @@ import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerCheckBox;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerSelectFrom;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextEdit;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextView;
 
 /**
@@ -65,12 +72,18 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 checkBox = (CheckBox) v.findViewById(R.id.wviewholder_checkbox);
                 checkBox.setVisibility(View.VISIBLE);
                 checkBox.setChecked(wCheckBox.getTrueOrFalse());
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        wCheckBox.setTrueOrFalse(isChecked);
+                    }
+                });
                 break;
 
             case WRecyclerObject.FINALIZE_BUTTONS:
+                WRecyclerFinalizeButtons finalizeButtons = (WRecyclerFinalizeButtons) wRecyclerObject;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
-                WRecyclerFinalizeButtons finalizeButtons = (WRecyclerFinalizeButtons) wRecyclerObject;
 
                 if(finalizeButtons.isSetSubmit()) {
                     submitButton = (Button) v.findViewById(R.id.wviewholder_submitButton);
@@ -93,18 +106,56 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 break;
 
             case WRecyclerObject.SELECT_FROM:
+                WRecyclerSelectFrom wRecyclerSelectFrom = (WRecyclerSelectFrom) wRecyclerObject;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
+                textView.setText(wRecyclerSelectFrom.getText());
                 spinner = (Spinner) v.findViewById(R.id.wviewholder_spinner);
                 spinner.setVisibility(View.VISIBLE);
+                ArrayAdapter<CharSequence> adapter = new ArrayAdapter(v.getContext(),
+                        android.R.layout.simple_spinner_item, wRecyclerSelectFrom.getValues());
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                spinner.setPrompt(wRecyclerSelectFrom.getSpinnerPrompt());
+                spinner.setSelection(wRecyclerSelectFrom.getSelectedValue());
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        wRecyclerSelectFrom.setSelectedValue(position);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
 
                 break;
 
             case WRecyclerObject.TEXT_EDIT:
+                WRecyclerTextEdit textEdit = (WRecyclerTextEdit) wRecyclerObject;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
+                textView.setText(textEdit.getText());
                 editText = (EditText) v.findViewById(R.id.wviewholder_edittext);
                 editText.setVisibility(View.VISIBLE);
+                if(textEdit.getUserInput() == null) {
+                    editText.setHint(textEdit.getPrompt());
+                } else {
+                    editText.setText(textEdit.getUserInput());
+                }
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        textEdit.setUserInput(s.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
                 break;
 
             default:

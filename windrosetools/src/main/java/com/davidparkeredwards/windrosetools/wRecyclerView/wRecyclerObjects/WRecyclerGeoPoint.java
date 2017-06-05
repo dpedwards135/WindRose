@@ -6,6 +6,7 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerGeoPoint implements WRecyclerObject {
 
+    private String fieldID;
 
     @Override
     public int getWRecyclerViewType() {
@@ -15,6 +16,11 @@ public class WRecyclerGeoPoint implements WRecyclerObject {
     @Override
     public boolean getIsEditable() {
         return false;
+    }
+
+    @Override
+    public String getFieldID() {
+        return fieldID;
     }
 
 }

@@ -6,12 +6,14 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerCheckBox implements WRecyclerObject {
 
+    private String fieldID;
     private String text = "Test text string";
     private boolean trueOrFalse = false;
     private int viewType = WRecyclerObject.CHECKBOX;
     private boolean isEditable = false;
 
-    public WRecyclerCheckBox(String text, boolean trueOrFalse) {
+    public WRecyclerCheckBox(String fieldID, String text, boolean trueOrFalse) {
+        this.fieldID = fieldID;
         this.text = text;
         this.trueOrFalse = trueOrFalse;
     }
@@ -32,4 +34,12 @@ public class WRecyclerCheckBox implements WRecyclerObject {
         return isEditable;
     }
 
+    public void setTrueOrFalse(boolean trueOrFalse) {
+        this.trueOrFalse = trueOrFalse;
+    }
+
+    @Override
+    public String getFieldID() {
+        return fieldID;
+    }
 }

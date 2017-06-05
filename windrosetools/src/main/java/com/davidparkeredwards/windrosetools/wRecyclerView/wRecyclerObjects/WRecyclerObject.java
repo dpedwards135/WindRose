@@ -18,6 +18,7 @@ public interface WRecyclerObject {
 
     int getWRecyclerViewType(); //This applies to the property and value
     boolean getIsEditable();
+    String getFieldID();
 
     int CHECKBOX = 1;
     int FINALIZE_BUTTONS = 2;

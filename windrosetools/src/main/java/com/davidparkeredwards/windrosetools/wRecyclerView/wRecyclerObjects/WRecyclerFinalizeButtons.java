@@ -9,13 +9,15 @@ import com.davidparkeredwards.windrosetools.WindroseApplication;
 
 public class WRecyclerFinalizeButtons implements WRecyclerObject {
 
+    private String fieldID;
     private int type = FINALIZE_BUTTONS;
     private boolean isEditable = false;
     private boolean setCancel;
     private boolean setSave;
     private boolean setSubmit;
 
-    public WRecyclerFinalizeButtons(boolean setCancel, boolean setSave, boolean setSubmit) {
+    public WRecyclerFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
+        this.fieldID = fieldID;
         this.setCancel = setCancel;
         this.setSave = setSave;
         this.setSubmit = setSubmit;
@@ -59,6 +61,11 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
             return this.buttonName;
         }
 
+    }
+
+    @Override
+    public String getFieldID() {
+        return fieldID;
     }
 }
 
