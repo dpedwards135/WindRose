@@ -1,5 +1,7 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
+import android.support.v7.widget.RecyclerView;
+
 /**
  * Created by davidedwards on 6/4/17.
  */
@@ -13,5 +15,10 @@ public class WRecyclerSelectFrom implements WRecyclerObject {
     @Override
     public boolean getIsEditable() {
         return false;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getViewHolder() {
+        return null;
     }
 }
