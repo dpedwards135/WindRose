@@ -1,25 +1,64 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
+import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.WindroseApplication;
+
 /**
  * Created by davidedwards on 6/4/17.
  */
 
 public class WRecyclerFinalizeButtons implements WRecyclerObject {
 
-    private int numberOfButtons;
+    private int type = FINALIZE_BUTTONS;
+    private boolean isEditable = false;
+    private boolean setCancel;
+    private boolean setSave;
+    private boolean setSubmit;
+
+    public WRecyclerFinalizeButtons(boolean setCancel, boolean setSave, boolean setSubmit) {
+        this.setCancel = setCancel;
+        this.setSave = setSave;
+        this.setSubmit = setSubmit;
+    }
 
     @Override
     public int getWRecyclerViewType() {
-        return 0;
+        return type;
     }
 
     @Override
     public boolean getIsEditable() {
-        return false;
+        return isEditable;
     }
 
-    public int getNumberOfButtons() {
-        return numberOfButtons;
+    public boolean isSetCancel() {
+        return setCancel;
+    }
+
+    public boolean isSetSave() {
+        return setSave;
+    }
+
+    public boolean isSetSubmit() {
+        return setSubmit;
+    }
+
+    public enum ButtonType {
+
+        SAVE(WindroseApplication.applicationContext.getString(R.string.save)),
+        CANCEL(WindroseApplication.applicationContext.getString(R.string.cancel)),
+        SUBMIT(WindroseApplication.applicationContext.getString(R.string.submit));
+
+        private String buttonName;
+
+        private ButtonType(String buttonType) {
+            this.buttonName = buttonName;
+        }
+
+        public String getButtonName() {
+            return this.buttonName;
+        }
+
     }
 }
 

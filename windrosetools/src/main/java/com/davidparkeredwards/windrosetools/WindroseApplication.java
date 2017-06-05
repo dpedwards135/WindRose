@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,10 +23,9 @@ public class WindroseApplication extends Application {
     6. Identifies the company in focus
     */
 
+    public static Context applicationContext;
 
     private static String companyID;
-
-
     private static int userFocus;
     private static int multiCompanyApp;
     private boolean isDebug;
@@ -51,6 +51,8 @@ public class WindroseApplication extends Application {
         super.onCreate();
 
         AndroidThreeTen.init(this);
+
+        applicationContext = this.getApplicationContext();
 
         FirebaseApp.initializeApp(getApplicationContext());
         auth = FirebaseAuth.getInstance();

@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerCheckBox;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextView;
@@ -34,9 +35,9 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
     private CheckBox checkBox;
     private Spinner spinner;
     private EditText editText;
-    private Button button1;
-    private Button button2;
-    private Button button3;
+    private Button submitButton;
+    private Button saveButton;
+    private Button cancelButton;
 
     
 
@@ -57,29 +58,35 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 break;
 
             case WRecyclerObject.CHECKBOX:
+                WRecyclerCheckBox wCheckBox = (WRecyclerCheckBox) wRecyclerObject;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
+                textView.setText(wCheckBox.getText());
                 checkBox = (CheckBox) v.findViewById(R.id.wviewholder_checkbox);
                 checkBox.setVisibility(View.VISIBLE);
+                checkBox.setChecked(wCheckBox.getTrueOrFalse());
                 break;
 
             case WRecyclerObject.FINALIZE_BUTTONS:
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
                 WRecyclerFinalizeButtons finalizeButtons = (WRecyclerFinalizeButtons) wRecyclerObject;
-                int numberOfButtons = finalizeButtons.getNumberOfButtons();
-                switch(numberOfButtons) {
-                    //Configure all button characteristics here
-                    case 3:
-                        button3.setVisibility(View.VISIBLE);
-                    case 2:
-                        button2.setVisibility(View.VISIBLE);
-                    case 1:
-                        button1.setVisibility(View.VISIBLE);
-                    case 0:
-                        break;
 
+                if(finalizeButtons.isSetSubmit()) {
+                    submitButton = (Button) v.findViewById(R.id.wviewholder_submitButton);
+                    submitButton.setVisibility(View.VISIBLE);
                 }
+
+                if(finalizeButtons.isSetSave()) {
+                    saveButton = (Button) v.findViewById(R.id.wviewholder_saveButton);
+                    saveButton.setVisibility(View.VISIBLE);
+                }
+
+                if(finalizeButtons.isSetCancel()) {
+                    cancelButton = (Button) v.findViewById(R.id.wviewholder_cancelButton);
+                    cancelButton.setVisibility(View.VISIBLE);
+                }
+
                 break;
 
             case WRecyclerObject.GEOPOINT:
@@ -90,6 +97,7 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 textView.setVisibility(View.VISIBLE);
                 spinner = (Spinner) v.findViewById(R.id.wviewholder_spinner);
                 spinner.setVisibility(View.VISIBLE);
+
                 break;
 
             case WRecyclerObject.TEXT_EDIT:

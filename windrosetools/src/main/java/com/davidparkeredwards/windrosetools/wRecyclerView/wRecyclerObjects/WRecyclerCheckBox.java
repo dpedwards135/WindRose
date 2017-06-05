@@ -20,6 +20,8 @@ public class WRecyclerCheckBox implements WRecyclerObject {
         return text;
     }
 
+    public boolean getTrueOrFalse() { return trueOrFalse; }
+
     @Override
     public int getWRecyclerViewType() {
         return viewType;

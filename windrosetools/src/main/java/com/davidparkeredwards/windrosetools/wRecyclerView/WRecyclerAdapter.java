@@ -41,6 +41,9 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     layoutResource = R.layout.wviewholder_geopoint;
                     inflatedView = LayoutInflater.from(parent.getContext()).inflate(layoutResource,
                             parent,false);
+                    RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    inflatedView.setLayoutParams(lp);
                     viewHolder = new WViewHolder(inflatedView);
                     break;
 
@@ -48,7 +51,11 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     layoutResource = R.layout.wviewholder;
                     inflatedView = LayoutInflater.from(parent.getContext()).inflate(layoutResource,
                             parent,false);
+                    RecyclerView.LayoutParams rlp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    inflatedView.setLayoutParams(rlp);
                     viewHolder = new WViewHolder(inflatedView);
+                    break;
             }
             return viewHolder;
         }
