@@ -1,5 +1,7 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
+
 import java.util.ArrayList;
 
 /**

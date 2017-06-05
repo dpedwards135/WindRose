@@ -6,6 +6,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/wrecycler_text_view_text_view"/>
+        android:id="@+id/wrecycler_checkbox_text_view"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wrecycler_checkbox_checkbox"/>
 
 </LinearLayout>

@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerAdapter;
-import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerObject;
-import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerTextView;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextView;
 
 import java.util.ArrayList;
 

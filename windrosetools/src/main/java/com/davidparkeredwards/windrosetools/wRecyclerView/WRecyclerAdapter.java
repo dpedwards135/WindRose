@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
 
 import java.util.ArrayList;
 
@@ -14,31 +15,20 @@ import java.util.ArrayList;
  */
 
 public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    //Define a viewHolder for each type of view required.
+    /* Don't mess with inserting into RecyclerView, etc, just modify the ArrayList with the
+    data and rebuild the RecyclerView. That means any edits need to be saved to the constructorObjects
+    and that is always up to date. */
 
     private ArrayList<WRecyclerObject> constructorObjects;
 
     public WRecyclerAdapter(ArrayList<WRecyclerObject> constructorObjects) {
+        this.constructorObjects = constructorObjects;
     }
 
     @Override
     public int getItemViewType(int position) {
-
         return constructorObjects.get(position).getWRecyclerViewType();
-
-        //return super.getItemViewType(position);
-
-
     }
-
-    /*
-        @Override
-        public int getItemViewType(int position) {
-            // Just as an example, return 0 or 2 depending on position
-            // Note that unlike in ListView adapters, types don't have to be contiguous
-            return position % 2 * 2;
-        }
-        */
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,38 +36,46 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int layoutResource = 0;
             View inflatedView;
 
-            //Next - build the rest of the ViewHolders and cases for inflating
             switch (viewType) {
-                case WRecyclerObject.TEXT_VIEW:
-                    layoutResource = R.layout.wrecycler_text_view;
+                case WRecyclerObject.GEOPOINT:
+                    layoutResource = R.layout.wviewholder_geopoint;
                     inflatedView = LayoutInflater.from(parent.getContext()).inflate(layoutResource,
                             parent,false);
-                    viewHolder = new WRecyclerTextView().getViewHolder(inflatedView);
+                    viewHolder = new WViewHolder(inflatedView);
                     break;
+
                 default:
-                    layoutResource = R.layout.wrecycler_text_view;
+                    layoutResource = R.layout.wviewholder;
                     inflatedView = LayoutInflater.from(parent.getContext()).inflate(layoutResource,
                             parent,false);
-                    viewHolder = new WRecyclerTextView().getViewHolder(inflatedView);
+                    viewHolder = new WViewHolder(inflatedView);
             }
-
             return viewHolder;
         }
 
-        @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-            WRecyclerObject wRecyclerObject = constructorObjects.get(position);
-            switch (holder.getItemViewType()) {
-                case WRecyclerObject.TEXT_VIEW:
-                    WRecyclerTextView.WRecyclerTextViewHolder vh = (WRecyclerTextView.WRecyclerTextViewHolder) holder;
-                    WRecyclerTextView wRecyclerTextView = (WRecyclerTextView) wRecyclerObject;
-                    vh.bindText(wRecyclerTextView.getText());
-            }
-        }
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        WRecyclerObject wRecyclerObject = constructorObjects.get(position);
+        WViewHolder wViewHolder = (WViewHolder) holder;
+        wViewHolder.bindObject(wRecyclerObject);
+    }
 
     @Override
     public int getItemCount() {
         return constructorObjects.size();
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        //Save and persist dataset
+        WRecyclerObject object = ((WViewHolder) holder).saveData();
+        int position = holder.getAdapterPosition();
+        constructorObjects.set(position, object);
+        super.onViewRecycled(holder);
+    }
+
+    public ArrayList<WRecyclerObject> getSavedObjects() {
+        return constructorObjects;
     }
 }
 

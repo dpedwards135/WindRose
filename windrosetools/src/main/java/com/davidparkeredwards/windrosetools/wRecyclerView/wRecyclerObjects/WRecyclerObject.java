@@ -1,7 +1,4 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView;
-
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -15,11 +12,12 @@ public interface WRecyclerObject {
         the type of ViewHolder that should be used to change the value of the property.
 
         RecyclerObject will also return its own view holder.
+
+        Two types of WViewHolders - Generic and GeoPoint
      */
 
     int getWRecyclerViewType(); //This applies to the property and value
     boolean getIsEditable();
-    RecyclerView.ViewHolder getViewHolder(View view);
 
     int CHECKBOX = 1;
     int FINALIZE_BUTTONS = 2;

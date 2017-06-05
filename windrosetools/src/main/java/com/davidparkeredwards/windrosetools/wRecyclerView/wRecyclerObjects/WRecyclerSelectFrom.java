@@ -1,12 +1,12 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView;
-
-import android.support.v7.widget.RecyclerView;
+package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
 public class WRecyclerSelectFrom implements WRecyclerObject {
+
+
     @Override
     public int getWRecyclerViewType() {
         return 0;
@@ -17,8 +17,4 @@ public class WRecyclerSelectFrom implements WRecyclerObject {
         return false;
     }
 
-    @Override
-    public RecyclerView.ViewHolder getViewHolder() {
-        return null;
-    }
 }
