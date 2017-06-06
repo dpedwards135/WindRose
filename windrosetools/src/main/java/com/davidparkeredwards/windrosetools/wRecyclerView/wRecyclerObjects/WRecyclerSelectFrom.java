@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public class WRecyclerSelectFrom implements WRecyclerObject {
 
-    private String fieldID;
-    private int viewType = SELECT_FROM;
-    private boolean isEditable;
-    private String text;
-    private ArrayList<String> selectableValues;
-    private int selectedValue;
-    private String spinnerPrompt;
+    public String fieldID;
+    public int viewType = SELECT_FROM;
+    public boolean isEditable;
+    public String text;
+    public ArrayList<String> selectableValues;
+    public int selectedValue;
+    public String spinnerPrompt;
 
     public WRecyclerSelectFrom(String fieldID, boolean isEditable, String text, ArrayList<String> selectableValues, int selectedValue, String spinnerPrompt) {
         this.fieldID = fieldID;

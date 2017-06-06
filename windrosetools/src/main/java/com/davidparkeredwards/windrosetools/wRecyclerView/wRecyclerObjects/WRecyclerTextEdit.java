@@ -6,11 +6,11 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerTextEdit implements WRecyclerObject {
 
-    private String fieldID;
-    private int viewType = TEXT_EDIT;
-    private String text;
-    private String userInput;
-    private String prompt;
+    public String fieldID;
+    public int viewType = TEXT_EDIT;
+    public String text;
+    public String userInput;
+    public String prompt;
 
     public WRecyclerTextEdit(String fieldID, String text, String userInput, String prompt) {
         this.fieldID = fieldID;

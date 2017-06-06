@@ -28,6 +28,7 @@ public class WindroseApplication extends Application {
     private static String companyID;
     private static int userFocus;
     private static int multiCompanyApp;
+    private static String companyName = "DEFAULT COMPANY"; //Must fix this later
     private boolean isDebug;
     public static final int RC_SIGN_IN = 123;
 
@@ -88,5 +89,9 @@ public class WindroseApplication extends Application {
 
     public static String getSubmissionKey() {
         return submissionKey;
+    }
+
+    public static String getCompanyName() {
+        return companyName;
     }
 }

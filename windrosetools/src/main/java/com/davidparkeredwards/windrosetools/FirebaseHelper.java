@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundleSerialized;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,9 +66,10 @@ public class FirebaseHelper {
         } else {
             baseDbString = "/Prod/";
         }
-        this.inProgressString = (baseDbString + "in_progress"
-                + WindroseApplication.auth.getCurrentUser().toString() + WindroseApplication.getCompanyID());
-
+        this.inProgressString = (baseDbString + "in_progress" + "/"
+                + WindroseApplication.auth.getCurrentUser().getEmail().replace(".", "0") + "/"
+                + (WindroseApplication.getCompanyID()).replace("-" , "0") + "/");
+            //MUST CHANGE THIS LATER TO COMPANY ID
     }
 
         public void firebaseHelperCheck() {
@@ -139,7 +141,7 @@ public class FirebaseHelper {
     //Caching methods for work in progress
     public void saveWROBundle(WRecyclerObjectBundle bundle){
         DatabaseReference ref = database.getReference(inProgressString + bundle.getClassKey());
-        ref.setValue(bundle);
+        ref.setValue(serializeBundle(bundle));
     }
 
     public void clearWROBundle(String classKey) {
@@ -158,7 +160,6 @@ public class FirebaseHelper {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         HashMap<String, WRecyclerObjectBundle> value
                                 = (HashMap<String, WRecyclerObjectBundle>) dataSnapshot.getValue();
-                        Log.i(TAG, "OBSERVABLE onDataChange: Value = " + value.toString());
                         e.onNext(value);
                     }
 
@@ -179,5 +180,7 @@ public class FirebaseHelper {
         ref.push().setValue(bundle);
     }
 
-
+    public WRecyclerObjectBundleSerialized serializeBundle(WRecyclerObjectBundle bundle) {
+        return new WRecyclerObjectBundleSerialized(bundle);
+    }
 }

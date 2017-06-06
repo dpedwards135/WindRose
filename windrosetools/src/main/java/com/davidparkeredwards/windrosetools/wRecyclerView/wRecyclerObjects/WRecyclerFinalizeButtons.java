@@ -12,12 +12,12 @@ import com.davidparkeredwards.windrosetools.FirebaseHelper;
 
 public class WRecyclerFinalizeButtons implements WRecyclerObject {
 
-    private String fieldID;
-    private int type = FINALIZE_BUTTONS;
-    private boolean isEditable = false;
-    private boolean setCancel;
-    private boolean setSave;
-    private boolean setSubmit;
+    public String fieldID;
+    public int type = FINALIZE_BUTTONS;
+    public boolean isEditable = false;
+    public boolean setCancel;
+    public boolean setSave;
+    public boolean setSubmit;
 
     public WRecyclerFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
         this.fieldID = fieldID;

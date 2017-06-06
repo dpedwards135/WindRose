@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
-import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.company.Company;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerAdapter;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
 
@@ -58,6 +58,8 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     }
 
     public void newRecyclerView() {
+        Log.i(TAG, "newRecyclerView: ");
+        //mRecyclerView = new RecyclerView(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.wRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -86,6 +88,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     }
 
     private void getWROBundle() {
+       // setBundle(new Company().getWRecyclerObjectsEditable()); //Temp Fix
 
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
         Observable<HashMap<String, WRecyclerObjectBundle>> idObservable = helper.getSavedWROBundle(modelClass.getKey());
@@ -100,28 +103,37 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
                     @Override
                     public void onNext(HashMap<String, WRecyclerObjectBundle> s) {
                         Log.i(TAG, "onNext: VALUE: " );
-                        if(!s.isEmpty()) {
-                            setBundle(s.get(modelClass.getKey()));
+                        if(s.isEmpty() || s == null) {
+                            //setBundle(s.get(modelClass.getKey()));
+                            Log.i(TAG, "onNext: EMPTY OR NULL");
+                            Company company = new Company();
+                            setBundle(company.getWRecyclerObjectsEditable());
+                        } else {
+                            Log.i(TAG, "onNext: NOT EMPTY OR NULL");
+                            Company company = new Company();
+                            setBundle(company.getWRecyclerObjectsEditable());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "onError: ", e);
-                        setBundle(new WRecyclerObjectBundle(modelClass.getKey(), null,
-                                WindroseApplication.getSubmissionKey()));
+                        Log.i(TAG, "onError: ERROR");
+                        Company company = new Company();
+                        setBundle(company.getWRecyclerObjectsEditable());
                     }
 
                     @Override
                     public void onComplete() {
                         Log.i(TAG, "onComplete: ");
-
                     }
                 });
     }
 
     public void setBundle(WRecyclerObjectBundle bundle) {
+        Log.i(TAG, "setBundle: ");
         this.bundle = bundle;
+        newRecyclerView();
     }
 
 }

@@ -6,10 +6,10 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerTextView implements WRecyclerObject {
 
-    private String fieldID;
-    private String text = "Test text string";
-    private int viewType = WRecyclerObject.TEXT_VIEW;
-    private boolean isEditable = false;
+    public String fieldID;
+    public String text = "Test text string";
+    public int viewType = WRecyclerObject.TEXT_VIEW;
+    public boolean isEditable = false;
 
     public WRecyclerTextView(String fieldID, String text) {
         this.fieldID = fieldID;

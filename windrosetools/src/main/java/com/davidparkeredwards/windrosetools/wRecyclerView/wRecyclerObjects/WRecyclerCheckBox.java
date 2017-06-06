@@ -6,11 +6,11 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerCheckBox implements WRecyclerObject {
 
-    private String fieldID;
-    private String text = "Test text string";
-    private boolean trueOrFalse = false;
-    private int viewType = WRecyclerObject.CHECKBOX;
-    private boolean isEditable = false;
+    public String fieldID;
+    public String text = "Test text string";
+    public boolean trueOrFalse = false;
+    public int viewType = WRecyclerObject.CHECKBOX;
+    public boolean isEditable = false;
 
     public WRecyclerCheckBox(String fieldID, String text, boolean trueOrFalse) {
         this.fieldID = fieldID;

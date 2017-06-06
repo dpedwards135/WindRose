@@ -6,7 +6,7 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
 public class WRecyclerGeoStop implements WRecyclerObject {
 
-    private String fieldID;
+    public String fieldID;
 
     @Override
     public int getWRecyclerViewType() {

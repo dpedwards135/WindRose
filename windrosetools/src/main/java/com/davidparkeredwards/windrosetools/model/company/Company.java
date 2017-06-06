@@ -4,6 +4,7 @@ import android.location.Address;
 
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.journey.type.JourneyType;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerConvertibleObject;
@@ -32,7 +33,7 @@ public class Company implements WRecyclerConvertibleObject{
     private String[] preferredLocationIds;
     private String[] companyLocationIds;
 
-    private static final String COMPANY_OBJECT = "company_object";
+    private static final String CLASS_KEY = WModelClass.COMPANY.getKey();
     private static final String COMPANYID = "company_id";
     private static final String NAME = "company_name";
     private static final String PHONE = "company_phone";
@@ -47,17 +48,17 @@ public class Company implements WRecyclerConvertibleObject{
         ArrayList<WRecyclerObject> array = new ArrayList<>();
         array.add(new WRecyclerTextView(COMPANYID, companyId));
         array.add(new WRecyclerTextEdit(NAME,
-                WindroseApplication.applicationContext.getResources().getString(R.string.company_name).toString(),
+                WindroseApplication.applicationContext.getResources().getString(R.string.company_name),
                 name,
-                WindroseApplication.applicationContext.getResources().getString(R.string.company_name_prompt).toString()
+                WindroseApplication.applicationContext.getResources().getString(R.string.company_name_prompt)
                 ));
         array.add(new WRecyclerTextEdit(PHONE,
-                WindroseApplication.applicationContext.getResources().getString(R.string.company_phone).toString(),
+                WindroseApplication.applicationContext.getResources().getString(R.string.company_phone),
                 phone,
-                WindroseApplication.applicationContext.getResources().getString(R.string.company_phone_prompt).toString()));
-        array.add(new WRecyclerFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, false, false));
+                WindroseApplication.applicationContext.getResources().getString(R.string.company_phone_prompt)));
+        array.add(new WRecyclerFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, true, false));
 
-        WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(COMPANY_OBJECT, array);
+        WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(CLASS_KEY, array, WindroseApplication.submissionKey);
         return bundle;
     }
 
