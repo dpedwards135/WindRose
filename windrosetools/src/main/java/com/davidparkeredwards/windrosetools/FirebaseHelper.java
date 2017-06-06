@@ -66,7 +66,7 @@ public class FirebaseHelper {
             baseDbString = "/Prod/";
         }
         this.inProgressString = (baseDbString + "in_progress"
-                + WindroseApplication.auth.getCurrentUser().toString());
+                + WindroseApplication.auth.getCurrentUser().toString() + WindroseApplication.getCompanyID());
 
     }
 
