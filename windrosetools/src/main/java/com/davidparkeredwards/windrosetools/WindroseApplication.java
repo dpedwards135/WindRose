@@ -42,6 +42,7 @@ public class WindroseApplication extends Application {
     //Firebase variables - Delete references later
     public static FirebaseDatabase firebaseDatabase;
     public static FirebaseAuth auth;
+    public static String submissionKey;
 
     private static final String TAG = WindroseApplication.class.getSimpleName();
 
@@ -51,7 +52,7 @@ public class WindroseApplication extends Application {
         super.onCreate();
 
         AndroidThreeTen.init(this);
-
+        submissionKey = BuildConfig.SUBMISSION_KEY;
         applicationContext = this.getApplicationContext();
 
         FirebaseApp.initializeApp(getApplicationContext());
@@ -85,4 +86,7 @@ public class WindroseApplication extends Application {
         return userFocus;
     }
 
+    public static String getSubmissionKey() {
+        return submissionKey;
+    }
 }

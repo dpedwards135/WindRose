@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.davidparkeredwards.windrosetools.activity.ConfigureCompanyActivity;
+import com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity;
 import com.davidparkeredwards.windrosetools.activity.WNavMenuActivity;
 
 public class MainCustomerActivity extends WNavMenuActivity {
@@ -20,7 +20,7 @@ public class MainCustomerActivity extends WNavMenuActivity {
         contentText.setText("Main Customer Activity");
 
         Intent intent = new Intent();
-        intent.setClass(this, ConfigureCompanyActivity.class);
+        intent.setClass(this, WRecyclerViewActivity.class);
         startActivity(intent);
     }
 }

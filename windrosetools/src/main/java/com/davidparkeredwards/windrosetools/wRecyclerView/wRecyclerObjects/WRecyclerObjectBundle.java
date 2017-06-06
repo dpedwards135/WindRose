@@ -8,27 +8,46 @@ import java.util.ArrayList;
 
 public class WRecyclerObjectBundle {
 
-    private String convertedObjectID;
+    private String classKey;
     private ArrayList<WRecyclerObject> recyclerObjects;
+    private String submissionKey;
 
-    public WRecyclerObjectBundle(String convertedObjectID, ArrayList<WRecyclerObject> recyclerObjects) {
-        this.convertedObjectID = convertedObjectID;
-        this.recyclerObjects = recyclerObjects;
+
+    public WRecyclerObjectBundle(String classKey, ArrayList<WRecyclerObject> recyclerObjects, String submissionKey) {
+        this.classKey = classKey;
+        if(recyclerObjects == null) {
+            this.recyclerObjects = new ArrayList<>();
+        } else {
+            this.recyclerObjects = recyclerObjects;
+        }
+        this.submissionKey = submissionKey;
     }
 
-    public String getConvertedObjectID() {
-        return convertedObjectID;
+    public String getClassKey() {
+        return classKey;
     }
 
-    public void setConvertedObjectID(String convertedObjectID) {
-        this.convertedObjectID = convertedObjectID;
+    public void setClassKey(String classKey) {
+        this.classKey = classKey;
     }
 
-    public ArrayList<WRecyclerObject> getRecyclerObjects() {
+    public ArrayList<WRecyclerObject> getRecyclerObjectsArray() {
         return recyclerObjects;
     }
 
-    public void setRecyclerObjects(ArrayList<WRecyclerObject> recyclerObjects) {
+    public void setRecyclerObjectsArray(ArrayList<WRecyclerObject> recyclerObjects) {
         this.recyclerObjects = recyclerObjects;
+    }
+
+    public void saveRecyclerObject(int index, WRecyclerObject object) {
+        recyclerObjects.set(index, object);
+    }
+
+    public WRecyclerObject getRecyclerObject(int index) {
+        return recyclerObjects.get(index);
+    }
+
+    public String getSubmissionKey() {
+        return submissionKey;
     }
 }

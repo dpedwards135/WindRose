@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
-
-import java.util.ArrayList;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -19,15 +18,18 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     data and rebuild the RecyclerView. That means any edits need to be saved to the constructorObjects
     and that is always up to date. */
 
-    private ArrayList<WRecyclerObject> constructorObjects;
 
-    public WRecyclerAdapter(ArrayList<WRecyclerObject> constructorObjects) {
-        this.constructorObjects = constructorObjects;
+    //Rewrite to make bundle the foundation of the adapter and everything gets saved to it.
+
+    private WRecyclerObjectBundle bundle;
+
+    public WRecyclerAdapter(WRecyclerObjectBundle bundle) {
+        this.bundle = bundle;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return constructorObjects.get(position).getWRecyclerViewType();
+        return bundle.getRecyclerObject(position).getWRecyclerViewType();
     }
 
         @Override
@@ -37,14 +39,14 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             View inflatedView;
 
             switch (viewType) {
-                case WRecyclerObject.GEOPOINT:
+                case WRecyclerObject.GEOSTOP:
                     layoutResource = R.layout.wviewholder_geopoint;
                     inflatedView = LayoutInflater.from(parent.getContext()).inflate(layoutResource,
                             parent,false);
                     RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);
                     inflatedView.setLayoutParams(lp);
-                    viewHolder = new WViewHolder(inflatedView);
+                    viewHolder = new WViewHolder(inflatedView, this);
                     break;
 
                 default:
@@ -54,7 +56,7 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     RecyclerView.LayoutParams rlp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);
                     inflatedView.setLayoutParams(rlp);
-                    viewHolder = new WViewHolder(inflatedView);
+                    viewHolder = new WViewHolder(inflatedView, this);
                     break;
             }
             return viewHolder;
@@ -62,14 +64,15 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        WRecyclerObject wRecyclerObject = constructorObjects.get(position);
+        WRecyclerObject wRecyclerObject = bundle.getRecyclerObject(position);
+        //WRecyclerObject wRecyclerObject = constructorObjects.get(position);
         WViewHolder wViewHolder = (WViewHolder) holder;
         wViewHolder.bindObject(wRecyclerObject);
     }
 
     @Override
     public int getItemCount() {
-        return constructorObjects.size();
+        return bundle.getRecyclerObjectsArray().size();
     }
 
     @Override
@@ -77,12 +80,15 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         //Save and persist dataset
         WRecyclerObject object = ((WViewHolder) holder).saveData();
         int position = holder.getAdapterPosition();
-        constructorObjects.set(position, object);
+        bundle.saveRecyclerObject(position, object);
         super.onViewRecycled(holder);
     }
 
+    /*
     public ArrayList<WRecyclerObject> getSavedObjects() {
         return constructorObjects;
     }
+    */
+    public WRecyclerObjectBundle getSavedBundle() { return bundle;}
 }
 

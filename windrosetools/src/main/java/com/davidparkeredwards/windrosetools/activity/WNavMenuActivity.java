@@ -17,7 +17,7 @@ import android.view.View;
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 
-public class WNavMenuActivity extends AppCompatActivity
+public abstract class WNavMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = WNavMenuActivity.class.getSimpleName();

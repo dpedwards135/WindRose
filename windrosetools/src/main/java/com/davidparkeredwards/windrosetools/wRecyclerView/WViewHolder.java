@@ -36,6 +36,7 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
     private WRecyclerObject wRecyclerObject;
     private int viewType;
     private View v;
+    private WRecyclerAdapter adapter;
 
     //Put all the widgets in here, default "GONE" and set visible if needed.
     private TextView textView;
@@ -48,9 +49,10 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     
 
-    public WViewHolder(View v) {
+    public WViewHolder(View v, WRecyclerAdapter adapter) {
         super(v);
         this.v = v;
+        this.adapter = adapter;
     }
 
     private void configureViewHolder() {
@@ -88,21 +90,39 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 if(finalizeButtons.isSetSubmit()) {
                     submitButton = (Button) v.findViewById(R.id.wviewholder_submitButton);
                     submitButton.setVisibility(View.VISIBLE);
+                    submitButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finalizeButtons.onClickSubmit(v.getContext());
+                        }
+                    });
                 }
 
                 if(finalizeButtons.isSetSave()) {
                     saveButton = (Button) v.findViewById(R.id.wviewholder_saveButton);
                     saveButton.setVisibility(View.VISIBLE);
+                    saveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finalizeButtons.onClickSave(v.getContext(), adapter.getSavedBundle());
+                        }
+                    });
                 }
 
                 if(finalizeButtons.isSetCancel()) {
                     cancelButton = (Button) v.findViewById(R.id.wviewholder_cancelButton);
                     cancelButton.setVisibility(View.VISIBLE);
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finalizeButtons.onClickCancel(v.getContext());
+                        }
+                    });
                 }
 
                 break;
 
-            case WRecyclerObject.GEOPOINT:
+            case WRecyclerObject.GEOSTOP:
                 break;
 
             case WRecyclerObject.SELECT_FROM:

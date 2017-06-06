@@ -50,6 +50,7 @@ android {
         def USER_FOCUS = "USER_FOCUS"
         def IS_MULTI_COMPANY_APP = "IS_MULTI_COMPANY_APP"
         def COMPANY_ID = "COMPANY_ID"
+        def SUBMISSION_KEY = "SUBMISSION_KEY"
 
 
         windroseBasicCustomer {
@@ -60,11 +61,13 @@ android {
             def CUSTOMER_FOCUS = "1"
             def BUSINESS_FOCUS = "2"
             def COMPANY = "\"Undefined\""
+            def SUB_KEY = "\"submission_queue_1\""
 
             dimension STANDARD
             buildConfigField INT, USER_FOCUS, CUSTOMER_FOCUS
             buildConfigField INT, IS_MULTI_COMPANY_APP, MULTI_COMPANY
             buildConfigField STRING, COMPANY_ID, COMPANY
+            buildConfigField(STRING, SUBMISSION_KEY, SUB_KEY)
         }
     }
 }

@@ -7,6 +7,7 @@ import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.journey.type.JourneyType;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerConvertibleObject;
+import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextEdit;
@@ -35,6 +36,7 @@ public class Company implements WRecyclerConvertibleObject{
     private static final String COMPANYID = "company_id";
     private static final String NAME = "company_name";
     private static final String PHONE = "company_phone";
+    private static final String COMPANY_FINALIZE_BUTTONS = "company_finalize_buttons";
 
     //Optional
     private Address address;
@@ -53,6 +55,7 @@ public class Company implements WRecyclerConvertibleObject{
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_phone).toString(),
                 phone,
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_phone_prompt).toString()));
+        array.add(new WRecyclerFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, false, false));
 
         WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(COMPANY_OBJECT, array);
         return bundle;

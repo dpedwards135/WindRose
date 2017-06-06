@@ -4,7 +4,7 @@ package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerGeoPoint implements WRecyclerObject {
+public class WRecyclerGeoStop implements WRecyclerObject {
 
     private String fieldID;
 

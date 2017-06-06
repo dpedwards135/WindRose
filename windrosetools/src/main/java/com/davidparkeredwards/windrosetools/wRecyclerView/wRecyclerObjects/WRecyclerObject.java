@@ -22,7 +22,7 @@ public interface WRecyclerObject {
 
     int CHECKBOX = 1;
     int FINALIZE_BUTTONS = 2;
-    int GEOPOINT = 3;
+    int GEOSTOP = 3;
     int SELECT_FROM = 4;
     int TEXT_EDIT = 5;
     int TEXT_VIEW = 6;

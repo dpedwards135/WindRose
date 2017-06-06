@@ -29,7 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name="com.davidparkeredwards.windrosetools.activity.ConfigureCompanyActivity"
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity"
             android:label="Configure Company"
             android:theme="@style/AppTheme.NoActionBar"/>
         

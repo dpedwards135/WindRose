@@ -1,7 +1,10 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
 
-import com.davidparkeredwards.windrosetools.R;
-import com.davidparkeredwards.windrosetools.WindroseApplication;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+
+import com.davidparkeredwards.windrosetools.FirebaseHelper;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -45,27 +48,31 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
         return setSubmit;
     }
 
-    public enum ButtonType {
-
-        SAVE(WindroseApplication.applicationContext.getString(R.string.save)),
-        CANCEL(WindroseApplication.applicationContext.getString(R.string.cancel)),
-        SUBMIT(WindroseApplication.applicationContext.getString(R.string.submit));
-
-        private String buttonName;
-
-        private ButtonType(String buttonType) {
-            this.buttonName = buttonName;
-        }
-
-        public String getButtonName() {
-            return this.buttonName;
-        }
-
-    }
-
     @Override
     public String getFieldID() {
         return fieldID;
+    }
+
+    public void onClickCancel(Context context, WRecyclerObjectBundle bundle) {
+        FirebaseHelper helper = new FirebaseHelper(context);
+        helper.clearWROBundle(bundle.getClassKey());
+        Intent intent = new Intent();
+        String packageName = context.getApplicationContext().getPackageName();
+        ComponentName componentName = new ComponentName(packageName,
+                packageName + ".WMainActivity");
+        intent.setComponent(componentName);
+        context.startActivity(intent);
+    }
+
+    public void onClickSave(Context context, WRecyclerObjectBundle bundle) {
+        FirebaseHelper helper = new FirebaseHelper(context);
+        helper.saveWROBundle(bundle);
+    }
+
+    public void onClickSubmit(Context context, WRecyclerObjectBundle bundle) {
+        FirebaseHelper helper = new FirebaseHelper(context);
+        helper.addToSubmissionQueue(bundle);
+
     }
 }
 
