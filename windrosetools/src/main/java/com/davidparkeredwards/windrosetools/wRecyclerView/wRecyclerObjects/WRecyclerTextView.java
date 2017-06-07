@@ -11,10 +11,14 @@ public class WRecyclerTextView implements WRecyclerObject {
     public int viewType = WRecyclerObject.TEXT_VIEW;
     public boolean isEditable = false;
 
+    public WRecyclerTextView() {}
+
     public WRecyclerTextView(String fieldID, String text) {
         this.fieldID = fieldID;
         this.text = text;
     }
+
+
 
     public String getText() {
         return text;

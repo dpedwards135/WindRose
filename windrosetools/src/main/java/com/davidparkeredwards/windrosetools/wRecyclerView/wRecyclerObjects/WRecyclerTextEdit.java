@@ -19,6 +19,8 @@ public class WRecyclerTextEdit implements WRecyclerObject {
         this.prompt = prompt;
     }
 
+    public WRecyclerTextEdit() {}
+
     @Override
     public int getWRecyclerViewType() {
         return viewType;

@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 
 public class WRecyclerObjectBundle {
+    private static final String TAG = WRecyclerObjectBundle.class.getSimpleName();
+
 
     private String classKey;
     private ArrayList<WRecyclerObject> recyclerObjects;
@@ -21,6 +23,25 @@ public class WRecyclerObjectBundle {
             this.recyclerObjects = recyclerObjects;
         }
         this.submissionKey = submissionKey;
+    }
+
+    public WRecyclerObjectBundle(WRecyclerObjectBundleSerialized sbundle) {
+        this.classKey = sbundle.classKey;
+        this.submissionKey = sbundle.submissionKey;
+        ArrayList<WRecyclerObject> stagedRecyclerObjects = new ArrayList<>();
+        if(sbundle.checkBoxes != null) stagedRecyclerObjects.addAll(sbundle.checkBoxes);
+        if(sbundle.finalizeButtons != null) stagedRecyclerObjects.addAll(sbundle.finalizeButtons);
+        if(sbundle.geoStops != null) stagedRecyclerObjects.addAll(sbundle.geoStops);
+        if(sbundle.selectFroms != null) stagedRecyclerObjects.addAll(sbundle.selectFroms);
+        if(sbundle.textEdits != null) stagedRecyclerObjects.addAll(sbundle.textEdits);
+        if(sbundle.textViews != null) stagedRecyclerObjects.addAll(sbundle.textViews);
+        this.recyclerObjects = new ArrayList<>();
+        recyclerObjects.addAll(stagedRecyclerObjects);
+        for(WRecyclerObject object : stagedRecyclerObjects) {
+            String fieldId = object.getFieldID();
+            int index = sbundle.fieldIdOrder.indexOf(fieldId);
+            recyclerObjects.set(index, object);
+        }
     }
 
     public String getClassKey() {

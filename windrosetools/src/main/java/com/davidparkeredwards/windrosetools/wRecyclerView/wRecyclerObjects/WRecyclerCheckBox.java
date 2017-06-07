@@ -8,9 +8,11 @@ public class WRecyclerCheckBox implements WRecyclerObject {
 
     public String fieldID;
     public String text = "Test text string";
-    public boolean trueOrFalse = false;
+    public boolean trueOrFalse;
     public int viewType = WRecyclerObject.CHECKBOX;
     public boolean isEditable = false;
+
+    public WRecyclerCheckBox() {}
 
     public WRecyclerCheckBox(String fieldID, String text, boolean trueOrFalse) {
         this.fieldID = fieldID;

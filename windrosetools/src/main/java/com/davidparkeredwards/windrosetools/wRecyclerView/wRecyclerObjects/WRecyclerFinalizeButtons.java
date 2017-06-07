@@ -19,6 +19,8 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
     public boolean setSave;
     public boolean setSubmit;
 
+    public WRecyclerFinalizeButtons() {}
+
     public WRecyclerFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
         this.fieldID = fieldID;
         this.setCancel = setCancel;

@@ -8,6 +8,8 @@ public class WRecyclerGeoStop implements WRecyclerObject {
 
     public String fieldID;
 
+    public WRecyclerGeoStop() {}
+
     @Override
     public int getWRecyclerViewType() {
         return 0;

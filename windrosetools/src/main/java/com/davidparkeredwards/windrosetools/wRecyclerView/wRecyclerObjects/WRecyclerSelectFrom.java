@@ -16,6 +16,8 @@ public class WRecyclerSelectFrom implements WRecyclerObject {
     public int selectedValue;
     public String spinnerPrompt;
 
+    public WRecyclerSelectFrom() {}
+
     public WRecyclerSelectFrom(String fieldID, boolean isEditable, String text, ArrayList<String> selectableValues, int selectedValue, String spinnerPrompt) {
         this.fieldID = fieldID;
         this.isEditable = isEditable;

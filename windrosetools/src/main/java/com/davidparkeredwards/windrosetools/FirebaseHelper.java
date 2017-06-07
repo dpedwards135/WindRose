@@ -3,6 +3,7 @@ package com.davidparkeredwards.windrosetools;
 import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.model.company.Company;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundleSerialized;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +33,22 @@ public class FirebaseHelper {
     private String baseDbString;
     private String inProgressString;
 
+
+    public FirebaseHelper(Context ctx) {
+        this.ctx = ctx;
+        database = WindroseApplication.firebaseDatabase;
+        this.isDebug = BuildConfig.DEBUG;
+        String currentUser = WindroseApplication.auth.getCurrentUser().getEmail().toString().replace(".", "");
+        String companyId = WindroseApplication.getCompanyID().replace("-","");
+
+        if (this.isDebug) {
+            baseDbString = "/QA/";
+        } else {
+            baseDbString = "/Prod/";
+        }
+        this.inProgressString = (baseDbString + "in_progress" + "/" + currentUser + "/" + companyId + "/");
+    }
+
     public Observable<HashMap> getCompanyIdObservable() {
         return Observable.create(new ObservableOnSubscribe<HashMap>() {
             @Override
@@ -56,21 +73,7 @@ public class FirebaseHelper {
         });
     }
 
-    public FirebaseHelper(Context ctx) {
-        this.ctx = ctx;
-        database = WindroseApplication.firebaseDatabase;
-        this.isDebug = BuildConfig.DEBUG;
 
-        if (this.isDebug) {
-            baseDbString = "/QA/";
-        } else {
-            baseDbString = "/Prod/";
-        }
-        this.inProgressString = (baseDbString + "in_progress" + "/"
-                + WindroseApplication.auth.getCurrentUser().getEmail().replace(".", "0") + "/"
-                + (WindroseApplication.getCompanyID()).replace("-" , "0") + "/");
-            //MUST CHANGE THIS LATER TO COMPANY ID
-    }
 
         public void firebaseHelperCheck() {
         DatabaseReference ref = database.getReference(baseDbString + "testNode");
@@ -141,7 +144,9 @@ public class FirebaseHelper {
     //Caching methods for work in progress
     public void saveWROBundle(WRecyclerObjectBundle bundle){
         DatabaseReference ref = database.getReference(inProgressString + bundle.getClassKey());
-        ref.setValue(serializeBundle(bundle));
+        WRecyclerObjectBundleSerialized sbundle = serializeBundle(bundle);
+        Log.i(TAG, "saveWROBundle: " + sbundle.classKey);
+        ref.setValue(sbundle);
     }
 
     public void clearWROBundle(String classKey) {
@@ -149,19 +154,31 @@ public class FirebaseHelper {
         ref.removeValue();
     }
 
-    public Observable<HashMap<String, WRecyclerObjectBundle>> getSavedWROBundle(String classKey) {
-        return Observable.create(new ObservableOnSubscribe<HashMap<String, WRecyclerObjectBundle>>() {
+    public Observable<WRecyclerObjectBundle> getSavedWROBundle(String classKey) {
+        return Observable.create(new ObservableOnSubscribe<WRecyclerObjectBundle>() {
             @Override
-            public void subscribe(ObservableEmitter<HashMap<String, WRecyclerObjectBundle>> e) throws Exception {
+            public void subscribe(ObservableEmitter<WRecyclerObjectBundle> e) throws Exception {
+
                 DatabaseReference ref = database.getReference(
                         inProgressString + classKey);
+                Log.i(TAG, "subscribe: Path: " + inProgressString+classKey);
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, WRecyclerObjectBundle> value
-                                = (HashMap<String, WRecyclerObjectBundle>) dataSnapshot.getValue();
-                        e.onNext(value);
+                        if(dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            Log.i(TAG, "onDataChange: SNAPSHOT: " + dataSnapshot.getValue().toString());
+                            WRecyclerObjectBundleSerialized sbundle =
+                                    dataSnapshot.getValue(WRecyclerObjectBundleSerialized.class);
+                            Log.i(TAG, "onDataChange: TEST: " + sbundle.classKey);
+                            WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(sbundle);
+                            e.onNext(bundle);
+                        } else {
+                            Log.i(TAG, "onDataChange: Value was null");
+                            Company company = new Company();
+                            e.onNext(company.getWRecyclerObjectsEditable());
+                        }
                     }
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

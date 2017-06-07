@@ -1,7 +1,5 @@
 package com.davidparkeredwards.windrosetools.model.company;
 
-import android.location.Address;
-
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
@@ -25,6 +23,8 @@ public class Company implements WRecyclerConvertibleObject{
     private String companyId;
     private String name;
     private String phone;
+    private String address;
+    private String email;
     private JourneyType[] journeyTypes;
     private VehicleType[] vehicleTypes;//TripType rules all set here. - Change to JourneyType or ItineraryType? or need multiple classes?
     private String[] employeeIds;
@@ -40,7 +40,7 @@ public class Company implements WRecyclerConvertibleObject{
     private static final String COMPANY_FINALIZE_BUTTONS = "company_finalize_buttons";
 
     //Optional
-    private Address address;
+
 
     @Override
     public WRecyclerObjectBundle getWRecyclerObjectsEditable() {

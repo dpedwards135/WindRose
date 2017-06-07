@@ -13,8 +13,6 @@ import com.davidparkeredwards.windrosetools.model.company.Company;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerAdapter;
 import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
 
-import java.util.HashMap;
-
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -91,28 +89,18 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
        // setBundle(new Company().getWRecyclerObjectsEditable()); //Temp Fix
 
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-        Observable<HashMap<String, WRecyclerObjectBundle>> idObservable = helper.getSavedWROBundle(modelClass.getKey());
+        Observable<WRecyclerObjectBundle> idObservable = helper.getSavedWROBundle(modelClass.getKey());
         idObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HashMap<String, WRecyclerObjectBundle>>() {
+                .subscribe(new Observer<WRecyclerObjectBundle>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.i(TAG, "onSubscribe: OnSubscribedID");
                     }
 
                     @Override
-                    public void onNext(HashMap<String, WRecyclerObjectBundle> s) {
-                        Log.i(TAG, "onNext: VALUE: " );
-                        if(s.isEmpty() || s == null) {
-                            //setBundle(s.get(modelClass.getKey()));
-                            Log.i(TAG, "onNext: EMPTY OR NULL");
-                            Company company = new Company();
-                            setBundle(company.getWRecyclerObjectsEditable());
-                        } else {
-                            Log.i(TAG, "onNext: NOT EMPTY OR NULL");
-                            Company company = new Company();
-                            setBundle(company.getWRecyclerObjectsEditable());
-                        }
+                    public void onNext(WRecyclerObjectBundle s) {
+                        setBundle(s);
                     }
 
                     @Override
