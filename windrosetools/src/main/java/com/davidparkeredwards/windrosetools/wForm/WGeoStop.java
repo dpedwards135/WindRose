@@ -1,14 +1,14 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerGeoStop implements WRecyclerObject {
+public class WGeoStop implements WFormField {
 
     public String fieldID;
 
-    public WRecyclerGeoStop() {}
+    public WGeoStop() {}
 
     @Override
     public int getWRecyclerViewType() {

@@ -14,7 +14,7 @@
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
 
-    <!--WRecyclerObject Identifiers -->
+    WFieldObjectject Identifiers -->
     <string name="company_phone">Phone</string>
     <string name="company_phone_prompt">Your phone number</string>
     <string name="company_name">Company Name</string>

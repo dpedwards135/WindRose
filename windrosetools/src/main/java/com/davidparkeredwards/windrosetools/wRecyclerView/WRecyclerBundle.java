@@ -1,4 +1,7 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wRecyclerView;
+
+import com.davidparkeredwards.windrosetools.wForm.WForm;
+import com.davidparkeredwards.windrosetools.wForm.WFormField;
 
 import java.util.ArrayList;
 
@@ -6,16 +9,17 @@ import java.util.ArrayList;
  * Created by davidedwards on 6/5/17.
  */
 
-public class WRecyclerObjectBundle {
-    private static final String TAG = WRecyclerObjectBundle.class.getSimpleName();
+public class WRecyclerBundle {
+    private static final String TAG = WRecyclerBundle.class.getSimpleName();
 
 
     private String classKey;
-    private ArrayList<WRecyclerObject> recyclerObjects;
+    private ArrayList<WFormField> recyclerObjects;
+    //private HashMap<String, WFormField> recyclerObjectMap;
     private String submissionKey;
 
 
-    public WRecyclerObjectBundle(String classKey, ArrayList<WRecyclerObject> recyclerObjects, String submissionKey) {
+    public WRecyclerBundle(String classKey, ArrayList<WFormField> recyclerObjects, String submissionKey) {
         this.classKey = classKey;
         if(recyclerObjects == null) {
             this.recyclerObjects = new ArrayList<>();
@@ -25,10 +29,10 @@ public class WRecyclerObjectBundle {
         this.submissionKey = submissionKey;
     }
 
-    public WRecyclerObjectBundle(WRecyclerObjectBundleSerialized sbundle) {
+    public WRecyclerBundle(WForm sbundle) {
         this.classKey = sbundle.classKey;
         this.submissionKey = sbundle.submissionKey;
-        ArrayList<WRecyclerObject> stagedRecyclerObjects = new ArrayList<>();
+        ArrayList<WFormField> stagedRecyclerObjects = new ArrayList<>();
         if(sbundle.checkBoxes != null) stagedRecyclerObjects.addAll(sbundle.checkBoxes);
         if(sbundle.finalizeButtons != null) stagedRecyclerObjects.addAll(sbundle.finalizeButtons);
         if(sbundle.geoStops != null) stagedRecyclerObjects.addAll(sbundle.geoStops);
@@ -37,7 +41,7 @@ public class WRecyclerObjectBundle {
         if(sbundle.textViews != null) stagedRecyclerObjects.addAll(sbundle.textViews);
         this.recyclerObjects = new ArrayList<>();
         recyclerObjects.addAll(stagedRecyclerObjects);
-        for(WRecyclerObject object : stagedRecyclerObjects) {
+        for(WFormField object : stagedRecyclerObjects) {
             String fieldId = object.getFieldID();
             int index = sbundle.fieldIdOrder.indexOf(fieldId);
             recyclerObjects.set(index, object);
@@ -52,19 +56,19 @@ public class WRecyclerObjectBundle {
         this.classKey = classKey;
     }
 
-    public ArrayList<WRecyclerObject> getRecyclerObjectsArray() {
+    public ArrayList<WFormField> getRecyclerObjectsArray() {
         return recyclerObjects;
     }
 
-    public void setRecyclerObjectsArray(ArrayList<WRecyclerObject> recyclerObjects) {
+    public void setRecyclerObjectsArray(ArrayList<WFormField> recyclerObjects) {
         this.recyclerObjects = recyclerObjects;
     }
 
-    public void saveRecyclerObject(int index, WRecyclerObject object) {
+    public void saveRecyclerObject(int index, WFormField object) {
         recyclerObjects.set(index, object);
     }
 
-    public WRecyclerObject getRecyclerObject(int index) {
+    public WFormField getRecyclerObject(int index) {
         return recyclerObjects.get(index);
     }
 

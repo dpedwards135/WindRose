@@ -15,12 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.R;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerCheckBox;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerFinalizeButtons;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerSelectFrom;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextEdit;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextView;
+import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
+import com.davidparkeredwards.windrosetools.wForm.WFormField;
+import com.davidparkeredwards.windrosetools.wForm.WTextView;
+import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
+import com.davidparkeredwards.windrosetools.wForm.WSelectFrom;
+import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
 
 /**
  * Created by davidedwards on 6/5/17.
@@ -31,9 +31,9 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
     //the view changes the object
     //Try to create just one ViewHolder that with minimal processing can take any object, create
     //a view and manipulate the object for saving and persistence.
-    //Try to create just one WRecyclerObject which defines which ViewHolder elements to make visible
+    //Try to create just one WFormField which defines which ViewHolder elements to make visible
 
-    private WRecyclerObject wRecyclerObject;
+    private WFormField wFormField;
     private int viewType;
     private View v;
     private WRecyclerAdapter adapter;
@@ -59,15 +59,15 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
         //ViewHolder Config:
         switch (viewType) {
-            case WRecyclerObject.TEXT_VIEW:
-                WRecyclerTextView wText = (WRecyclerTextView) wRecyclerObject;
+            case WFormField.TEXT_VIEW:
+                WTextView wText = (WTextView) wFormField;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(wText.getText());
                 break;
 
-            case WRecyclerObject.CHECKBOX:
-                WRecyclerCheckBox wCheckBox = (WRecyclerCheckBox) wRecyclerObject;
+            case WFormField.CHECKBOX:
+                WCheckBox wCheckBox = (WCheckBox) wFormField;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(wCheckBox.getText());
@@ -82,8 +82,8 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 });
                 break;
 
-            case WRecyclerObject.FINALIZE_BUTTONS:
-                WRecyclerFinalizeButtons finalizeButtons = (WRecyclerFinalizeButtons) wRecyclerObject;
+            case WFormField.FINALIZE_BUTTONS:
+                WFinalizeButtons finalizeButtons = (WFinalizeButtons) wFormField;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
 
@@ -122,11 +122,11 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
                 break;
 
-            case WRecyclerObject.GEOSTOP:
+            case WFormField.GEOSTOP:
                 break;
 
-            case WRecyclerObject.SELECT_FROM:
-                WRecyclerSelectFrom wRecyclerSelectFrom = (WRecyclerSelectFrom) wRecyclerObject;
+            case WFormField.SELECT_FROM:
+                WSelectFrom wRecyclerSelectFrom = (WSelectFrom) wFormField;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(wRecyclerSelectFrom.getText());
@@ -152,8 +152,8 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
                 break;
 
-            case WRecyclerObject.TEXT_EDIT:
-                WRecyclerTextEdit textEdit = (WRecyclerTextEdit) wRecyclerObject;
+            case WFormField.TEXT_EDIT:
+                WTextEdit textEdit = (WTextEdit) wFormField;
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(textEdit.getText());
@@ -191,13 +191,13 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
         Log.d("RecyclerView", "CLICK!" + textView.getText());
     }
 
-    public void bindObject(WRecyclerObject wRecyclerObject) {
-        this.wRecyclerObject = wRecyclerObject;
-        viewType = wRecyclerObject.getWRecyclerViewType();
+    public void bindObject(WFormField wFormField) {
+        this.wFormField = wFormField;
+        viewType = wFormField.getWRecyclerViewType();
         configureViewHolder();
     }
 
-    public WRecyclerObject saveData() {
-        return wRecyclerObject;
+    public WFormField saveData() {
+        return wFormField;
     }
 }

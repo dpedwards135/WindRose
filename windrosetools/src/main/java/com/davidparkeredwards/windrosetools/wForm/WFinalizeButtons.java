@@ -1,16 +1,17 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
+import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerFinalizeButtons implements WRecyclerObject {
+public class WFinalizeButtons implements WFormField {
 
     public String fieldID;
     public int type = FINALIZE_BUTTONS;
@@ -19,9 +20,9 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
     public boolean setSave;
     public boolean setSubmit;
 
-    public WRecyclerFinalizeButtons() {}
+    public WFinalizeButtons() {}
 
-    public WRecyclerFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
+    public WFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
         this.fieldID = fieldID;
         this.setCancel = setCancel;
         this.setSave = setSave;
@@ -55,7 +56,7 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
         return fieldID;
     }
 
-    public void onClickCancel(Context context, WRecyclerObjectBundle bundle) {
+    public void onClickCancel(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
         helper.clearWROBundle(bundle.getClassKey());
         Intent intent = new Intent();
@@ -66,12 +67,12 @@ public class WRecyclerFinalizeButtons implements WRecyclerObject {
         context.startActivity(intent);
     }
 
-    public void onClickSave(Context context, WRecyclerObjectBundle bundle) {
+    public void onClickSave(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
         helper.saveWROBundle(bundle);
     }
 
-    public void onClickSubmit(Context context, WRecyclerObjectBundle bundle) {
+    public void onClickSubmit(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
         helper.addToSubmissionQueue(bundle);
 

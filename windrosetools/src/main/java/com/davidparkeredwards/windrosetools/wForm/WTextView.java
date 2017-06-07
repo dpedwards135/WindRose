@@ -1,19 +1,19 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerTextView implements WRecyclerObject {
+public class WTextView implements WFormField {
 
     public String fieldID;
     public String text = "Test text string";
-    public int viewType = WRecyclerObject.TEXT_VIEW;
+    public int viewType = WFormField.TEXT_VIEW;
     public boolean isEditable = false;
 
-    public WRecyclerTextView() {}
+    public WTextView() {}
 
-    public WRecyclerTextView(String fieldID, String text) {
+    public WTextView(String fieldID, String text) {
         this.fieldID = fieldID;
         this.text = text;
     }

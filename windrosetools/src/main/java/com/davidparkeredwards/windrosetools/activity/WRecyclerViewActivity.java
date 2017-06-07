@@ -11,7 +11,7 @@ import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.company.Company;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerAdapter;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
+import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -27,7 +27,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
     private static final String TAG = WRecyclerViewActivity.class.getSimpleName();
     WModelClass modelClass;
-    WRecyclerObjectBundle bundle;
+    WRecyclerBundle bundle;
 
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
@@ -67,7 +67,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
 
     public void saveRecyclerObjects() {
-        WRecyclerObjectBundle savedBundle = recyclerAdapter.getSavedBundle();
+        WRecyclerBundle savedBundle = recyclerAdapter.getSavedBundle();
         FirebaseHelper helper = new FirebaseHelper(this);
         helper.saveWROBundle(savedBundle);
     }
@@ -89,17 +89,17 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
        // setBundle(new Company().getWRecyclerObjectsEditable()); //Temp Fix
 
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-        Observable<WRecyclerObjectBundle> idObservable = helper.getSavedWROBundle(modelClass.getKey());
+        Observable<WRecyclerBundle> idObservable = helper.getSavedWROBundle(modelClass.getKey());
         idObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<WRecyclerObjectBundle>() {
+                .subscribe(new Observer<WRecyclerBundle>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.i(TAG, "onSubscribe: OnSubscribedID");
                     }
 
                     @Override
-                    public void onNext(WRecyclerObjectBundle s) {
+                    public void onNext(WRecyclerBundle s) {
                         setBundle(s);
                     }
 
@@ -118,7 +118,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
                 });
     }
 
-    public void setBundle(WRecyclerObjectBundle bundle) {
+    public void setBundle(WRecyclerBundle bundle) {
         Log.i(TAG, "setBundle: ");
         this.bundle = bundle;
         newRecyclerView();

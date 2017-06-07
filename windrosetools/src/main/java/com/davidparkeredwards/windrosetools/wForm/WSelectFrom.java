@@ -1,4 +1,4 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerSelectFrom implements WRecyclerObject {
+public class WSelectFrom implements WFormField {
 
     public String fieldID;
     public int viewType = SELECT_FROM;
@@ -16,9 +16,9 @@ public class WRecyclerSelectFrom implements WRecyclerObject {
     public int selectedValue;
     public String spinnerPrompt;
 
-    public WRecyclerSelectFrom() {}
+    public WSelectFrom() {}
 
-    public WRecyclerSelectFrom(String fieldID, boolean isEditable, String text, ArrayList<String> selectableValues, int selectedValue, String spinnerPrompt) {
+    public WSelectFrom(String fieldID, boolean isEditable, String text, ArrayList<String> selectableValues, int selectedValue, String spinnerPrompt) {
         this.fieldID = fieldID;
         this.isEditable = isEditable;
         this.text = text;

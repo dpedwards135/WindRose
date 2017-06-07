@@ -1,20 +1,20 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerCheckBox implements WRecyclerObject {
+public class WCheckBox implements WFormField {
 
     public String fieldID;
     public String text = "Test text string";
     public boolean trueOrFalse;
-    public int viewType = WRecyclerObject.CHECKBOX;
+    public int viewType = WFormField.CHECKBOX;
     public boolean isEditable = false;
 
-    public WRecyclerCheckBox() {}
+    public WCheckBox() {}
 
-    public WRecyclerCheckBox(String fieldID, String text, boolean trueOrFalse) {
+    public WCheckBox(String fieldID, String text, boolean trueOrFalse) {
         this.fieldID = fieldID;
         this.text = text;
         this.trueOrFalse = trueOrFalse;

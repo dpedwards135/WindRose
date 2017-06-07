@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.davidparkeredwards.windrosetools.model.company.Company;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundleSerialized;
+import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
+import com.davidparkeredwards.windrosetools.wForm.WForm;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +32,20 @@ public class FirebaseHelper {
     private Context ctx;
     private String baseDbString;
     private String inProgressString;
+
+
+    /*
+    Next:
+        Contract for paths
+        saveForm();
+        submitForm();
+        deleteForm();
+        getBlankForm();
+        getListOfTypes();
+
+        progressSpinner
+        userAlert with messages
+     */
 
 
     public FirebaseHelper(Context ctx) {
@@ -142,9 +156,9 @@ public class FirebaseHelper {
     }
 
     //Caching methods for work in progress
-    public void saveWROBundle(WRecyclerObjectBundle bundle){
+    public void saveWROBundle(WRecyclerBundle bundle){
         DatabaseReference ref = database.getReference(inProgressString + bundle.getClassKey());
-        WRecyclerObjectBundleSerialized sbundle = serializeBundle(bundle);
+        WForm sbundle = serializeBundle(bundle);
         Log.i(TAG, "saveWROBundle: " + sbundle.classKey);
         ref.setValue(sbundle);
     }
@@ -154,10 +168,10 @@ public class FirebaseHelper {
         ref.removeValue();
     }
 
-    public Observable<WRecyclerObjectBundle> getSavedWROBundle(String classKey) {
-        return Observable.create(new ObservableOnSubscribe<WRecyclerObjectBundle>() {
+    public Observable<WRecyclerBundle> getSavedWROBundle(String classKey) {
+        return Observable.create(new ObservableOnSubscribe<WRecyclerBundle>() {
             @Override
-            public void subscribe(ObservableEmitter<WRecyclerObjectBundle> e) throws Exception {
+            public void subscribe(ObservableEmitter<WRecyclerBundle> e) throws Exception {
 
                 DatabaseReference ref = database.getReference(
                         inProgressString + classKey);
@@ -167,10 +181,10 @@ public class FirebaseHelper {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             Log.i(TAG, "onDataChange: SNAPSHOT: " + dataSnapshot.getValue().toString());
-                            WRecyclerObjectBundleSerialized sbundle =
-                                    dataSnapshot.getValue(WRecyclerObjectBundleSerialized.class);
+                            WForm sbundle =
+                                    dataSnapshot.getValue(WForm.class);
                             Log.i(TAG, "onDataChange: TEST: " + sbundle.classKey);
-                            WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(sbundle);
+                            WRecyclerBundle bundle = new WRecyclerBundle(sbundle);
                             e.onNext(bundle);
                         } else {
                             Log.i(TAG, "onDataChange: Value was null");
@@ -192,12 +206,12 @@ public class FirebaseHelper {
     }
 
 
-    public void addToSubmissionQueue(WRecyclerObjectBundle bundle) {
+    public void addToSubmissionQueue(WRecyclerBundle bundle) {
         DatabaseReference ref = database.getReference(baseDbString + bundle.getSubmissionKey() + bundle.getClassKey());
         ref.push().setValue(bundle);
     }
 
-    public WRecyclerObjectBundleSerialized serializeBundle(WRecyclerObjectBundle bundle) {
-        return new WRecyclerObjectBundleSerialized(bundle);
+    public WForm serializeBundle(WRecyclerBundle bundle) {
+        return new WForm(bundle);
     }
 }

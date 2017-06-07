@@ -1,14 +1,14 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public interface WRecyclerObject {
+public interface WFormField {
 
     /*  Whenever you want to show a new recyclerView, using an object as a type, that object needs
         to be converted to an array, where each property of the object that you want to display
-        is converted to a WRecyclerObject, implementing getWRecyclerViewType() which returns
+        is converted to a WFormField, implementing getWRecyclerViewType() which returns
         the type of ViewHolder that should be used to change the value of the property.
 
         RecyclerObject will also return its own view holder.

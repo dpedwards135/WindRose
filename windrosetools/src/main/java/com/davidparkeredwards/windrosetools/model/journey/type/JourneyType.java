@@ -3,6 +3,7 @@ package com.davidparkeredwards.windrosetools.model.journey.type;
 import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoStop;
 import com.davidparkeredwards.windrosetools.model.geoTemporal.GeoTimeArea;
+import com.davidparkeredwards.windrosetools.model.journey.EditRule;
 import com.davidparkeredwards.windrosetools.model.journey.JourneyOption;
 import com.davidparkeredwards.windrosetools.model.journey.charge.ChargeRule;
 
@@ -69,6 +70,7 @@ public class JourneyType {
 
     //Options available
     private JourneyOption[] options;
+    private EditRule[] editRules;
 
     //Journey Rules
     private double goalJourneyDurationInSeconds;

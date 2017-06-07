@@ -5,12 +5,12 @@ import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.journey.type.JourneyType;
-import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerConvertibleObject;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerFinalizeButtons;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObject;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerObjectBundle;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextEdit;
-import com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects.WRecyclerTextView;
+import com.davidparkeredwards.windrosetools.wRecyclerView.WFormSource;
+import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
+import com.davidparkeredwards.windrosetools.wForm.WFormField;
+import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
+import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
+import com.davidparkeredwards.windrosetools.wForm.WTextView;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by davidedwards on 5/30/17.
  */
 
-public class Company implements WRecyclerConvertibleObject{
+public class Company implements WFormSource {
 
     private String companyId;
     private String name;
@@ -43,32 +43,32 @@ public class Company implements WRecyclerConvertibleObject{
 
 
     @Override
-    public WRecyclerObjectBundle getWRecyclerObjectsEditable() {
+    public WRecyclerBundle getWRecyclerObjectsEditable() {
 
-        ArrayList<WRecyclerObject> array = new ArrayList<>();
-        array.add(new WRecyclerTextView(COMPANYID, companyId));
-        array.add(new WRecyclerTextEdit(NAME,
+        ArrayList<WFormField> array = new ArrayList<>();
+        array.add(new WTextView(COMPANYID, companyId));
+        array.add(new WTextEdit(NAME,
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_name),
                 name,
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_name_prompt)
                 ));
-        array.add(new WRecyclerTextEdit(PHONE,
+        array.add(new WTextEdit(PHONE,
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_phone),
                 phone,
                 WindroseApplication.applicationContext.getResources().getString(R.string.company_phone_prompt)));
-        array.add(new WRecyclerFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, true, false));
+        array.add(new WFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, true, false));
 
-        WRecyclerObjectBundle bundle = new WRecyclerObjectBundle(CLASS_KEY, array, WindroseApplication.submissionKey);
+        WRecyclerBundle bundle = new WRecyclerBundle(CLASS_KEY, array, WindroseApplication.submissionKey);
         return bundle;
     }
 
     @Override
-    public WRecyclerObjectBundle getWRecyclerObjectsViewable() {
+    public WRecyclerBundle getWRecyclerObjectsViewable() {
         return null;
     }
 
     @Override
-    public void from(WRecyclerObjectBundle bundle) {
+    public void from(WRecyclerBundle bundle) {
 
     }
 }

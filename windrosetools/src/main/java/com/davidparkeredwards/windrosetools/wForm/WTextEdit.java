@@ -1,10 +1,10 @@
-package com.davidparkeredwards.windrosetools.wRecyclerView.wRecyclerObjects;
+package com.davidparkeredwards.windrosetools.wForm;
 
 /**
  * Created by davidedwards on 6/4/17.
  */
 
-public class WRecyclerTextEdit implements WRecyclerObject {
+public class WTextEdit implements WFormField {
 
     public String fieldID;
     public int viewType = TEXT_EDIT;
@@ -12,14 +12,14 @@ public class WRecyclerTextEdit implements WRecyclerObject {
     public String userInput;
     public String prompt;
 
-    public WRecyclerTextEdit(String fieldID, String text, String userInput, String prompt) {
+    public WTextEdit(String fieldID, String text, String userInput, String prompt) {
         this.fieldID = fieldID;
         this.text = text;
         this.userInput = userInput;
         this.prompt = prompt;
     }
 
-    public WRecyclerTextEdit() {}
+    public WTextEdit() {}
 
     @Override
     public int getWRecyclerViewType() {
