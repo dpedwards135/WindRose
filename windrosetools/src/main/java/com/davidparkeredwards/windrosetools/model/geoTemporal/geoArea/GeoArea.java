@@ -20,7 +20,7 @@ public interface GeoArea {
 
     Saving to Firebase - Everything that implements FBSavable will have a DatabaseReference that can be used to save and retrieve
         - boolean saveToFirebase(FBSavable, DBRef); - Includes methods to convert to JSONObject.
-        - FBSavable retrieveFromFB(new FBSavable, DBRef); - Includes methods to reconstitute from JSONObject
+        - FBSavable retrieveFromFB(new FBSavable, DBRef); - Includes methods to reconstitute fromRecyclerBundle JSONObject
                 - Still try to keep model objects to primitive types as long as it doesn't impose a burden
                 - That will help make saving and reconstitution process easier.
 

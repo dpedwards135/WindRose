@@ -15,6 +15,8 @@ import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.StringWithTag;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.WUser;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.ArrayList;
@@ -37,6 +39,9 @@ import io.reactivex.schedulers.Schedulers;
 public class WLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "WLoginActivity";
+    public static final int RC_SIGN_IN = 100;
+    public static final int CREATE_WUSER = 200;
+
 
     Spinner companyIdSpinner;
     ArrayAdapter companySpinnerAdapter;
@@ -64,7 +69,7 @@ public class WLoginActivity extends AppCompatActivity {
             initializeCompany();
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), WindroseApplication.RC_SIGN_IN);
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
     }
 
@@ -72,10 +77,34 @@ public class WLoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //Get Authorization Activity result
         Log.i(TAG, "onActivityResult: " + resultCode);
-        if(resultCode == RESULT_OK) {
-            initializeCompany();
+        if(requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                setWUser();
+                initializeCompany();
+            }
+        }
+        if(requestCode == CREATE_WUSER) {
+            if (resultCode == RESULT_OK) {
+                setWUser();
+                initializeCompany();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setWUser(){
+        String uID = WindroseApplication.auth.getCurrentUser().getUid();
+        if(uID != null) {
+            FirebaseHelper helper = new FirebaseHelper(this);
+            WUser wUser = new WUser(helper.getIndexedForm(WModelClass.W_USER)); //Set up getWUser
+            if(wUser == null) {
+                //sign up new user
+            } else {
+                WindroseApplication.currentWUser = wUser;
+            }
+        } else {
+            Log.i(TAG, "setWUser: UID is null");
+        }
     }
 
     private void initializeCompany() {
@@ -176,7 +205,7 @@ public class WLoginActivity extends AppCompatActivity {
         place of Add New Company. A CompanyInConfiguration will walk the user through all the steps
         of Configuring a new company, with steps in all of the options. There will be an option at
         the end to Validate New Company and then to Launch New Company, which will move the companyID
-        from CompanyInConfiguration class to CompanyIdList so that customers can find it.
+        fromRecyclerBundle CompanyInConfiguration class to CompanyIdList so that customers can find it.
         Companies/InConfiguration/UserId/CompanyID: Company
         Companies/Launched/CompanyID: Company
         Companies/Deactivated/CompanyId: Company

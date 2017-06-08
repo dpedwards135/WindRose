@@ -13,7 +13,7 @@ public class Journey {
 
     //All Journeys are charged once finalized, but the final charge can be set earlier.
     private String journeyId;
-    private JourneyType journeyType; //All the rules come from here
+    private JourneyType journeyType; //All the rules come fromRecyclerBundle here
     private String itineraryId;
     private JourneyStatus journeyStatus;
     private JourneyPayStatus journeyPayStatus;

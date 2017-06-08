@@ -15,7 +15,7 @@ public class JourneyType {
     /* One Unit per Journey
      * This is not a Journey, this is just the rules for setting one up
      * Journey Types can be created and deactivated, so that older journeys can still be validated
-     * against the type the type they were created from
+     * against the type the type they were created fromRecyclerBundle
      *
      * As users fill out the journey request each step is validated as they go and errors are pointed
      * out for correction so that by the time they get to submit they have one that conforms with all

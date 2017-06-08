@@ -9,7 +9,10 @@ import java.util.List;
  * Created by davidedwards on 6/6/17.
  */
 
-public class WForm {
+public class WForm implements DbBody {
+
+    public String userId;
+    public String companyId;
 
     public List<String> fieldIdOrder;
     public List<WCheckBox> checkBoxes;
@@ -21,7 +24,9 @@ public class WForm {
     public String classKey;
     public String submissionKey;
 
-    public WForm(WRecyclerBundle bundle) {
+    public WForm(){}
+
+    public WForm fromRecyclerBundle(WRecyclerBundle bundle) {
         ArrayList<WFormField> recyclerObjects = bundle.getRecyclerObjectsArray();
         this.classKey = bundle.getClassKey();
         this.submissionKey = bundle.getSubmissionKey();
@@ -58,11 +63,12 @@ public class WForm {
                     break;
             }
         }
+        return this;
     }
 
-    public WForm(){}
 
-    public WRecyclerBundle deserialize() {
+
+    public WRecyclerBundle toRecyclerBundle() {
 
         ArrayList<WFormField> arrayList = new ArrayList<>(fieldIdOrder.size());
 
@@ -106,5 +112,10 @@ public class WForm {
         return bundle;
 
 
+    }
+
+    @Override
+    public DbBody getDbBody() {
+        return this;
     }
 }

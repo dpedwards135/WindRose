@@ -5,7 +5,7 @@ import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.assets.type.VehicleType;
 import com.davidparkeredwards.windrosetools.model.journey.type.JourneyType;
-import com.davidparkeredwards.windrosetools.wRecyclerView.WFormSource;
+import com.davidparkeredwards.windrosetools.wForm.WFormSource;
 import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
 import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
