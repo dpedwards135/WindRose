@@ -27,16 +27,41 @@ public class FirebaseHelper {
 
     private static final String TAG = FirebaseHelper.class.getSimpleName();
 
+    //CONTRACT
+
+    private static final String QA = "qa/";
+    private static final String PROD = "prod/";
+    private static final String IN_PROGRESS = "in_progress/";
+    private static final String WINDROSE = "windrose/";
+    private static final String FORMS = "forms/";
+    private static final String TYPE = "type/";
+    private static final String CLASSES = "classes/";
+    private static final String STOCK_TYPE = "stock_type/";
+    private String baseDbString;
+    private String companyString;
+    private String companyFormString;
+    private String companyClassString; //Classes are classes, or defined Type
+    private String windroseStockTypeString;
+    private String windroseClassString;
+    private String userString;
+    private String userSavedString;
+    private String windroseString;
+    private String windroseFormsString;
+    private String windroseTypesString;
+
+    private String companyId;
+    private String wUserId;
     private FirebaseDatabase database;
     private static boolean isDebug;
     private Context ctx;
-    private String baseDbString;
-    private String inProgressString;
+
+
+
 
 
     /*
     Next:
-        Contract for paths
+        Contract for paths X
         saveForm();
         submitForm();
         deleteForm();
@@ -52,15 +77,33 @@ public class FirebaseHelper {
         this.ctx = ctx;
         database = WindroseApplication.firebaseDatabase;
         this.isDebug = BuildConfig.DEBUG;
-        String currentUser = WindroseApplication.auth.getCurrentUser().getEmail().toString().replace(".", "");
-        String companyId = WindroseApplication.getCompanyID().replace("-","");
 
+        configureStrings();
+
+
+    }
+
+    public void configureStrings() {
+        wUserId = WindroseApplication.auth.getCurrentUser().getEmail().toString().replace(".", "") + "/";
+        companyId = WindroseApplication.getCompanyID().replace("-","") + "/";
+
+        baseDbString = "/v" + BuildConfig.VERSION + "/";
         if (this.isDebug) {
-            baseDbString = "/QA/";
+            baseDbString += QA;
         } else {
-            baseDbString = "/Prod/";
+            baseDbString += PROD;
         }
-        this.inProgressString = (baseDbString + "in_progress" + "/" + currentUser + "/" + companyId + "/");
+        companyString = baseDbString + companyId;
+        companyFormString = companyString + FORMS;
+        companyClassString = companyFormString + CLASSES;
+        userString = companyString + userString;
+        userSavedString = userString + IN_PROGRESS;
+        windroseString = baseDbString + WINDROSE;
+        windroseFormsString = windroseString + FORMS;
+        windroseTypesString = windroseFormsString + TYPE;
+        windroseStockTypeString = windroseFormsString + STOCK_TYPE;
+        windroseClassString = windroseFormsString + CLASSES;
+
     }
 
     public Observable<HashMap> getCompanyIdObservable() {
