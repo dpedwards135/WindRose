@@ -9,7 +9,10 @@ import android.widget.TextView;
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
-import com.davidparkeredwards.windrosetools.model.company.Company;
+import com.davidparkeredwards.windrosetools.model.WUser;
+import com.davidparkeredwards.windrosetools.wForm.DBResponse;
+import com.davidparkeredwards.windrosetools.wForm.DbBody;
+import com.davidparkeredwards.windrosetools.wForm.WForm;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerAdapter;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
 
@@ -33,7 +36,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private WRecyclerAdapter recyclerAdapter;
 
-
+    //Need to change all methods over to the new getter and setter and get this to pass Form instead of Bundle
     public abstract WModelClass defineModelClass();
 
     @Override
@@ -46,7 +49,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
         TextView contentText = (TextView) findViewById(R.id.content_text_view);
         contentText.setText("Configure Recycler View Activity");
 
-        getWROBundle();
+        getSavedForm();
 
 
     }
@@ -68,8 +71,10 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
     public void saveRecyclerObjects() {
         WRecyclerBundle savedBundle = recyclerAdapter.getSavedBundle();
+        WForm wForm = (new WForm()).fromRecyclerBundle(savedBundle);
         FirebaseHelper helper = new FirebaseHelper(this);
-        helper.saveWROBundle(savedBundle);
+        helper.putWForm(wForm, FirebaseHelper.SAVED, modelClass, true);
+        //helper.saveWROBundle(savedBundle);
     }
 
     @Override
@@ -85,9 +90,83 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
     }
 
-    private void getWROBundle() {
-       // setBundle(new Company().getWRecyclerObjectsEditable()); //Temp Fix
+    private void getSavedForm() {
 
+        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+        Observable<DBResponse> dbResponseObservable = helper.getWForm(FirebaseHelper.SAVED, modelClass, true);
+        dbResponseObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        if (dbResponse.getCode() == FirebaseHelper.OK) {
+                            DbBody body = dbResponse.getDbBody();
+                            WForm form = (WForm) body;
+                            setBundle(form);
+                        } else {
+                            Log.i(TAG, "onNext: Error " + dbResponse.getMessage());
+                            getBlankForm();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void getBlankForm() {
+        if(modelClass == WModelClass.W_USER || modelClass == WModelClass.COMPANY) {
+            //Next: Get new ID for each new User or Company so that this can be stored in WForm
+        }
+
+        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+        Observable<DBResponse> dbResponseObservable = helper.getWForm(FirebaseHelper.BLANK, modelClass, false);
+        dbResponseObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        if (dbResponse.getCode() == FirebaseHelper.OK) {
+                            DbBody body = dbResponse.getDbBody();
+                            WForm form = (WForm) body;
+                            setBundle(form);
+                        } else {
+                            Log.i(TAG, "onNext: No Blank form available");
+                            Log.i(TAG, "onNext: CREATED OBJECT SIZE = " + (new WUser().getForm().textEdits.size()));
+                            setBundle(new WUser().getForm()); //CHECK
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /*
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
         Observable<WRecyclerBundle> idObservable = helper.getSavedWROBundle(modelClass.getKey());
         idObservable.subscribeOn(Schedulers.io())
@@ -117,10 +196,13 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
                     }
                 });
     }
+    */
 
-    public void setBundle(WRecyclerBundle bundle) {
+    public void setBundle(WForm form) {
+        bundle = form.toRecyclerBundle();
         Log.i(TAG, "setBundle: ");
-        this.bundle = bundle;
+        Log.i(TAG, "setBundle: " );
+
         newRecyclerView();
     }
 

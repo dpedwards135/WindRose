@@ -7,7 +7,7 @@ package com.davidparkeredwards.windrosetools.wForm;
 public class WTextEdit implements WFormField {
 
     public String fieldID;
-    public int viewType = TEXT_EDIT;
+    public double viewType = TEXT_EDIT;
     public String text;
     public String userInput;
     public String prompt;
@@ -23,7 +23,7 @@ public class WTextEdit implements WFormField {
 
     @Override
     public int getWRecyclerViewType() {
-        return viewType;
+        return (int) viewType;
     }
 
     @Override

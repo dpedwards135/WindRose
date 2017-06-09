@@ -32,6 +32,10 @@
         <activity android:name="com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity"
             android:label="Configure Company"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.WSignUpActivity"
+            android:label="Sign Up"
+            android:theme="@style/AppTheme.NoActionBar"/>
         
 
     </application>

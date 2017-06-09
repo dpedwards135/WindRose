@@ -9,7 +9,7 @@ public class WCheckBox implements WFormField {
     public String fieldID;
     public String text = "Test text string";
     public boolean trueOrFalse;
-    public int viewType = WFormField.CHECKBOX;
+    public double viewType = WFormField.CHECKBOX;
     public boolean isEditable = false;
 
     public WCheckBox() {}
@@ -28,7 +28,7 @@ public class WCheckBox implements WFormField {
 
     @Override
     public int getWRecyclerViewType() {
-        return viewType;
+        return (int) viewType;
     }
 
     @Override

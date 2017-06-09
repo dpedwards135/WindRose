@@ -8,7 +8,7 @@ public class WTextView implements WFormField {
 
     public String fieldID;
     public String text = "Test text string";
-    public int viewType = WFormField.TEXT_VIEW;
+    public double viewType = WFormField.TEXT_VIEW;
     public boolean isEditable = false;
 
     public WTextView() {}
@@ -26,7 +26,7 @@ public class WTextView implements WFormField {
 
     @Override
     public int getWRecyclerViewType() {
-        return viewType;
+        return (int) viewType;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
-import com.davidparkeredwards.windrosetools.wForm.WForm;
+import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
 
 import java.util.ArrayList;
@@ -13,14 +13,15 @@ public class WRecyclerBundle {
     private static final String TAG = WRecyclerBundle.class.getSimpleName();
 
 
-    private String classKey;
+    //private String classKey;
+    private WModelClass wModelClass;
     private ArrayList<WFormField> recyclerObjects;
     //private HashMap<String, WFormField> recyclerObjectMap;
     private String submissionKey;
 
 
-    public WRecyclerBundle(String classKey, ArrayList<WFormField> recyclerObjects, String submissionKey) {
-        this.classKey = classKey;
+    public WRecyclerBundle(WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, String submissionKey) {
+        this.wModelClass = wModelClass;
         if(recyclerObjects == null) {
             this.recyclerObjects = new ArrayList<>();
         } else {
@@ -29,6 +30,7 @@ public class WRecyclerBundle {
         this.submissionKey = submissionKey;
     }
 
+    /*
     public WRecyclerBundle(WForm sbundle) {
         this.classKey = sbundle.classKey;
         this.submissionKey = sbundle.submissionKey;
@@ -47,14 +49,16 @@ public class WRecyclerBundle {
             recyclerObjects.set(index, object);
         }
     }
+    */
 
     public String getClassKey() {
-        return classKey;
+        return wModelClass.getKey();
     }
 
-    public void setClassKey(String classKey) {
+    /*public void setClassKey(String classKey) {
         this.classKey = classKey;
     }
+    */
 
     public ArrayList<WFormField> getRecyclerObjectsArray() {
         return recyclerObjects;
@@ -74,5 +78,9 @@ public class WRecyclerBundle {
 
     public String getSubmissionKey() {
         return submissionKey;
+    }
+
+    public WModelClass getwModelClass() {
+        return wModelClass;
     }
 }

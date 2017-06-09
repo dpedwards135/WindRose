@@ -17,6 +17,10 @@ import com.davidparkeredwards.windrosetools.StringWithTag;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.WUser;
+import com.davidparkeredwards.windrosetools.wForm.DBResponse;
+import com.davidparkeredwards.windrosetools.wForm.DbBody;
+import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
+import com.davidparkeredwards.windrosetools.wForm.WForm;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.ArrayList;
@@ -66,11 +70,18 @@ public class WLoginActivity extends AppCompatActivity {
         if (WindroseApplication.auth.getCurrentUser() != null) {
             Log.i(TAG, "onCreate: User is signed in as "
                     + WindroseApplication.auth.getCurrentUser().getDisplayName());
-            initializeCompany();
+            getWUserIDFromIndex();
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
+    }
+
+    protected void createNewWUser() {
+        Log.i(TAG, "createNewWUser: ");
+        Intent intent = new Intent();
+        intent.setClass(this, WSignUpActivity.class);
+        startActivityForResult(intent, CREATE_WUSER);
     }
 
     @Override
@@ -79,32 +90,96 @@ public class WLoginActivity extends AppCompatActivity {
         Log.i(TAG, "onActivityResult: " + resultCode);
         if(requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                setWUser();
-                initializeCompany();
+                getWUserIDFromIndex();
             }
         }
         if(requestCode == CREATE_WUSER) {
             if (resultCode == RESULT_OK) {
-                setWUser();
-                initializeCompany();
+
+                Log.i(TAG, "onActivityResult: OK CREATE WUSER");
+                //getWUserFromDB(data.getData());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setWUser(){
-        String uID = WindroseApplication.auth.getCurrentUser().getUid();
-        if(uID != null) {
-            FirebaseHelper helper = new FirebaseHelper(this);
-            WUser wUser = new WUser(helper.getIndexedForm(WModelClass.W_USER)); //Set up getWUser
-            if(wUser == null) {
-                //sign up new user
-            } else {
-                WindroseApplication.currentWUser = wUser;
-            }
-        } else {
-            Log.i(TAG, "setWUser: UID is null");
-        }
+    private void getWUserIDFromIndex() {
+        Log.i(TAG, "getWUserIDFromIndex: ");
+        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+        Observable<DBResponse> userIndexObservable = helper.getUniqueIds(FirebaseHelper.WINDROSE_INDEX, WModelClass.W_USER,
+                FirebaseHelper.PRECISION_EXACT,WindroseApplication.auth.getCurrentUser().getUid());
+        userIndexObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        Log.i(TAG, "onNext: Message = " + dbResponse.getMessage());
+                        if(dbResponse.getCode() == FirebaseHelper.OK) {
+                            DbBody body = dbResponse.getDbBody();
+                            UniqueIds ids = (UniqueIds) body.getDbBody();
+                            String id = ids.getUniqueIds().get(0);
+                            Log.i(TAG, "onNext: ID is " + id);
+                            getWUserFromDB(id);
+                        } else {
+                            Log.i(TAG, "onNext: Error " + dbResponse.getMessage());
+                            createNewWUser();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+
+    private void getWUserFromDB(String uniqueId) {
+        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+        Observable<DBResponse> userObservable = helper.getWForm(uniqueId, WModelClass.W_USER, false);
+        userObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        Log.i(TAG, "onNext: Message = " + dbResponse.getMessage());
+                        if(dbResponse.getCode() == FirebaseHelper.OK) {
+                            DbBody body = dbResponse.getDbBody();
+                            WForm form = (WForm) dbResponse.getDbBody();
+                            WUser wUser = new WUser(form);
+                            WindroseApplication.currentWUser = wUser;
+                            initializeCompany();
+                        } else {
+                            Log.i(TAG, "onNext: Error " + dbResponse.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void initializeCompany() {
@@ -148,6 +223,7 @@ public class WLoginActivity extends AppCompatActivity {
                                }
                            });
     }
+
     private boolean companyIdValid() {
         if(companyIDList.containsKey(WindroseApplication.getCompanyID())) {
             return true;

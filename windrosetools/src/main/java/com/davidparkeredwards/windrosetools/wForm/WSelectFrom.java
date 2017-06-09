@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools.wForm;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -9,11 +10,11 @@ import java.util.ArrayList;
 public class WSelectFrom implements WFormField {
 
     public String fieldID;
-    public int viewType = SELECT_FROM;
+    public double viewType = SELECT_FROM;
     public boolean isEditable;
     public String text;
-    public ArrayList<String> selectableValues;
-    public int selectedValue;
+    public List<String> selectableValues;
+    public double selectedValue;
     public String spinnerPrompt;
 
     public WSelectFrom() {}
@@ -29,7 +30,7 @@ public class WSelectFrom implements WFormField {
 
     @Override
     public int getWRecyclerViewType() {
-        return viewType;
+        return (int) viewType;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class WSelectFrom implements WFormField {
     }
 
     public ArrayList<String> getValues() {
-        return selectableValues;
+        return (ArrayList) selectableValues;
     }
 
     public void setSelectedValue(int position) {
@@ -50,7 +51,7 @@ public class WSelectFrom implements WFormField {
     }
 
     public int getSelectedValue() {
-        return selectedValue;
+        return (int) selectedValue;
     }
 
     public String getSpinnerPrompt() {

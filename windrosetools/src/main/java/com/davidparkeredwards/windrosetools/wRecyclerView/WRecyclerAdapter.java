@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     data and rebuild the RecyclerView. That means any edits need to be saved to the constructorObjects
     and that is always up to date. */
 
+    private static final String TAG = WRecyclerAdapter.class.getSimpleName();
 
     //Rewrite to make bundle the foundation of the adapter and everything gets saved to it.
 
@@ -24,6 +26,7 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public WRecyclerAdapter(WRecyclerBundle bundle) {
         this.bundle = bundle;
+        Log.i(TAG, "WRecyclerAdapter: Bundle : " + bundle.getRecyclerObjectsArray().size());
     }
 
     @Override
@@ -56,6 +59,7 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ViewGroup.LayoutParams.WRAP_CONTENT);
                     inflatedView.setLayoutParams(rlp);
                     viewHolder = new WViewHolder(inflatedView, this);
+                    Log.i(TAG, "onCreateViewHolder: ");
                     break;
             }
             return viewHolder;

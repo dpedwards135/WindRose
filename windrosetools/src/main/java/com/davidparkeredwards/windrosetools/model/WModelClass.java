@@ -95,4 +95,13 @@ public enum WModelClass {
         return this.isWindroseIndexed;
     }
 
+    public static WModelClass findWModelFromKey(String classKey) {
+        for(WModelClass wModelClass : WModelClass.values()) {
+            if(classKey.equals(wModelClass.getKey())) {
+                return wModelClass;
+            }
+        }
+        return null;
+    }
+
 }

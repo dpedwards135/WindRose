@@ -3,9 +3,16 @@ package com.davidparkeredwards.windrosetools.wForm;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -13,8 +20,11 @@ import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
 
 public class WFinalizeButtons implements WFormField {
 
+    private static final String TAG = WFinalizeButtons.class.getSimpleName();
+
+
     public String fieldID;
-    public int type = FINALIZE_BUTTONS;
+    public double type = FINALIZE_BUTTONS;
     public boolean isEditable = false;
     public boolean setCancel;
     public boolean setSave;
@@ -31,7 +41,7 @@ public class WFinalizeButtons implements WFormField {
 
     @Override
     public int getWRecyclerViewType() {
-        return type;
+        return (int) type;
     }
 
     @Override
@@ -58,7 +68,6 @@ public class WFinalizeButtons implements WFormField {
 
     public void onClickCancel(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
-        helper.clearWROBundle(bundle.getClassKey());
         Intent intent = new Intent();
         String packageName = context.getApplicationContext().getPackageName();
         ComponentName componentName = new ComponentName(packageName,
@@ -68,13 +77,47 @@ public class WFinalizeButtons implements WFormField {
     }
 
     public void onClickSave(Context context, WRecyclerBundle bundle) {
+        Log.i(TAG, "onClickSave: ");
         FirebaseHelper helper = new FirebaseHelper(context);
-        helper.saveWROBundle(bundle);
+
+        WForm wForm = WForm.fromRecyclerBundle(bundle);
+        Log.i(TAG, "onClickSave: WFORM: " + wForm.toString());
+        DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
+
+        Observable<DBResponse> onClickSaveObservable =
+                helper.putWForm(wForm, FirebaseHelper.SAVED, bundle.getwModelClass(), true);
+        onClickSaveObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        dbResponseHandler.onSubscribe();
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        dbResponseHandler.onNext();
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dbResponseHandler.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dbResponseHandler.onComplete();
+                    }
+                });
     }
 
     public void onClickSubmit(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
-        helper.addToSubmissionQueue(bundle);
+        WForm wForm = new WForm().fromRecyclerBundle(bundle);
+        helper.indexNewKeyAndSubmitForm(wForm, bundle.getwModelClass());
+
+        //helper.putWForm(wForm, FirebaseHelper.SAVED, bundle.getwModelClass(), true);
 
     }
 }
