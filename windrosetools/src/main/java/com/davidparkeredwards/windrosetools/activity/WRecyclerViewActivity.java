@@ -73,7 +73,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
         WRecyclerBundle savedBundle = recyclerAdapter.getSavedBundle();
         WForm wForm = (new WForm()).fromRecyclerBundle(savedBundle);
         FirebaseHelper helper = new FirebaseHelper(this);
-        helper.putWForm(wForm, FirebaseHelper.SAVED, modelClass, true);
+        helper.putWForm(wForm);
         //helper.saveWROBundle(savedBundle);
     }
 
@@ -127,11 +127,14 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     }
 
     private void getBlankForm() {
-        if(modelClass == WModelClass.W_USER || modelClass == WModelClass.COMPANY) {
-            //Next: Get new ID for each new User or Company so that this can be stored in WForm
-        }
-
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+
+        //New UserID and new CompanyID are the key without dashes replaced by @ if - doesn't work
+
+        //Next: Get new ID for each new form as it is created. Instead of storing objects in Saved, turn that
+            //into an index where you can pull another object, and the index is cleared onCancel and onSubmit.
+            //Company and WUser will only be unique because instead of calling the ids from the app they'll self assign
+
         Observable<DBResponse> dbResponseObservable = helper.getWForm(FirebaseHelper.BLANK, modelClass, false);
         dbResponseObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -199,6 +202,9 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     */
 
     public void setBundle(WForm form) {
+        form.initialize(this);
+        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
+
         bundle = form.toRecyclerBundle();
         Log.i(TAG, "setBundle: ");
         Log.i(TAG, "setBundle: " );

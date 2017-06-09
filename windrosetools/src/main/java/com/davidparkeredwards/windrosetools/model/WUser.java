@@ -59,7 +59,7 @@ public class WUser implements WFormSource {
         String userId = "Anonymous";//Need to get key prior to saving this. Same for Company.
         String companyId = WindroseApplication.getCompanyID();
         String classKey = CLASS_KEY;
-        String submissionKey = WindroseApplication.getSubmissionKey();
+        boolean isSubmitted = false;
 
         List<String> fieldIdOrder = new ArrayList<>();
         fieldIdOrder.add(NAME);
@@ -86,7 +86,7 @@ public class WUser implements WFormSource {
         String description = authUID;
 
         WForm wForm = new WForm(userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
-                selectFroms, textEdits, textViews, classKey, submissionKey, description);
+                selectFroms, textEdits, textViews, classKey, isSubmitted, description);
         return wForm;
     }
 }

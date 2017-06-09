@@ -85,7 +85,7 @@ public class WFinalizeButtons implements WFormField {
         DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
 
         Observable<DBResponse> onClickSaveObservable =
-                helper.putWForm(wForm, FirebaseHelper.SAVED, bundle.getwModelClass(), true);
+                helper.putWForm(wForm);
         onClickSaveObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DBResponse>() {
@@ -115,7 +115,7 @@ public class WFinalizeButtons implements WFormField {
     public void onClickSubmit(Context context, WRecyclerBundle bundle) {
         FirebaseHelper helper = new FirebaseHelper(context);
         WForm wForm = new WForm().fromRecyclerBundle(bundle);
-        helper.indexNewKeyAndSubmitForm(wForm, bundle.getwModelClass());
+        helper.putWForm(wForm);
 
         //helper.putWForm(wForm, FirebaseHelper.SAVED, bundle.getwModelClass(), true);
 

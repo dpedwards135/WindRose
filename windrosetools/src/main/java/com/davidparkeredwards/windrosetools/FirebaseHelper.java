@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
+import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.davidparkeredwards.windrosetools.wForm.WForm;
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +21,10 @@ import java.util.HashMap;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by davidedwards on 5/27/17.
@@ -56,21 +61,11 @@ public class FirebaseHelper {
     private static final String PERSONAL = "personal/";
 
     private String baseDbString;
-    private String companyString;
-    private String companyFormString;
-    private String companyClassString; //Classes are classes, or defined Type
+    private String formsString;
     private String companyIndexString;
-    private String windroseStockTypeString;
-    private String windroseClassString;
-    private String userString;
-    private String userSavedString;
-    private String userSavedPersonalString;
     private String userIndexString;
-    private String windroseString;
-    private String windroseFormsString;
-    private String windroseTypesString;
     private String windroseIndexString;
-    private String submittedFormsString;
+    private String userSaveIndex;
 
 
     private String companyId;
@@ -119,25 +114,14 @@ public class FirebaseHelper {
             baseDbString += PROD;
         }
 
-        companyString = baseDbString + companyId;
-        companyFormString = baseDbString + companyId + FORMS;
-        companyClassString = baseDbString + companyId + FORMS + CLASSES;
-        companyIndexString = baseDbString + companyId + INDEX;
-        userString = baseDbString + wUserId;
-        userSavedString = baseDbString + wUserId + IN_PROGRESS + companyId;
-        userSavedPersonalString = baseDbString + wUserId + IN_PROGRESS + PERSONAL;
-        userIndexString = baseDbString + wUserId + INDEX;
-        windroseString = baseDbString + WINDROSE;
-        windroseIndexString = baseDbString + WINDROSE + INDEX;
-        windroseFormsString = baseDbString + WINDROSE + FORMS;
-        windroseTypesString = baseDbString + WINDROSE + FORMS + TYPE;
-        windroseClassString = baseDbString + WINDROSE + FORMS + CLASSES;
-        windroseStockTypeString = baseDbString + WINDROSE + FORMS + CLASSES + STOCK_TYPE;
-        submittedFormsString = baseDbString + SUBMITTED_FORMS;
+        //right now I'm only worried about saving and retrieving forms. All I need is a Forms bucket
+        //and indices
 
-        Log.i(TAG, "configureStrings: " + userSavedString);
-        //One big bucket for submitted forms from all companies broken out by WModelClass
-        //Individual buckets for saved forms broken out by Company then User
+        formsString = baseDbString + FORMS;
+        companyIndexString = baseDbString + INDEX + companyId;
+        windroseIndexString = baseDbString + INDEX + WINDROSE;
+        userIndexString = baseDbString + INDEX + wUserId;
+        userSaveIndex = baseDbString + INDEX + wUserId + companyId;
     }
 
 
@@ -159,6 +143,7 @@ public class FirebaseHelper {
                         break;
                     case USER_INDEX:
                         path = userIndexString + wModelClass.getKey() + "/";
+                        break;
                     default:
                         path = userIndexString + wModelClass.getKey() + "/";
                 }
@@ -212,19 +197,8 @@ public class FirebaseHelper {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
 
-                String path = getPathWithUniqueID(uniqueId, wModelClass, isInProgress);
+                String path = getFormPathWithUniqueID(uniqueId, wModelClass);
 
-                /*
-                if(isInProgress) {
-                    if(wModelClass.getIsCompanyIndexed()) {
-                        path = userSavedString + companyId + wModelClass.getKey() + "/" + uniqueId;
-                    } else {
-                        path = userSavedPersonalString + wModelClass.getKey() + "/" + uniqueId;
-                    }
-                } else {
-                    path = submittedFormsString + wModelClass.getKey() + "/" + uniqueId;
-                }
-                */
                 DatabaseReference indexRef = database.getReference(path);
 
                 ValueEventListener valueEventListener = new ValueEventListener() {
@@ -255,38 +229,30 @@ public class FirebaseHelper {
     //Save methods - Put, Post(push/set/save ID - Should always be indexed when making an addition), update, delete
         //Next: Create new WUser and post to DB, with return to Login
 
-    private String getNewId(WModelClass wModelClass, boolean isInProgress) {
-        String path = getPathWithUniqueID("", wModelClass, isInProgress);
+    public String getNewId(WModelClass wModelClass) {
+        String path = getFormPathWithUniqueID("", wModelClass);
         DatabaseReference ref = database.getReference(path);
         String newId = ref.push().getKey();
+        Log.i(TAG, "getNewId: " + newId);
         return newId;
     }
 
-    private String getPathWithUniqueID(String uniqueId, WModelClass wModelClass, boolean isInProgress) {
+    public String getFormPathWithUniqueID(String uniqueId, WModelClass wModelClass) {
         String path;
-        if (isInProgress) {
-            if (wModelClass.getIsCompanyIndexed()) {
-                path = userSavedString + wModelClass.getKey() + "/" + uniqueId;
-                Log.i(TAG, "subscribe: Path: " + path);
-            } else {
-                path = userSavedPersonalString + wModelClass.getKey() + "/" + uniqueId;
-                Log.i(TAG, "subscribe: Path: " + path);
-            }
-        } else {
-            path = submittedFormsString + wModelClass.getKey() + "/" + uniqueId;
-            Log.i(TAG, "subscribe: Path: " + path);
-        }
+
+        path = formsString + wModelClass.getKey() + "/" + uniqueId;
+
         return path;
     }
 
-    public Observable<DBResponse> putWForm(WForm wForm, String uniqueId, WModelClass wModelClass, boolean isInProgress) {
+    public Observable<DBResponse> putWForm(WForm wForm) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
 
-                String path = getPathWithUniqueID(uniqueId, wModelClass, isInProgress);
+                String path = getFormPathWithUniqueID(wForm.getUniqueId(), wForm.getWModelClass());
 
-                DatabaseReference indexRef = database.getReference(path);
+                DatabaseReference formRef = database.getReference(path);
 
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @Override
@@ -294,6 +260,7 @@ public class FirebaseHelper {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
                             e.onNext(dbResponse);
+                            indexAndProcessForm(wForm);
                             return;
                         } else {
                             DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
@@ -308,15 +275,15 @@ public class FirebaseHelper {
                         e.onError(databaseError.toException());
                     }
                 };
-                indexRef.addValueEventListener(valueEventListener);
+                formRef.addValueEventListener(valueEventListener);
                 Log.i(TAG, "subscribe: FORM: " + wForm.toString());
-                indexRef.setValue(wForm);
+                formRef.setValue(wForm);
             }
         });
     }
 
 
-    public Observable<DBResponse> indexNewKeyAndSubmitForm(WForm wForm, WModelClass wModelClass) {
+    public Observable<DBResponse> indexKey(WForm wForm, WModelClass wModelClass) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
@@ -341,69 +308,68 @@ public class FirebaseHelper {
                         e.onError(databaseError.toException());
                     }
                 };
-
-                String path;
-                path = submittedFormsString + wModelClass.getKey() + "/";
-                DatabaseReference indexRef = database.getReference(path);
-                String newKey = indexRef.push().getKey();
-                DatabaseReference newRef = indexRef.child(newKey);
-                newRef.addValueEventListener(valueEventListener);
-                newRef.setValue(wForm);
 
                 IndexItem indexItem = new IndexItem(wForm.description, wForm.userId, wForm.companyId);
-                putIndexItem(indexItem, newKey, wModelClass);
 
+                if(wForm.isSubmitted) {
+                    ArrayList<DatabaseReference> indexRefs = new ArrayList<>();
+
+                    if (wModelClass.getIsCompanyIndexed()) {
+                        DatabaseReference compIndex = database.getReference(companyIndexString + wModelClass.getKey() + "/");
+                        indexRefs.add(compIndex);
+                    }
+                    if (wModelClass.getIsWindroseIndexed()) {
+                        DatabaseReference wIndex = database.getReference(windroseIndexString + wModelClass.getKey() + "/");
+                        indexRefs.add(wIndex);
+                    }
+                    if (wModelClass.getIsUserIndexed()) {
+                        DatabaseReference userIndex = database.getReference(userIndexString + wModelClass.getKey() + "/");
+                        indexRefs.add(userIndex);
+                    }
+                    for(DatabaseReference ref : indexRefs) {
+                        ref.addValueEventListener(valueEventListener);
+                        ref.child(wForm.uniqueId).setValue(indexItem);
+                    }
+                } else {
+                    DatabaseReference savedIndex = database.getReference(userSaveIndex + wModelClass.getKey());
+                    savedIndex.removeValue();
+                    savedIndex.child(wForm.uniqueId).setValue(indexItem);
+                }
             }
         });
     }
 
-    public Observable<DBResponse> putIndexItem(IndexItem indexItem, String uniqueId, WModelClass wModelClass) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+    private void indexAndProcessForm(WForm wform) {
 
-                ValueEventListener valueEventListener = new ValueEventListener() {
+        DbResponseHandler handler = new DbResponseHandler(ctx);
+
+        Observable<DBResponse> indexObservable = indexKey(wform, wform.getWModelClass());
+        indexObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
-                            e.onNext(dbResponse);
-                            return;
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
+                    public void onSubscribe(Disposable d) {
+                        handler.onSubscribe();
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
+                    public void onNext(DBResponse dbResponse) {
 
-                if(wModelClass.getIsWindroseIndexed()) {
-                    String path = windroseIndexString + wModelClass.getKey() + "/";
-                    DatabaseReference indexRef = database.getReference(path);
-                    indexRef.addValueEventListener(valueEventListener);
-                    indexRef.child(uniqueId).setValue(indexItem);
-                }
-                if(wModelClass.getIsCompanyIndexed()) {
-                    String path = companyIndexString + wModelClass.getKey() + "/";
-                    DatabaseReference indexRef = database.getReference(path);
-                    indexRef.addValueEventListener(valueEventListener);
-                    indexRef.child(uniqueId).setValue(indexItem);
-                }
-                if(wModelClass.getIsUserIndexed()) {
-                    String path = userIndexString + wModelClass.getKey() + "/";
-                    DatabaseReference indexRef = database.getReference(path);
-                    indexRef.addValueEventListener(valueEventListener);
-                    indexRef.child(uniqueId).setValue(indexItem);
-                }
-            }
-        });
+                        handler.onNext();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handler.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        handler.onComplete();
+                    }
+                });
     }
+
 
 
 
@@ -456,52 +422,6 @@ public class FirebaseHelper {
         });
     }
 
-    public void setNewCompanyId(String companyName) {
-
-        //Set company ID by getting all companyIds then CompanyId : CompanyName
-        DatabaseReference ref = database.getReference(baseDbString + "companyIds");
-        Date date = new Date();
-        ref.push().setValue(companyName);
-        Log.i(TAG, "setNewCompanyId: Adding Listener");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                Log.i(TAG, "onDataChange: Value = " + value.toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                Log.i(TAG, "onCancelled: Cancelled");
-            }
-        });
-    }
-
-
-    public ValueEventListener getCompanyIds() {
-
-        DatabaseReference ref = database.getReference(baseDbString + "companyIds");
-
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                Log.i(TAG, "onDataChange: Value = " + value.toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled: Cancelled");
-
-            }
-        };
-        ref.addValueEventListener(valueEventListener);
-
-        return valueEventListener;
-    }
-
 
     private class IndexItem {
         private String description;
@@ -539,7 +459,4 @@ public class FirebaseHelper {
         }
     }
 
-    public String getUserSavedString() {
-        return userSavedString;
-    }
 }

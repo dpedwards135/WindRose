@@ -1,7 +1,9 @@
 package com.davidparkeredwards.windrosetools.wForm;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
@@ -19,9 +21,12 @@ public class WForm implements DbBody {
     @Exclude
     private static final String TAG = WForm.class.getSimpleName();
 
-
+    public String uniqueId;
     public String userId;
     public String companyId;
+    public String classKey;
+    public boolean isSubmitted;
+    public String description;
 
     public List<String> fieldIdOrder;
     public List<WCheckBox> checkBoxes;
@@ -30,16 +35,14 @@ public class WForm implements DbBody {
     public List<WSelectFrom> selectFroms;
     public List<WTextEdit> textEdits;
     public List<WTextView> textViews;
-    public String classKey;
-    public String submissionKey;
-    public String description;
+
 
     public WForm(){}
 
 
     public WForm(String userId, String companyId, List<String> fieldIdOrder, List<WCheckBox> checkBoxes,
                  List<WFinalizeButtons> finalizeButtons, List<WGeoStop> geoStops, List<WSelectFrom> selectFroms,
-                 List<WTextEdit> textEdits, List<WTextView> textViews, String classKey, String submissionKey,
+                 List<WTextEdit> textEdits, List<WTextView> textViews, String classKey, boolean isSubmitted,
                  String description) {
         this.userId = userId;
         this.companyId = companyId;
@@ -51,7 +54,7 @@ public class WForm implements DbBody {
         this.textEdits = textEdits;
         this.textViews = textViews;
         this.classKey = classKey;
-        this.submissionKey = submissionKey;
+        this.isSubmitted = isSubmitted;
         this.description = description;
     }
 
@@ -59,7 +62,7 @@ public class WForm implements DbBody {
     public static WForm fromRecyclerBundle(WRecyclerBundle bundle) {
         ArrayList<WFormField> recyclerObjects = bundle.getRecyclerObjectsArray();
         String wrclassKey = bundle.getClassKey();
-        String wrsubmissionKey = bundle.getSubmissionKey();
+        boolean wrIsSubmitted = bundle.getIsSubmitted();
         String wrdescription = "Form from WRecyclerBundle";
         List wrfieldIdOrder = new ArrayList<>();
 
@@ -111,9 +114,34 @@ public class WForm implements DbBody {
         WForm wform = new WForm(wrwUserId, wrCompanyId,
                 wrfieldIdOrder, wrcheckBoxes,
                 wrfinalizeButtons, wrgeoStops, wrselectFroms,
-                wrtextEdits, wrtextViews, wrclassKey, wrsubmissionKey,
+                wrtextEdits, wrtextViews, wrclassKey, wrIsSubmitted,
                 wrdescription);
         return wform;
+    }
+
+    @Exclude
+    public static WForm initialize(Context context, WForm wForm) {
+        FirebaseHelper helper = new FirebaseHelper(context);
+        WModelClass wModelClass = wForm.getWModelClass()
+        String id = helper.getNewId(wModelClass);
+        String uniqueId = id;
+        String userId;
+        String companyId;
+        String description;
+        if(wModelClass == WModelClass.W_USER) {
+            userId = id;
+            companyId = (WindroseApplication.getCompanyID() != null) ? WindroseApplication.getCompanyID() : "UninitializedCompany";
+            description = WindroseApplication.auth.getCurrentUser().getUid();
+        } else if (wModelClass == WModelClass.COMPANY) {
+            userId = WindroseApplication.currentWUser.getWUserId();
+            companyId = id;
+            description = "";
+        } else {
+            userId = WindroseApplication.currentWUser.getWUserId();
+            companyId = WindroseApplication.getCompanyID();
+            description = "";
+        }
+        return new WForm() //Need to finish constructing new WForm with new variables and old variables from input
     }
 
     @Exclude
@@ -174,7 +202,7 @@ public class WForm implements DbBody {
             }
         }
         Log.i("WFORM", "toRecyclerBundle: ArrayList size = " + arrayList.size());
-        WRecyclerBundle bundle = new WRecyclerBundle(WModelClass.findWModelFromKey(classKey), arrayList, submissionKey);
+        WRecyclerBundle bundle = new WRecyclerBundle(this.getWModelClass(), arrayList, isSubmitted);
         return bundle;
     }
 
@@ -182,6 +210,16 @@ public class WForm implements DbBody {
     @Override
     public DbBody getDbBody() {
         return this;
+    }
+
+    @Exclude
+    public String getUniqueId() {
+        return this.uniqueId;
+    }
+
+    @Exclude
+    public WModelClass getWModelClass() {
+        return WModelClass.findWModelFromKey(classKey);
     }
 
     @Exclude

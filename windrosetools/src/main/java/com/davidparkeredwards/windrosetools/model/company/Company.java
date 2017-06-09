@@ -51,7 +51,7 @@ public class Company implements WFormSource {
         String userId = WindroseApplication.currentWUser.getWUserId();
         String companyId = WindroseApplication.getCompanyID();
         String classKey = CLASS_KEY;
-        String submissionKey = WindroseApplication.getSubmissionKey();
+        boolean isSubmitted = false;
 
         List<String> fieldIdOrder = new ArrayList<>();
         fieldIdOrder.add(COMPANYID);
@@ -81,7 +81,7 @@ public class Company implements WFormSource {
         String description = name;
 
         WForm wForm = new WForm(userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
-                selectFroms, textEdits, textViews, classKey, submissionKey, description);
+                selectFroms, textEdits, textViews, classKey, isSubmitted, description);
         return wForm;    }
 
     @Override

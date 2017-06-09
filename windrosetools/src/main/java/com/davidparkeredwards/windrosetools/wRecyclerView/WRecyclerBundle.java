@@ -17,17 +17,17 @@ public class WRecyclerBundle {
     private WModelClass wModelClass;
     private ArrayList<WFormField> recyclerObjects;
     //private HashMap<String, WFormField> recyclerObjectMap;
-    private String submissionKey;
+    private boolean isSubmitted;
 
 
-    public WRecyclerBundle(WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, String submissionKey) {
+    public WRecyclerBundle(WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, boolean isSubmitted) {
         this.wModelClass = wModelClass;
         if(recyclerObjects == null) {
             this.recyclerObjects = new ArrayList<>();
         } else {
             this.recyclerObjects = recyclerObjects;
         }
-        this.submissionKey = submissionKey;
+        this.isSubmitted = isSubmitted;
     }
 
     /*
@@ -76,8 +76,8 @@ public class WRecyclerBundle {
         return recyclerObjects.get(index);
     }
 
-    public String getSubmissionKey() {
-        return submissionKey;
+    public boolean getIsSubmitted() {
+        return isSubmitted;
     }
 
     public WModelClass getwModelClass() {
