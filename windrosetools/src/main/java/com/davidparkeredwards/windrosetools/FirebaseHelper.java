@@ -45,7 +45,7 @@ public class FirebaseHelper {
     public static final int OK = 200;
     public static final int FAILED = 400;
     public static final String BLANK = "blank";
-    public static final String SAVED = "saved";
+    public static final String SAVED = "saved/";
 
     private static final String QA = "qa/";
     private static final String PROD = "prod/";
@@ -121,7 +121,7 @@ public class FirebaseHelper {
         companyIndexString = baseDbString + INDEX + companyId;
         windroseIndexString = baseDbString + INDEX + WINDROSE;
         userIndexString = baseDbString + INDEX + wUserId;
-        userSaveIndex = baseDbString + INDEX + wUserId + companyId;
+        userSaveIndex = baseDbString + INDEX + wUserId + SAVED + companyId;
     }
 
 

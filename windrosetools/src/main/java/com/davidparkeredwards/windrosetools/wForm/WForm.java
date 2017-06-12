@@ -26,6 +26,8 @@ public class WForm implements DbBody {
     public String companyId;
     public String classKey;
     public boolean isSubmitted;
+    public double requestType;
+    public String modelReference; //If it is anything but Create
     public String description;
 
     public List<String> fieldIdOrder;
@@ -40,10 +42,11 @@ public class WForm implements DbBody {
     public WForm(){}
 
 
-    public WForm(String userId, String companyId, List<String> fieldIdOrder, List<WCheckBox> checkBoxes,
+    public WForm(String uniqueId, String userId, String companyId, List<String> fieldIdOrder, List<WCheckBox> checkBoxes,
                  List<WFinalizeButtons> finalizeButtons, List<WGeoStop> geoStops, List<WSelectFrom> selectFroms,
                  List<WTextEdit> textEdits, List<WTextView> textViews, String classKey, boolean isSubmitted,
                  String description) {
+        this.uniqueId = uniqueId;
         this.userId = userId;
         this.companyId = companyId;
         this.fieldIdOrder = fieldIdOrder;
@@ -61,6 +64,7 @@ public class WForm implements DbBody {
     @Exclude
     public static WForm fromRecyclerBundle(WRecyclerBundle bundle) {
         ArrayList<WFormField> recyclerObjects = bundle.getRecyclerObjectsArray();
+        String wrUniqueId = bundle.getUniqueId();
         String wrclassKey = bundle.getClassKey();
         boolean wrIsSubmitted = bundle.getIsSubmitted();
         String wrdescription = "Form from WRecyclerBundle";
@@ -111,7 +115,7 @@ public class WForm implements DbBody {
             wrCompanyId = "null";
         }
 
-        WForm wform = new WForm(wrwUserId, wrCompanyId,
+        WForm wform = new WForm(wrUniqueId, wrwUserId, wrCompanyId,
                 wrfieldIdOrder, wrcheckBoxes,
                 wrfinalizeButtons, wrgeoStops, wrselectFroms,
                 wrtextEdits, wrtextViews, wrclassKey, wrIsSubmitted,
@@ -122,7 +126,7 @@ public class WForm implements DbBody {
     @Exclude
     public static WForm initialize(Context context, WForm wForm) {
         FirebaseHelper helper = new FirebaseHelper(context);
-        WModelClass wModelClass = wForm.getWModelClass()
+        WModelClass wModelClass = wForm.getWModelClass();
         String id = helper.getNewId(wModelClass);
         String uniqueId = id;
         String userId;
@@ -141,7 +145,10 @@ public class WForm implements DbBody {
             companyId = WindroseApplication.getCompanyID();
             description = "";
         }
-        return new WForm() //Need to finish constructing new WForm with new variables and old variables from input
+        return new WForm(uniqueId, userId, companyId, wForm.fieldIdOrder, wForm.checkBoxes,
+                wForm.finalizeButtons, wForm.geoStops, wForm.selectFroms,
+                wForm.textEdits, wForm.textViews, wForm.classKey, wForm.isSubmitted,
+        description); //Need to finish constructing new WForm with new variables and old variables from input
     }
 
     @Exclude
@@ -202,7 +209,7 @@ public class WForm implements DbBody {
             }
         }
         Log.i("WFORM", "toRecyclerBundle: ArrayList size = " + arrayList.size());
-        WRecyclerBundle bundle = new WRecyclerBundle(this.getWModelClass(), arrayList, isSubmitted);
+        WRecyclerBundle bundle = new WRecyclerBundle(this.uniqueId, this.getWModelClass(), arrayList, isSubmitted);
         return bundle;
     }
 

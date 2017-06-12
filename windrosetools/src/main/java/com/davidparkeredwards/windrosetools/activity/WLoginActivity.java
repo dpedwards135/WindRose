@@ -73,6 +73,7 @@ public class WLoginActivity extends AppCompatActivity {
             getWUserIDFromIndex();
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
+
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
     }

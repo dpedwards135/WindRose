@@ -202,10 +202,8 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     */
 
     public void setBundle(WForm form) {
-        form.initialize(this);
-        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-
-        bundle = form.toRecyclerBundle();
+        WForm newForm = WForm.initialize(this, form);
+        bundle = newForm.toRecyclerBundle();
         Log.i(TAG, "setBundle: ");
         Log.i(TAG, "setBundle: " );
 

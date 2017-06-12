@@ -85,7 +85,7 @@ public class WUser implements WFormSource {
 
         String description = authUID;
 
-        WForm wForm = new WForm(userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
+        WForm wForm = new WForm(null, userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
                 selectFroms, textEdits, textViews, classKey, isSubmitted, description);
         return wForm;
     }

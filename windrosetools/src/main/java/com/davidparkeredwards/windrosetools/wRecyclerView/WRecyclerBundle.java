@@ -14,13 +14,15 @@ public class WRecyclerBundle {
 
 
     //private String classKey;
+    private String uniqueId;
     private WModelClass wModelClass;
     private ArrayList<WFormField> recyclerObjects;
     //private HashMap<String, WFormField> recyclerObjectMap;
     private boolean isSubmitted;
 
 
-    public WRecyclerBundle(WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, boolean isSubmitted) {
+    public WRecyclerBundle(String uniqueId, WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, boolean isSubmitted) {
+        this.uniqueId = uniqueId;
         this.wModelClass = wModelClass;
         if(recyclerObjects == null) {
             this.recyclerObjects = new ArrayList<>();
@@ -82,5 +84,9 @@ public class WRecyclerBundle {
 
     public WModelClass getwModelClass() {
         return wModelClass;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
     }
 }

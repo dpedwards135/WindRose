@@ -7,7 +7,8 @@
             android:name=".activity.WNavMenuActivity"
             android:label="@string/title_activity_wnav_menu"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.WSignUpActivity"></activity>
+        <activity android:name=".activity.WSignUpActivity" />
+        <activity android:name=".activity.SignUp"></activity>
     </application>
 
 </manifest>
