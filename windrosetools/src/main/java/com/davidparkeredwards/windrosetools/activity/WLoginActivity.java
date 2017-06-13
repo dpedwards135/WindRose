@@ -75,7 +75,7 @@ public class WLoginActivity extends AppCompatActivity {
 
             Intent intent = new Intent();
             intent.setClass(this, SignUp.class);
-            startActivity(intent);
+            startActivityForResult(intent, CREATE_WUSER);
             //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
     }
@@ -99,7 +99,9 @@ public class WLoginActivity extends AppCompatActivity {
         if(requestCode == CREATE_WUSER) {
             if (resultCode == RESULT_OK) {
 
-                Log.i(TAG, "onActivityResult: OK CREATE WUSER");
+                //Next - log in the user in this activity, including logging in after signing up
+                Log.i(TAG, "onActivityResult: ");
+                Log.i(TAG, "onActivityResult: OK CREATE WUSER " + WindroseApplication.currentWUser.getWUserId());
                 //getWUserFromDB(data.getData());
             }
         }

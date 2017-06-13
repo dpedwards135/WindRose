@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools.model;
 
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
 import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wForm.WForm;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by davidedwards on 6/8/17.
  */
 
-public class WUser implements WFormSource, ModelObject {
+public class WUser extends ModelObject implements WFormSource {
 
     private static final String CLASS_KEY = WModelClass.W_USER.getKey();
     private static final String NAME = "name";
@@ -114,7 +115,20 @@ public class WUser implements WFormSource, ModelObject {
     }
 
     @Override
+    public String getDescription() {
+        return emailAddress + " " + authUID;
+    }
+
+    @Override
     public WModelClass getWModelClass() {
         return WModelClass.W_USER;
+    }
+
+    @Override
+    public UniqueIds getUniqueId() {
+        ArrayList<String> uniqueId = new ArrayList<>();
+        uniqueId.add(this.wUserId);
+        UniqueIds uniqueIds = new UniqueIds(uniqueId);
+        return uniqueIds;
     }
 }

@@ -3,8 +3,10 @@ package com.davidparkeredwards.windrosetools;
 import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.model.IndexItem;
 import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
@@ -23,6 +25,9 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -61,10 +66,12 @@ public class FirebaseHelper {
     private static final String SUBMITTED_FORMS = "submitted_forms/";
     private static final String COMPANY = "company/";
     private static final String PERSONAL = "personal/";
+    private static final String USER_ID = "user_id/";
 
     private String baseDbString;
     private String formsString;
     private String modelString;
+    private String userIdString;
     private String companyIndexString;
     private String userIndexString;
     private String windroseIndexString;
@@ -120,6 +127,7 @@ public class FirebaseHelper {
         //right now I'm only worried about saving and retrieving forms. All I need is a Forms bucket
         //and indices
 
+        userIdString = USER_ID;
         modelString = baseDbString + MODEL;
         formsString = baseDbString + FORMS;
         companyIndexString = baseDbString + INDEX + companyId;
@@ -407,6 +415,13 @@ public class FirebaseHelper {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
                             e.onNext(dbResponse);
+                            //Later change this to a more universal indexer
+                            if(modelObject.getWModelClass() == WModelClass.W_USER) {
+                                IndexItem indexItem = new IndexItem(modelObject.getDescription(),
+                                        ((WUser) modelObject).getWUserId(), WindroseApplication.getCompanyID());
+                                DatabaseReference userIndex = database.getReference(USER_ID);
+                                userIndex.child(((WUser) modelObject).getWUserId()).setValue(indexItem);
+                            }
                             return;
                         } else {
                             DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
@@ -427,6 +442,178 @@ public class FirebaseHelper {
         });
     }
 
+
+    public Single<DBResponse> checkPreExistingUser(String description) {
+        return Single.create(new SingleOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(SingleEmitter<DBResponse> e) throws Exception {
+                Log.i(TAG, "subscribe: ");
+
+                String path = userIdString;
+
+                Log.i(TAG, "subscribe: Path " + path);
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.i(TAG, "onDataChange: FIRST");
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+
+                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+
+                            for(DataSnapshot child : children) {
+                                IndexItem indexItem = child.getValue(IndexItem.class);
+                                if (indexItem.getDescription().contains(description)) {
+                                    Log.i(TAG, "onDataChange: email already exists");
+                                    e.onSuccess(new DBResponse(OK, null, "Object found"));
+                                    return;
+                                } else {
+                                    //e.onSuccess(new DBResponse(FAILED, null, "Object not found"));
+                                    Log.i(TAG, "onDataChange: email does not exist");
+                                }
+                            }
+                            e.onSuccess(new DBResponse(FAILED, null, "Object not found"));
+                        } else {
+                            e.onSuccess(new DBResponse(FAILED, null, "Object not found"));
+                            Log.i(TAG, "onDataChange: email does not exist");
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: " + databaseError.toString());
+
+                    }
+                };
+
+                objectRef.addValueEventListener(valueEventListener);
+                Log.i(TAG, "subscribe: Added Event Listener to PREEXISTING");
+            }
+        });
+    }
+
+
+    public Observable<DBResponse> checkPreExistingUserZZZ(String description) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                Log.i(TAG, "subscribe: ");
+
+                String path = userIdString;
+
+                Log.i(TAG, "subscribe: Path " + path);
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.i(TAG, "onDataChange: FIRST");
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+
+                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+
+                            for(DataSnapshot child : children) {
+                                IndexItem indexItem = child.getValue(IndexItem.class);
+                                if (indexItem.getDescription().contains(description)) {
+                                    e.onNext(new DBResponse(OK, null, "Object found"));
+                                } else {
+                                    e.onNext(new DBResponse(FAILED, null, "Object not found"));
+                            }
+
+                            /*
+                            Log.i(TAG, "onDataChange: ");
+                            HashMap<String, DataSnapshot> modelObjectHashMap = (HashMap<String, DataSnapshot>) dataSnapshot.getValue();
+                            for (String key : modelObjectHashMap.keySet()) {
+                                DataSnapshot ds = modelObjectHashMap.get(key);
+
+                                IndexItem object = ds.getValue(IndexItem.class);
+                                if (object.getDescription().contains(description)) {
+                                    e.onNext(new DBResponse(OK, null, "Object found"));
+                                } else {
+                                    e.onNext(new DBResponse(FAILED, null, "Object not found"));
+                                }
+                            }
+                            */
+
+                            }} else {
+                            e.onNext(new DBResponse(FAILED, null, "Object not found"));
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: " + databaseError.toString());
+
+                    }
+                };
+
+                objectRef.addValueEventListener(valueEventListener);
+                Log.i(TAG, "subscribe: Added Event Listener to PREEXISTING");
+            }
+        });
+    }
+
+    public Observable<DBResponse> findWModelObject(WModelClass wModelClass, int precision, String description) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+                                     @Override
+                                     public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                                         Log.i(TAG, "subscribe: ");
+
+                                         String path = getObjectPathWithUniqueID("", wModelClass);
+
+                                         Log.i(TAG, "subscribe: Path " + path);
+                                         DatabaseReference objectRef = database.getReference(path);
+
+                                         /*
+                                         ValueEventListener valueEventListener = new ValueEventListener() {
+                                             @Override
+                                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                                 Log.i(TAG, "onDataChange: ");
+                                             }
+
+                                             @Override
+                                             public void onCancelled(DatabaseError databaseError) {
+                                                 Log.i(TAG, "onCancelled: " + databaseError.toString());
+
+                                             }
+                                         };
+                                         */
+
+                                         ValueEventListener valueEventListener = new ValueEventListener() {
+                                             @Override
+                                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+
+                                                     Log.i(TAG, "onDataChange: ");
+                                                     HashMap<String, ModelObject> modelObjectHashMap = dataSnapshot.getValue(HashMap.class);
+                                                     for (String key : modelObjectHashMap.keySet()) {
+                                                         ModelObject object = modelObjectHashMap.get(key);
+                                                         if (precision == PRECISION_EXACT && object.getDescription().equals(description)) {
+                                                             e.onNext(new DBResponse(OK, object.getUniqueId(), "Object found"));
+                                                         } else if (precision == PRECISION_CONTAINS && object.getDescription().contains(description)) {
+                                                             e.onNext(new DBResponse(OK, object.getUniqueId(), "Object found"));
+                                                         } else {
+                                                             e.onNext(new DBResponse(FAILED, null, "Object not found"));
+                                                         }
+                                                     }
+                                                 }
+                                             }
+
+                                             @Override
+                                             public void onCancelled(DatabaseError databaseError) {
+                                                 Log.i(TAG, "onCancelled: " + databaseError.toString());
+
+                                             }
+                                         };
+
+                                         objectRef.addValueEventListener(valueEventListener);
+                                         Log.i(TAG, "subscribe: Added Event Listener");
+                                     }
+                                 });
+    }
 
 
 
@@ -477,42 +664,4 @@ public class FirebaseHelper {
             }
         });
     }
-
-
-    private class IndexItem {
-        private String description;
-        private String userId;
-        private String companyId;
-
-        private IndexItem(String description, String userId, String companyId) {
-            this.description = description;
-            this.userId = userId;
-            this.companyId = companyId;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getCompanyId() {
-            return companyId;
-        }
-
-        public void setCompanyId(String companyId) {
-            this.companyId = companyId;
-        }
-    }
-
 }

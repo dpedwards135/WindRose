@@ -23,11 +23,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -99,22 +100,70 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void clickSubmit() {
-
-        ArrayList<String> newUser = new ArrayList<>();
+        Log.i(TAG, "clickSubmit: ");
         if(email_address.getText() != null
                 && full_name.getText() != null
                 && password.getText() != null
                 && password_confirm != null) {
+            //createFBUser();
             checkForExistingUser();
         }
-        newUser.add(full_name.getText().toString());
-        newUser.add(email_address.getText().toString());
+    }
+
+    private void createFBUser() {
+        WindroseApplication.auth.createUserWithEmailAndPassword(email_address.getText().toString(),
+                password.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()) {
+                            Log.i(TAG, "createUserWithEmail:success "
+                                    + WindroseApplication.auth.getCurrentUser().getEmail().toString());
+                            addNewWUser(WindroseApplication.auth.getCurrentUser().getUid());
+
+                        } else {
+                            Log.i(TAG, "createUserWithEmail:failure", task.getException());
+                            showToast();
+                        }
+                    }
+                });
     }
 
     private void checkForExistingUser() {
-        Observable<DBResponse> userIndexObservable = helper.getUniqueIds(FirebaseHelper.WINDROSE_INDEX, WModelClass.W_USER,
-                FirebaseHelper.PRECISION_CONTAINS, email_address.getText().toString());
-        userIndexObservable.subscribeOn(Schedulers.io())
+        Log.i(TAG, "checkForExistingUser: ");
+        Single<DBResponse> newSingle = helper.checkPreExistingUser(email_address.getText().toString());
+        newSingle.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(DBResponse dbResponse) {
+
+                        Log.i(TAG, "onNext: Single ");
+                        if(dbResponse.getCode() == helper.OK) {
+                            showToast();
+                        } else if(dbResponse.getCode() == helper.FAILED) {
+                            createFBUser();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+
+
+
+        /*
+
+        Observable<DBResponse> modelObjectObservable = helper.checkPreExistingUser(email_address.getText().toString());
+        modelObjectObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DBResponse>() {
                     @Override
@@ -124,22 +173,12 @@ public class SignUp extends AppCompatActivity {
 
                     @Override
                     public void onNext(DBResponse dbResponse) {
+                        Log.i(TAG, "onNext: ");
                         if(dbResponse.getCode() == helper.OK) {
                             showToast();
                         } else if(dbResponse.getCode() == helper.FAILED) {
-                            WindroseApplication.auth.createUserWithEmailAndPassword(email_address.getText().toString(),
-                                    password.getText().toString())
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if(task.isSuccessful()) {
-                                                Log.i(TAG, "createUserWithEmail:success");
-                                                addNewWUser(WindroseApplication.auth.getCurrentUser().getUid());
-                                            } else {
-                                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                            }
-                                        }
-                                    });
+                            //addNewWUser(WindroseApplication.auth.getCurrentUser().getUid());
+                            createFBUser();
                         }
                     }
 
@@ -153,9 +192,11 @@ public class SignUp extends AppCompatActivity {
 
                     }
                 });
+                */
     }
 
     private void addNewWUser(String uid) {
+        Log.i(TAG, "addNewWUser: ");
         String newKey = helper.getNewObjectKey(WModelClass.W_USER);
 
         HashMap<String, String> userValues = new HashMap<>();
@@ -177,6 +218,7 @@ public class SignUp extends AppCompatActivity {
 
                     @Override
                     public void onNext(DBResponse dbResponse) {
+                        Log.i(TAG, "onNext: ");
                         dbResponseHandler.onNext();
                         if(dbResponse.getCode() == helper.OK) {
                             finishAndReturn();
@@ -185,6 +227,7 @@ public class SignUp extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "onError: ");
                         dbResponseHandler.onError();
                     }
 
