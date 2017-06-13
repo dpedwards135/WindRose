@@ -11,13 +11,14 @@ import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
 import com.davidparkeredwards.windrosetools.wForm.WTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by davidedwards on 6/8/17.
  */
 
-public class WUser implements WFormSource {
+public class WUser implements WFormSource, ModelObject {
 
     private static final String CLASS_KEY = WModelClass.W_USER.getKey();
     private static final String NAME = "name";
@@ -39,6 +40,14 @@ public class WUser implements WFormSource {
     //  Clean up recyclerView and Adapter
 
     public WUser() {}
+
+    public WUser(String fullname, String emailAddress, String wUserId, String authUID) {
+        this.name = fullname;
+        this.userName = fullname;
+        this.emailAddress = emailAddress;
+        this.wUserId = wUserId;
+        this.authUID = authUID;
+    }
 
     public WUser(WForm wForm){
         //Set to pull values based on field ID for arrays.
@@ -88,5 +97,24 @@ public class WUser implements WFormSource {
         WForm wForm = new WForm(null, userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
                 selectFroms, textEdits, textViews, classKey, isSubmitted, description);
         return wForm;
+    }
+
+    @Override
+    public String getKey() {
+        return wUserId;
+    }
+
+    @Override
+    public HashMap<String, String> getValue() {
+        HashMap<String, String> userValues = new HashMap<>();
+        userValues.put("full_name", name);
+        userValues.put("email_address", emailAddress);
+        userValues.put("fb_uid", authUID);
+        return userValues;
+    }
+
+    @Override
+    public WModelClass getWModelClass() {
+        return WModelClass.W_USER;
     }
 }

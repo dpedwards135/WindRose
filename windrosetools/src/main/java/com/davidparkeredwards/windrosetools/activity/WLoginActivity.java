@@ -21,7 +21,6 @@ import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.davidparkeredwards.windrosetools.wForm.WForm;
-import com.firebase.ui.auth.AuthUI;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,15 +73,18 @@ public class WLoginActivity extends AppCompatActivity {
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
 
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
+            Intent intent = new Intent();
+            intent.setClass(this, SignUp.class);
+            startActivity(intent);
+            //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
     }
 
     protected void createNewWUser() {
         Log.i(TAG, "createNewWUser: ");
         Intent intent = new Intent();
-        intent.setClass(this, WSignUpActivity.class);
-        startActivityForResult(intent, CREATE_WUSER);
+        //intent.setClass(this, WSignUpActivity.class); Check
+        //startActivityForResult(intent, CREATE_WUSER);
     }
 
     @Override

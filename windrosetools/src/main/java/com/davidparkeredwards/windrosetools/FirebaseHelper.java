@@ -3,6 +3,7 @@ package com.davidparkeredwards.windrosetools;
 import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
@@ -52,6 +53,7 @@ public class FirebaseHelper {
     private static final String IN_PROGRESS = "in_progress/";
     private static final String WINDROSE = "windrose/";
     private static final String FORMS = "forms/";
+    private static final String MODEL = "model/";
     private static final String TYPE = "type/";
     private static final String CLASSES = "classes/";
     private static final String STOCK_TYPE = "stock_type/";
@@ -62,6 +64,7 @@ public class FirebaseHelper {
 
     private String baseDbString;
     private String formsString;
+    private String modelString;
     private String companyIndexString;
     private String userIndexString;
     private String windroseIndexString;
@@ -117,6 +120,7 @@ public class FirebaseHelper {
         //right now I'm only worried about saving and retrieving forms. All I need is a Forms bucket
         //and indices
 
+        modelString = baseDbString + MODEL;
         formsString = baseDbString + FORMS;
         companyIndexString = baseDbString + INDEX + companyId;
         windroseIndexString = baseDbString + INDEX + WINDROSE;
@@ -370,6 +374,58 @@ public class FirebaseHelper {
                 });
     }
 
+    ////////////////////   Model Objects Direct Manipulation ////////////////////
+
+    public String getObjectPathWithUniqueID(String uniqueId, WModelClass wModelClass) {
+        String path;
+
+        path = modelString + wModelClass.getKey() + "/" + uniqueId;
+
+        return path;
+    }
+
+    public String getNewObjectKey(WModelClass wModelClass) {
+        String path = getFormPathWithUniqueID("", wModelClass);
+        DatabaseReference ref = database.getReference(path);
+        String newId = ref.push().getKey();
+        Log.i(TAG, "getNewId: " + newId);
+        return newId;
+    }
+
+    public Observable<DBResponse> putWModelObject(ModelObject modelObject) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+
+                String path = getObjectPathWithUniqueID(modelObject.getKey(), modelObject.getWModelClass());
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
+                            e.onNext(dbResponse);
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+                objectRef.setValue(modelObject.getValue());
+            }
+        });
+    }
 
 
 
