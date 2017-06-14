@@ -33,8 +33,11 @@
             android:label="Configure Company"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name="com.davidparkeredwards.windrosetools.activity.WSignUpActivity"
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.SignUp"
             android:label="Sign Up"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.SignInActivity"
+            android:label="Sign In"
             android:theme="@style/AppTheme.NoActionBar"/>
         
 

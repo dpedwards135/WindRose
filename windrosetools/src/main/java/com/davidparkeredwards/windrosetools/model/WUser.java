@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools.model;
 
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.wForm.DbBody;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
 import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
@@ -106,12 +107,37 @@ public class WUser extends ModelObject implements WFormSource {
     }
 
     @Override
-    public HashMap<String, String> getValue() {
+    public DbObject toDbObject() {
         HashMap<String, String> userValues = new HashMap<>();
         userValues.put("full_name", name);
         userValues.put("email_address", emailAddress);
         userValues.put("fb_uid", authUID);
-        return userValues;
+        String uniqueId = wUserId;
+        return new DbObject(uniqueId, userValues);
+    }
+
+    //PICK UP HERE - NEED TO FINISH CONVERTING TO DBOBJECT AND FIX OLD METHOD CALLS IN OTHER CLASSES ESPECIALLY HELPER
+    @Override
+    public void fromDbObject(DbObject dbObject) {
+        HashMap<String, String> hashMap = mkv.getHashMap();
+        String uniqueId = mkv.getKey();
+        name = hashMap.get("full_name");
+        emailAddress = hashMap.get("email_address");
+        authUID = hashMap.get("fb_uid");
+        userName = hashMap.get("full_name");
+        wUserId = uniqueId;
+    }
+
+    @Override
+    public WUser fromHashMapValue(WModelObjectKeyAndValue mkv) {
+        HashMap<String, String> hashMap = mkv.getHashMap();
+        String uniqueId = mkv.getKey();
+        name = hashMap.get("full_name");
+        emailAddress = hashMap.get("email_address");
+        authUID = hashMap.get("fb_uid");
+        userName = hashMap.get("full_name");
+        wUserId = uniqueId;
+        return this;
     }
 
     @Override
@@ -130,5 +156,10 @@ public class WUser extends ModelObject implements WFormSource {
         uniqueId.add(this.wUserId);
         UniqueIds uniqueIds = new UniqueIds(uniqueId);
         return uniqueIds;
+    }
+
+    @Override
+    public DbBody getDbBody() {
+        return this;
     }
 }

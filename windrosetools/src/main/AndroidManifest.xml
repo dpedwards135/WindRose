@@ -2,13 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.davidparkeredwards.windrosetools">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application>
         <activity
             android:name=".activity.WNavMenuActivity"
             android:label="@string/title_activity_wnav_menu"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.WSignUpActivity" />
-        <activity android:name=".activity.SignUp"></activity>
+        <activity android:name=".activity.SignUp" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.davidparkeredwards.windrosetools.model.IndexItem;
 import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.WModelObjectKeyAndValue;
 import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
@@ -18,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
@@ -442,6 +442,45 @@ public class FirebaseHelper {
         });
     }
 
+    public Observable<DBResponse> getWModelObjectHashMap(WModelClass wModelClass, String uniqueId) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+
+                String path = getObjectPathWithUniqueID(uniqueId, wModelClass);
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+
+                            HashMap<String, String> modelObjectValue = (HashMap<String, String>) dataSnapshot.getValue();
+                            String modelObjectKey = dataSnapshot.getKey();
+
+                            WModelObjectKeyAndValue mkv = new WModelObjectKeyAndValue(modelObjectKey, modelObjectValue);
+
+                            DBResponse dbResponse = new DBResponse(OK, mkv, SUCCESS);
+                            e.onNext(dbResponse);
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);}
+        });
+    }
 
     public Single<DBResponse> checkPreExistingUser(String description) {
         return Single.create(new SingleOnSubscribe<DBResponse>() {
@@ -466,7 +505,10 @@ public class FirebaseHelper {
                                 IndexItem indexItem = child.getValue(IndexItem.class);
                                 if (indexItem.getDescription().contains(description)) {
                                     Log.i(TAG, "onDataChange: email already exists");
-                                    e.onSuccess(new DBResponse(OK, null, "Object found"));
+                                    ArrayList<String> list = new ArrayList();
+                                    list.add(child.getKey());
+                                    UniqueIds uniqueIds = new UniqueIds(list);
+                                    e.onSuccess(new DBResponse(OK, uniqueIds, "Object found"));
                                     return;
                                 } else {
                                     //e.onSuccess(new DBResponse(FAILED, null, "Object not found"));
@@ -477,68 +519,6 @@ public class FirebaseHelper {
                         } else {
                             e.onSuccess(new DBResponse(FAILED, null, "Object not found"));
                             Log.i(TAG, "onDataChange: email does not exist");
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: " + databaseError.toString());
-
-                    }
-                };
-
-                objectRef.addValueEventListener(valueEventListener);
-                Log.i(TAG, "subscribe: Added Event Listener to PREEXISTING");
-            }
-        });
-    }
-
-
-    public Observable<DBResponse> checkPreExistingUserZZZ(String description) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-                Log.i(TAG, "subscribe: ");
-
-                String path = userIdString;
-
-                Log.i(TAG, "subscribe: Path " + path);
-                DatabaseReference objectRef = database.getReference(path);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.i(TAG, "onDataChange: FIRST");
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-
-                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-
-                            for(DataSnapshot child : children) {
-                                IndexItem indexItem = child.getValue(IndexItem.class);
-                                if (indexItem.getDescription().contains(description)) {
-                                    e.onNext(new DBResponse(OK, null, "Object found"));
-                                } else {
-                                    e.onNext(new DBResponse(FAILED, null, "Object not found"));
-                            }
-
-                            /*
-                            Log.i(TAG, "onDataChange: ");
-                            HashMap<String, DataSnapshot> modelObjectHashMap = (HashMap<String, DataSnapshot>) dataSnapshot.getValue();
-                            for (String key : modelObjectHashMap.keySet()) {
-                                DataSnapshot ds = modelObjectHashMap.get(key);
-
-                                IndexItem object = ds.getValue(IndexItem.class);
-                                if (object.getDescription().contains(description)) {
-                                    e.onNext(new DBResponse(OK, null, "Object found"));
-                                } else {
-                                    e.onNext(new DBResponse(FAILED, null, "Object not found"));
-                                }
-                            }
-                            */
-
-                            }} else {
-                            e.onNext(new DBResponse(FAILED, null, "Object not found"));
 
                         }
                     }
@@ -567,28 +547,13 @@ public class FirebaseHelper {
                                          Log.i(TAG, "subscribe: Path " + path);
                                          DatabaseReference objectRef = database.getReference(path);
 
-                                         /*
-                                         ValueEventListener valueEventListener = new ValueEventListener() {
-                                             @Override
-                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                 Log.i(TAG, "onDataChange: ");
-                                             }
-
-                                             @Override
-                                             public void onCancelled(DatabaseError databaseError) {
-                                                 Log.i(TAG, "onCancelled: " + databaseError.toString());
-
-                                             }
-                                         };
-                                         */
-
                                          ValueEventListener valueEventListener = new ValueEventListener() {
                                              @Override
                                              public void onDataChange(DataSnapshot dataSnapshot) {
                                                  if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
 
                                                      Log.i(TAG, "onDataChange: ");
-                                                     HashMap<String, ModelObject> modelObjectHashMap = dataSnapshot.getValue(HashMap.class);
+                                                     HashMap<String, ModelObject> modelObjectHashMap = (HashMap<String, ModelObject>) dataSnapshot.getValue();
                                                      for (String key : modelObjectHashMap.keySet()) {
                                                          ModelObject object = modelObjectHashMap.get(key);
                                                          if (precision == PRECISION_EXACT && object.getDescription().equals(description)) {
@@ -613,55 +578,5 @@ public class FirebaseHelper {
                                          Log.i(TAG, "subscribe: Added Event Listener");
                                      }
                                  });
-    }
-
-
-
-
-
-    ///////////////////         Old Stuff        ////////////////////////
-
-    public Observable<HashMap> getCompanyIdObservable() {
-        return Observable.create(new ObservableOnSubscribe<HashMap>() {
-            @Override
-            public void subscribe(ObservableEmitter<HashMap> e) throws Exception {
-                DatabaseReference ref = database.getReference(baseDbString + "companyIds");
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, String> value = (HashMap<String, String>) dataSnapshot.getValue();
-                        Log.i(TAG, "OBSERVABLE onDataChange: Value = " + value.toString());
-                        e.onNext(value);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-
-                    }
-                };
-                ref.addValueEventListener(valueEventListener);
-            }
-        });
-    }
-
-    public void firebaseHelperCheck() {
-        DatabaseReference ref = database.getReference(baseDbString + "testNode");
-        Date date = new Date();
-        ref.setValue("WRTools Check on: " + date.toString());
-        Log.i(TAG, "firebaseHelperCheck: Adding Listener");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                Log.i(TAG, "onDataChange: Value = " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                Log.i(TAG, "onCancelled: Cancelled");
-            }
-        });
     }
 }

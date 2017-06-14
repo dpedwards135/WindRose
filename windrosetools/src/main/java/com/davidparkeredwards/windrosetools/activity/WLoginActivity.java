@@ -16,6 +16,7 @@ import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.StringWithTag;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.WModelObjectKeyAndValue;
 import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
@@ -23,7 +24,6 @@ import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.davidparkeredwards.windrosetools.wForm.WForm;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +31,8 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -46,6 +48,7 @@ public class WLoginActivity extends AppCompatActivity {
     public static final int CREATE_WUSER = 200;
 
 
+    FirebaseHelper helper = new FirebaseHelper(this);
     Spinner companyIdSpinner;
     ArrayAdapter companySpinnerAdapter;
     Button newCompanyButton;
@@ -65,16 +68,20 @@ public class WLoginActivity extends AppCompatActivity {
         }
         companyIdSpinner = (Spinner) findViewById(R.id.company_spinner);
 
+
         //AUTHORIZATION INITIALIZATION
         if (WindroseApplication.auth.getCurrentUser() != null) {
+            setWUser();
+            /*
             Log.i(TAG, "onCreate: User is signed in as "
                     + WindroseApplication.auth.getCurrentUser().getDisplayName());
             getWUserIDFromIndex();
+            */
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
 
             Intent intent = new Intent();
-            intent.setClass(this, SignUp.class);
+            intent.setClass(this, SignInActivity.class);
             startActivityForResult(intent, CREATE_WUSER);
             //startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), RC_SIGN_IN);
         }
@@ -98,14 +105,72 @@ public class WLoginActivity extends AppCompatActivity {
         }
         if(requestCode == CREATE_WUSER) {
             if (resultCode == RESULT_OK) {
-
+                setWUser();
                 //Next - log in the user in this activity, including logging in after signing up
                 Log.i(TAG, "onActivityResult: ");
-                Log.i(TAG, "onActivityResult: OK CREATE WUSER " + WindroseApplication.currentWUser.getWUserId());
+                //Log.i(TAG, "onActivityResult: OK CREATE WUSER " + WindroseApplication.currentWUser.getWUserId());
                 //getWUserFromDB(data.getData());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setWUser() {
+        Single<DBResponse> getWUserIDObservable = helper.checkPreExistingUser(WindroseApplication.auth.getCurrentUser().getUid());
+
+        getWUserIDObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {}
+
+                    @Override
+                    public void onSuccess(DBResponse dbResponse) {
+                        if (dbResponse.getCode() == FirebaseHelper.OK) {
+                            String uniqueId = ((UniqueIds) dbResponse.getDbBody()).getUniqueIds().get(0);
+                            Observable<DBResponse> getUser = helper.getWModelObjectHashMap(WModelClass.W_USER, uniqueId);
+                            getUser.subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<DBResponse>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {}
+
+                                        @Override
+                                        public void onNext(DBResponse dbResponse) {
+                                            if (dbResponse.getCode() == FirebaseHelper.OK) {
+                                                WUser w = new WUser();
+                                                WModelObjectKeyAndValue mkv = (WModelObjectKeyAndValue) dbResponse.getDbBody();
+                                                WindroseApplication.currentWUser = w.fromHashMapValue(mkv);
+                                                Log.i(TAG, "onNext: currentWUser : " + WindroseApplication.currentWUser.getWUserId());
+                                                initializeCompany();
+                                            } else {
+                                                Log.i(TAG, "onNext: SET WUSER FAILED");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+
+
+                        } else {
+                            Log.i(TAG, "onNext: SET WUSER FAILED");
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     private void getWUserIDFromIndex() {
@@ -188,10 +253,11 @@ public class WLoginActivity extends AppCompatActivity {
     }
 
     private void initializeCompany() {
-        
-        Date date = new Date();
+
         FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-        //helper.setNewCompanyId("Example Company " + date.toString());
+
+
+        /*
         Observable<HashMap> idObservable = helper.getCompanyIdObservable();
         idObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -227,6 +293,8 @@ public class WLoginActivity extends AppCompatActivity {
 
                                }
                            });
+    }
+    */
     }
 
     private boolean companyIdValid() {
