@@ -3,11 +3,10 @@ package com.davidparkeredwards.windrosetools;
 import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.IndexItem;
 import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
-import com.davidparkeredwards.windrosetools.model.WModelObjectKeyAndValue;
-import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
@@ -20,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -416,12 +416,14 @@ public class FirebaseHelper {
                             DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
                             e.onNext(dbResponse);
                             //Later change this to a more universal indexer
+                            /*
                             if(modelObject.getWModelClass() == WModelClass.W_USER) {
                                 IndexItem indexItem = new IndexItem(modelObject.getDescription(),
                                         ((WUser) modelObject).getWUserId(), WindroseApplication.getCompanyID());
                                 DatabaseReference userIndex = database.getReference(USER_ID);
                                 userIndex.child(((WUser) modelObject).getWUserId()).setValue(indexItem);
                             }
+                            */
                             return;
                         } else {
                             DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
@@ -437,7 +439,7 @@ public class FirebaseHelper {
                     }
                 };
                 objectRef.addValueEventListener(valueEventListener);
-                objectRef.setValue(modelObject.getValue());
+                objectRef.setValue(modelObject.toDbObject());
             }
         });
     }
@@ -456,12 +458,12 @@ public class FirebaseHelper {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
 
-                            HashMap<String, String> modelObjectValue = (HashMap<String, String>) dataSnapshot.getValue();
-                            String modelObjectKey = dataSnapshot.getKey();
 
-                            WModelObjectKeyAndValue mkv = new WModelObjectKeyAndValue(modelObjectKey, modelObjectValue);
-
-                            DBResponse dbResponse = new DBResponse(OK, mkv, SUCCESS);
+                            HashMap<String, List<String>> dbObjectValues = (HashMap<String, List<String>>) dataSnapshot.getValue();
+                            //HashMap<String, String> modelObjectValue = (HashMap<String, String>) dataSnapshot.getValue();
+                            String dbObjectKey = dataSnapshot.getKey();
+                            DbObject dbObject = new DbObject(dbObjectKey, dbObjectValues);
+                            DBResponse dbResponse = new DBResponse(OK, dbObject, SUCCESS);
                             e.onNext(dbResponse);
                             return;
                         } else {
@@ -579,4 +581,53 @@ public class FirebaseHelper {
                                      }
                                  });
     }
+
+    private String getAbstractPath(ModelObject modelObject) {
+        return modelString + wModelClass.getKey() + "/" + uniqueId;
+    }
+
+    public Observable<DBResponse> putAstractModelObject(ModelObject modelObject) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+
+                String path = getObjectPathWithUniqueID(modelObject.getKey(), modelObject.getWModelClass());
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
+                            e.onNext(dbResponse);
+                            //Later change this to a more universal indexer
+                            /*
+                            if(modelObject.getWModelClass() == WModelClass.W_USER) {
+                                IndexItem indexItem = new IndexItem(modelObject.getDescription(),
+                                        ((WUser) modelObject).getWUserId(), WindroseApplication.getCompanyID());
+                                DatabaseReference userIndex = database.getReference(USER_ID);
+                                userIndex.child(((WUser) modelObject).getWUserId()).setValue(indexItem);
+                            }
+                            */
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+                objectRef.setValue(modelObject.toDbObject());
+            }
+        });
+    }
+
 }

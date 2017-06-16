@@ -15,8 +15,8 @@ import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.StringWithTag;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
-import com.davidparkeredwards.windrosetools.model.WModelObjectKeyAndValue;
 import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
@@ -139,8 +139,8 @@ public class WLoginActivity extends AppCompatActivity {
                                         public void onNext(DBResponse dbResponse) {
                                             if (dbResponse.getCode() == FirebaseHelper.OK) {
                                                 WUser w = new WUser();
-                                                WModelObjectKeyAndValue mkv = (WModelObjectKeyAndValue) dbResponse.getDbBody();
-                                                WindroseApplication.currentWUser = w.fromHashMapValue(mkv);
+                                                w.fromDbObject((DbObject) dbResponse.getDbBody());
+                                                WindroseApplication.currentWUser = w;
                                                 Log.i(TAG, "onNext: currentWUser : " + WindroseApplication.currentWUser.getWUserId());
                                                 initializeCompany();
                                             } else {
@@ -348,19 +348,8 @@ public class WLoginActivity extends AppCompatActivity {
     }
 
     public void addNewCompany() {
-        /*
-        Need to create Company class and a subtype of that to be CompanyInConfiguration - one of
-        which can be saved to every user and if they have one it will be listed as an option in
-        place of Add New Company. A CompanyInConfiguration will walk the user through all the steps
-        of Configuring a new company, with steps in all of the options. There will be an option at
-        the end to Validate New Company and then to Launch New Company, which will move the companyID
-        fromRecyclerBundle CompanyInConfiguration class to CompanyIdList so that customers can find it.
-        Companies/InConfiguration/UserId/CompanyID: Company
-        Companies/Launched/CompanyID: Company
-        Companies/Deactivated/CompanyId: Company
 
-        Company
-         */
+
     }
 
 

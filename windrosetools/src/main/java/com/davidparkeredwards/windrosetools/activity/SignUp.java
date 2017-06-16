@@ -23,8 +23,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-import java.util.HashMap;
-
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Single;
@@ -198,11 +196,6 @@ public class SignUp extends AppCompatActivity {
     private void addNewWUser(String uid) {
         Log.i(TAG, "addNewWUser: ");
         String newKey = helper.getNewObjectKey(WModelClass.W_USER);
-
-        HashMap<String, String> userValues = new HashMap<>();
-        userValues.put("full_name", full_name.getText().toString());
-        userValues.put("email_address", email_address.getText().toString());
-        userValues.put("fb_uid", uid);
 
         WUser user = new WUser(full_name.getText().toString(), email_address.getText().toString(),
                 newKey, uid);

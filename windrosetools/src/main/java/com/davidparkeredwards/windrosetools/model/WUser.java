@@ -106,12 +106,13 @@ public class WUser extends ModelObject implements WFormSource {
         return wUserId;
     }
 
+
     @Override
     public DbObject toDbObject() {
-        HashMap<String, String> userValues = new HashMap<>();
-        userValues.put("full_name", name);
-        userValues.put("email_address", emailAddress);
-        userValues.put("fb_uid", authUID);
+        HashMap<String, List<String>> userValues = new HashMap<>();
+        userValues.put("full_name", valueToList(name));
+        userValues.put("email_address", valueToList(emailAddress));
+        userValues.put("fb_uid", valueToList(authUID));
         String uniqueId = wUserId;
         return new DbObject(uniqueId, userValues);
     }
@@ -119,25 +120,13 @@ public class WUser extends ModelObject implements WFormSource {
     //PICK UP HERE - NEED TO FINISH CONVERTING TO DBOBJECT AND FIX OLD METHOD CALLS IN OTHER CLASSES ESPECIALLY HELPER
     @Override
     public void fromDbObject(DbObject dbObject) {
-        HashMap<String, String> hashMap = mkv.getHashMap();
-        String uniqueId = mkv.getKey();
-        name = hashMap.get("full_name");
-        emailAddress = hashMap.get("email_address");
-        authUID = hashMap.get("fb_uid");
-        userName = hashMap.get("full_name");
+        HashMap<String, List<String>> hashMapLists = dbObject.getObjectValues();
+        String uniqueId = dbObject.getUniqueID();
+        name = singleValueFromList(hashMapLists.get("full_name"));
+        emailAddress = singleValueFromList(hashMapLists.get("email_address"));
+        authUID = singleValueFromList(hashMapLists.get("fb_uid"));
+        userName = singleValueFromList(hashMapLists.get("full_name"));
         wUserId = uniqueId;
-    }
-
-    @Override
-    public WUser fromHashMapValue(WModelObjectKeyAndValue mkv) {
-        HashMap<String, String> hashMap = mkv.getHashMap();
-        String uniqueId = mkv.getKey();
-        name = hashMap.get("full_name");
-        emailAddress = hashMap.get("email_address");
-        authUID = hashMap.get("fb_uid");
-        userName = hashMap.get("full_name");
-        wUserId = uniqueId;
-        return this;
     }
 
     @Override
