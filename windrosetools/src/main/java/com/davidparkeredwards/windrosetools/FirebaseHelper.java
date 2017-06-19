@@ -8,9 +8,7 @@ import com.davidparkeredwards.windrosetools.model.IndexItem;
 import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
-import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
-import com.davidparkeredwards.windrosetools.wForm.WForm;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,20 +16,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by davidedwards on 5/27/17.
@@ -137,252 +130,6 @@ public class FirebaseHelper {
         userSaveIndex = baseDbString + INDEX + wUserId + SAVED + companyId;
     }
 
-
-    //GET Methods
-
-    public Observable<DBResponse> getUniqueIds(int indexType, WModelClass wModelClass, final int precision, String description) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-
-                //Indexes are HashMaps with UniqueIds as keys
-                String path;
-                switch (indexType) {
-                    case WINDROSE_INDEX:
-                        path = windroseIndexString + wModelClass.getKey() + "/";
-                        break;
-                    case COMPANY_INDEX:
-                        path = companyIndexString + wModelClass.getKey() + "/";
-                        break;
-                    case USER_INDEX:
-                        path = userIndexString + wModelClass.getKey() + "/";
-                        break;
-                    default:
-                        path = userIndexString + wModelClass.getKey() + "/";
-                }
-                DatabaseReference indexRef = database.getReference(path);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> uniqueIds = new ArrayList<>();
-                        if(dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            for(DataSnapshot child : dataSnapshot.getChildren()) {
-                                IndexItem indexItem = child.getValue(IndexItem.class);
-                                String indexItemDescription = indexItem.getDescription();
-                                if(precision == PRECISION_EXACT
-                                        && description.contentEquals(indexItemDescription)) {
-                                    uniqueIds.add(child.getKey());
-                                } else if(precision == PRECISION_CONTAINS
-                                        && indexItemDescription.contains(description)) {
-                                    uniqueIds.add(child.getKey());
-                                }
-                            }
-                            if(uniqueIds.isEmpty()) {
-                                DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                                e.onNext(dbResponse);
-                                return;
-                            } else {
-                                UniqueIds ids = new UniqueIds(uniqueIds);
-                                DBResponse dbResponse = new DBResponse(OK, ids, SUCCESS);
-                                e.onNext(dbResponse);
-                                return;
-                            }
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
-                indexRef.addValueEventListener(valueEventListener);
-            }
-        });
-    }
-
-    public Observable<DBResponse> getWForm(String uniqueId, WModelClass wModelClass, boolean isInProgress) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-
-                String path = getFormPathWithUniqueID(uniqueId, wModelClass);
-
-                DatabaseReference indexRef = database.getReference(path);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            WForm wform = dataSnapshot.getValue(WForm.class);
-                            DBResponse dbResponse = new DBResponse(OK, wform, SUCCESS);
-                            e.onNext(dbResponse);
-                            return;
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
-                indexRef.addValueEventListener(valueEventListener);
-            }
-        });
-    }
-
-    //Save methods - Put, Post(push/set/save ID - Should always be indexed when making an addition), update, delete
-        //Next: Create new WUser and post to DB, with return to Login
-
-    public String getNewId(WModelClass wModelClass) {
-        String path = getFormPathWithUniqueID("", wModelClass);
-        DatabaseReference ref = database.getReference(path);
-        String newId = ref.push().getKey();
-        Log.i(TAG, "getNewId: " + newId);
-        return newId;
-    }
-
-    public String getFormPathWithUniqueID(String uniqueId, WModelClass wModelClass) {
-        String path;
-
-        path = formsString + wModelClass.getKey() + "/" + uniqueId;
-
-        return path;
-    }
-
-    public Observable<DBResponse> putWForm(WForm wForm) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-
-                String path = getFormPathWithUniqueID(wForm.getUniqueId(), wForm.getWModelClass());
-
-                DatabaseReference formRef = database.getReference(path);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
-                            e.onNext(dbResponse);
-                            indexAndProcessForm(wForm);
-                            return;
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
-                formRef.addValueEventListener(valueEventListener);
-                Log.i(TAG, "subscribe: FORM: " + wForm.toString());
-                formRef.setValue(wForm);
-            }
-        });
-    }
-
-
-    public Observable<DBResponse> indexKey(WForm wForm, WModelClass wModelClass) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
-                            e.onNext(dbResponse);
-                            return;
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
-
-                IndexItem indexItem = new IndexItem(wForm.description, wForm.userId, wForm.companyId);
-
-                if(wForm.isSubmitted) {
-                    ArrayList<DatabaseReference> indexRefs = new ArrayList<>();
-
-                    if (wModelClass.getIsCompanyIndexed()) {
-                        DatabaseReference compIndex = database.getReference(companyIndexString + wModelClass.getKey() + "/");
-                        indexRefs.add(compIndex);
-                    }
-                    if (wModelClass.getIsWindroseIndexed()) {
-                        DatabaseReference wIndex = database.getReference(windroseIndexString + wModelClass.getKey() + "/");
-                        indexRefs.add(wIndex);
-                    }
-                    if (wModelClass.getIsUserIndexed()) {
-                        DatabaseReference userIndex = database.getReference(userIndexString + wModelClass.getKey() + "/");
-                        indexRefs.add(userIndex);
-                    }
-                    for(DatabaseReference ref : indexRefs) {
-                        ref.addValueEventListener(valueEventListener);
-                        ref.child(wForm.uniqueId).setValue(indexItem);
-                    }
-                } else {
-                    DatabaseReference savedIndex = database.getReference(userSaveIndex + wModelClass.getKey());
-                    savedIndex.removeValue();
-                    savedIndex.child(wForm.uniqueId).setValue(indexItem);
-                }
-            }
-        });
-    }
-
-    private void indexAndProcessForm(WForm wform) {
-
-        DbResponseHandler handler = new DbResponseHandler(ctx);
-
-        Observable<DBResponse> indexObservable = indexKey(wform, wform.getWModelClass());
-        indexObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DBResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        handler.onSubscribe();
-                    }
-
-                    @Override
-                    public void onNext(DBResponse dbResponse) {
-
-                        handler.onNext();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        handler.onError();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        handler.onComplete();
-                    }
-                });
-    }
-
     ////////////////////   Model Objects Direct Manipulation ////////////////////
 
     public String getObjectPathWithUniqueID(String uniqueId, WModelClass wModelClass) {
@@ -394,12 +141,52 @@ public class FirebaseHelper {
     }
 
     public String getNewObjectKey(WModelClass wModelClass) {
-        String path = getFormPathWithUniqueID("", wModelClass);
+        String path = getObjectPathWithUniqueID("", wModelClass);
         DatabaseReference ref = database.getReference(path);
         String newId = ref.push().getKey();
         Log.i(TAG, "getNewId: " + newId);
         return newId;
     }
+
+    public Observable<DBResponse> putDbObject(DbObject dbObject) {
+        //DbObject contains all the info to know where it goes.
+
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                String path = getObjectPathWithUniqueID(dbObject.getUniqueID(),
+                        WModelClass.findWModelFromKey(dbObject.getwModelClassKey()));
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
+                            e.onNext(dbResponse);
+                            Log.i(TAG, "onDataChange: PUTWMODELOBJECT");
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            Log.i(TAG, "onDataChange: PUTOBJECT - FAILED, ITEM NOT FOUND");
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+                objectRef.setValue(dbObject);
+            }
+        });
+    }
+
 
     public Observable<DBResponse> putWModelObject(ModelObject modelObject) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
@@ -537,100 +324,6 @@ public class FirebaseHelper {
 
                 objectRef.addValueEventListener(valueEventListener);
                 Log.i(TAG, "subscribe: Added Event Listener to PREEXISTING");
-            }
-        });
-    }
-
-    public Observable<DBResponse> findWModelObject(WModelClass wModelClass, int precision, String description) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-                                     @Override
-                                     public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-                                         Log.i(TAG, "subscribe: ");
-
-                                         String path = getObjectPathWithUniqueID("", wModelClass);
-
-                                         Log.i(TAG, "subscribe: Path " + path);
-                                         DatabaseReference objectRef = database.getReference(path);
-
-                                         ValueEventListener valueEventListener = new ValueEventListener() {
-                                             @Override
-                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-
-                                                     Log.i(TAG, "onDataChange: ");
-                                                     HashMap<String, ModelObject> modelObjectHashMap = (HashMap<String, ModelObject>) dataSnapshot.getValue();
-                                                     for (String key : modelObjectHashMap.keySet()) {
-                                                         ModelObject object = modelObjectHashMap.get(key);
-                                                         if (precision == PRECISION_EXACT && object.getDescription().equals(description)) {
-                                                             e.onNext(new DBResponse(OK, object.getUniqueId(), "Object found"));
-                                                         } else if (precision == PRECISION_CONTAINS && object.getDescription().contains(description)) {
-                                                             e.onNext(new DBResponse(OK, object.getUniqueId(), "Object found"));
-                                                         } else {
-                                                             e.onNext(new DBResponse(FAILED, null, "Object not found"));
-                                                         }
-                                                     }
-                                                 }
-                                             }
-
-                                             @Override
-                                             public void onCancelled(DatabaseError databaseError) {
-                                                 Log.i(TAG, "onCancelled: " + databaseError.toString());
-
-                                             }
-                                         };
-
-                                         objectRef.addValueEventListener(valueEventListener);
-                                         Log.i(TAG, "subscribe: Added Event Listener");
-                                     }
-                                 });
-    }
-
-    /*
-    private String getAbstractPath(ModelObject modelObject) {
-        return modelString + wModelClass.getKey() + "/" + uniqueId;
-    }
-    */
-
-    public Observable<DBResponse> putAstractModelObject(ModelObject modelObject) {
-        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
-            @Override
-            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
-
-                String path = getObjectPathWithUniqueID(modelObject.getKey(), modelObject.getWModelClass());
-
-                DatabaseReference objectRef = database.getReference(path);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
-                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
-                            e.onNext(dbResponse);
-                            //Later change this to a more universal indexer
-                            /*
-                            if(modelObject.getWModelClass() == WModelClass.W_USER) {
-                                IndexItem indexItem = new IndexItem(modelObject.getDescription(),
-                                        ((WUser) modelObject).getWUserId(), WindroseApplication.getCompanyID());
-                                DatabaseReference userIndex = database.getReference(USER_ID);
-                                userIndex.child(((WUser) modelObject).getWUserId()).setValue(indexItem);
-                            }
-                            */
-                            return;
-                        } else {
-                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
-                            e.onNext(dbResponse);
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
-                        e.onError(databaseError.toException());
-                    }
-                };
-                objectRef.addValueEventListener(valueEventListener);
-                objectRef.setValue(modelObject.toDbObject());
             }
         });
     }

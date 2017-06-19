@@ -26,11 +26,6 @@ public class WTextEdit implements WFormField {
         return (int) viewType;
     }
 
-    @Override
-    public boolean getIsEditable() {
-        return false;
-    }
-
     public String getText() {
         return text;
     }
@@ -45,11 +40,6 @@ public class WTextEdit implements WFormField {
 
     public String getPrompt() {
         return prompt;
-    }
-
-    @Override
-    public String getFieldID() {
-        return fieldID;
     }
 
 }

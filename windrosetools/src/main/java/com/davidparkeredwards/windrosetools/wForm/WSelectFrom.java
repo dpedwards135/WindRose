@@ -32,11 +32,6 @@ public class WSelectFrom implements WFormField {
         return (int) viewType;
     }
 
-    @Override
-    public boolean getIsEditable() {
-        return isEditable;
-    }
-
     public String getText() {
         return text;
     }
@@ -58,8 +53,4 @@ public class WSelectFrom implements WFormField {
         return spinnerPrompt;
     }
 
-    @Override
-    public String getFieldID() {
-        return fieldID;
-    }
 }

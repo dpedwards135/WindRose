@@ -1,16 +1,7 @@
 package com.davidparkeredwards.windrosetools.model;
 
-import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
-import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
-import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
-import com.davidparkeredwards.windrosetools.wForm.WForm;
-import com.davidparkeredwards.windrosetools.wForm.WFormSource;
-import com.davidparkeredwards.windrosetools.wForm.WGeoStop;
-import com.davidparkeredwards.windrosetools.wForm.WSelectFrom;
-import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
-import com.davidparkeredwards.windrosetools.wForm.WTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +12,7 @@ import java.util.List;
  * Created by davidedwards on 6/8/17.
  */
 
-public class WUser extends ModelObject implements WFormSource {
+public class WUser extends ModelObject {
 
     private static final String CLASS_KEY = WModelClass.W_USER.getKey();
     private static final String NAME = "name";
@@ -52,54 +43,8 @@ public class WUser extends ModelObject implements WFormSource {
         this.authUID = authUID;
     }
 
-    public WUser(WForm wForm){
-        //Set to pull values based on field ID for arrays.
-    }
-
     public String getWUserId() {
         return this.wUserId;
-    }
-
-    @Override
-    public boolean getIsType() {
-        return false;
-    }
-
-    @Override
-    public WForm getForm() {
-
-        String userId = "Anonymous";//Need to get key prior to saving this. Same for Company.
-        String companyId = WindroseApplication.getCompanyID();
-        String classKey = CLASS_KEY;
-        boolean isSubmitted = false;
-
-        List<String> fieldIdOrder = new ArrayList<>();
-        fieldIdOrder.add(NAME);
-        fieldIdOrder.add(USERNAME);
-        fieldIdOrder.add(EMAIL_ADDRESS);
-        fieldIdOrder.add(WUSER_FINALIZE_BUTTONS);
-
-        List<WCheckBox> checkBoxes = new ArrayList<>();
-
-        List<WFinalizeButtons> finalizeButtons = new ArrayList<>();
-        //finalizeButtons.add(new WFinalizeButtons(WUSER_FINALIZE_BUTTONS, true, true, true));
-
-        List<WGeoStop> geoStops = new ArrayList<>();
-
-        List<WSelectFrom> selectFroms = new ArrayList<>();
-
-        List<WTextEdit> textEdits = new ArrayList<>();
-        textEdits.add(new WTextEdit(NAME, "Full Name", name, "Full Name"));
-        textEdits.add(new WTextEdit(USERNAME, "Username", userName, "Username"));
-        textEdits.add(new WTextEdit(EMAIL_ADDRESS, "Email Address", emailAddress, "name@example.com"));
-
-        List<WTextView> textViews = new ArrayList<>();
-
-        String description = authUID;
-
-        WForm wForm = new WForm(null, userId, companyId, fieldIdOrder, checkBoxes, finalizeButtons, geoStops,
-                selectFroms, textEdits, textViews, classKey, isSubmitted, description);
-        return wForm;
     }
 
     @Override
@@ -121,7 +66,7 @@ public class WUser extends ModelObject implements WFormSource {
     //PICK UP HERE - NEED TO FINISH CONVERTING TO DBOBJECT AND FIX OLD METHOD CALLS IN OTHER CLASSES ESPECIALLY HELPER
     @Override
     public void fromDbObject(DbObject dbObject) {
-        HashMap<String, List<String>> hashMapLists = dbObject.getObjectValues();
+        HashMap<String, List<String>> hashMapLists = dbObject.getProperties();
         String uniqueId = dbObject.getUniqueID();
         name = singleValueFromList(hashMapLists.get("full_name"));
         emailAddress = singleValueFromList(hashMapLists.get("email_address"));

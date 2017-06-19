@@ -88,6 +88,7 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 Log.i("Finalize Buttons", "configureViewHolder: ");
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
+                textView.setText(finalizeButtons.displayText);
 
                 if(finalizeButtons.isSetSubmit()) {
                     submitButton = (Button) v.findViewById(R.id.wviewholder_submitButton);

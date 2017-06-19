@@ -20,9 +20,7 @@ import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
-import com.davidparkeredwards.windrosetools.wForm.DbBody;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
-import com.davidparkeredwards.windrosetools.wForm.WForm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +43,6 @@ import io.reactivex.schedulers.Schedulers;
 public class WLoginActivity extends AppCompatActivity {
 
     private static final String TAG = "WLoginActivity";
-    public static final int RC_SIGN_IN = 100;
     public static final int CREATE_WUSER = 200;
 
 
@@ -83,11 +80,6 @@ public class WLoginActivity extends AppCompatActivity {
         //AUTHORIZATION INITIALIZATION
         if (WindroseApplication.auth.getCurrentUser() != null) {
             setWUser();
-            /*
-            Log.i(TAG, "onCreate: User is signed in as "
-                    + WindroseApplication.auth.getCurrentUser().getDisplayName());
-            getWUserIDFromIndex();
-            */
         } else {
             Log.i(TAG, "onCreate: User is not signed in");
 
@@ -98,29 +90,12 @@ public class WLoginActivity extends AppCompatActivity {
         }
     }
 
-    protected void createNewWUser() {
-        Log.i(TAG, "createNewWUser: ");
-        Intent intent = new Intent();
-        //intent.setClass(this, WSignUpActivity.class); Check
-        //startActivityForResult(intent, CREATE_WUSER);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //Get Authorization Activity result
-        Log.i(TAG, "onActivityResult: " + resultCode);
-        if(requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                getWUserIDFromIndex();
-            }
-        }
         if(requestCode == CREATE_WUSER) {
             if (resultCode == RESULT_OK) {
                 setWUser();
-                //Next - log in the user in this activity, including logging in after signing up
                 Log.i(TAG, "onActivityResult: ");
-                //Log.i(TAG, "onActivityResult: OK CREATE WUSER " + WindroseApplication.currentWUser.getWUserId());
-                //getWUserFromDB(data.getData());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -179,85 +154,6 @@ public class WLoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
-                    }
-                });
-    }
-
-    private void getWUserIDFromIndex() {
-        Log.i(TAG, "getWUserIDFromIndex: ");
-        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-        Observable<DBResponse> userIndexObservable = helper.getUniqueIds(FirebaseHelper.WINDROSE_INDEX, WModelClass.W_USER,
-                FirebaseHelper.PRECISION_EXACT,WindroseApplication.auth.getCurrentUser().getUid());
-        userIndexObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DBResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DBResponse dbResponse) {
-                        Log.i(TAG, "onNext: Message = " + dbResponse.getMessage());
-                        if(dbResponse.getCode() == FirebaseHelper.OK) {
-                            DbBody body = dbResponse.getDbBody();
-                            UniqueIds ids = (UniqueIds) body.getDbBody();
-                            String id = ids.getUniqueIds().get(0);
-                            Log.i(TAG, "onNext: ID is " + id);
-                            getWUserFromDB(id);
-                        } else {
-                            Log.i(TAG, "onNext: Error " + dbResponse.getMessage());
-                            createNewWUser();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: ", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-
-    private void getWUserFromDB(String uniqueId) {
-        FirebaseHelper helper = new FirebaseHelper(getApplicationContext());
-        Observable<DBResponse> userObservable = helper.getWForm(uniqueId, WModelClass.W_USER, false);
-        userObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DBResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DBResponse dbResponse) {
-                        Log.i(TAG, "onNext: Message = " + dbResponse.getMessage());
-                        if(dbResponse.getCode() == FirebaseHelper.OK) {
-                            DbBody body = dbResponse.getDbBody();
-                            WForm form = (WForm) dbResponse.getDbBody();
-                            WUser wUser = new WUser(form);
-                            WindroseApplication.currentWUser = wUser;
-                            initializeCompany();
-                        } else {
-                            Log.i(TAG, "onNext: Error " + dbResponse.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                        Log.e(TAG, "onError: ", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
 
                     }
                 });

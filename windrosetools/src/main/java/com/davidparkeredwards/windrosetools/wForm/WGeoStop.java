@@ -15,14 +15,4 @@ public class WGeoStop implements WFormField {
         return 0;
     }
 
-    @Override
-    public boolean getIsEditable() {
-        return false;
-    }
-
-    @Override
-    public String getFieldID() {
-        return fieldID;
-    }
-
 }

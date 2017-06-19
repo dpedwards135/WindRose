@@ -31,17 +31,7 @@ public class WCheckBox implements WFormField {
         return (int) viewType;
     }
 
-    @Override
-    public boolean getIsEditable() {
-        return isEditable;
-    }
-
     public void setTrueOrFalse(boolean trueOrFalse) {
         this.trueOrFalse = trueOrFalse;
-    }
-
-    @Override
-    public String getFieldID() {
-        return fieldID;
     }
 }

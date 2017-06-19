@@ -1,8 +1,12 @@
 package com.davidparkeredwards.windrosetools.model;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.FirebaseHelper;
+import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
+import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
 import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
@@ -17,6 +21,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by davidedwards on 6/14/17.
  */
@@ -30,7 +39,7 @@ public class DbObject implements DbBody{
 
 
     public String uniqueID;
-    public LinkedHashMap<String, List<String>> objectValues;
+    public LinkedHashMap<String, List<String>> properties;
 
     /*
     Object Values in the following order within a list:
@@ -49,7 +58,7 @@ public class DbObject implements DbBody{
 
     public DbObject(String uniqueID, LinkedHashMap<String, List<String>> objectValues) {
         this.uniqueID = uniqueID;
-        this.objectValues = objectValues;
+        this.properties = objectValues;
     }
 
     @Exclude
@@ -58,6 +67,10 @@ public class DbObject implements DbBody{
         LinkedHashMap<String, List<String>> testValues = new LinkedHashMap<>();
 
 
+        String property0name = WMODEL_CLASS;
+        List<String> property0list = new ArrayList<>();
+        property0list.add("" + WFormField.EXCLUDE);
+        property0list.add(WModelClass.COMPANY.toString());
 
 
         String property1name = "First Property";
@@ -111,7 +124,7 @@ public class DbObject implements DbBody{
         property5list.add("This is the selected value");
 
 
-
+        testValues.put(property0name, property0list);
         testValues.put(property1name, property1list);
         testValues.put(property2name, property2list);
         testValues.put(property4name, property4list);
@@ -125,8 +138,8 @@ public class DbObject implements DbBody{
     @Exclude
     public WRecyclerBundle toWRecyclerBundle(boolean viewOnly) {
         ArrayList<WFormField> formFields = new ArrayList<>();
-        for(String key : objectValues.keySet()) {
-            List<String> list = objectValues.get(key);
+        for(String key : properties.keySet()) {
+            List<String> list = properties.get(key);
             if (!viewOnly) {
                 switch (Integer.valueOf(list.get(FORM_FIELD_TYPE))) {
                     case WFormField.EXCLUDE:
@@ -196,11 +209,46 @@ public class DbObject implements DbBody{
         this.uniqueID = uniqueID;
     }
     @Exclude
-    public HashMap<String, List<String>> getObjectValues() {
-        return objectValues;
+    public HashMap<String, List<String>> getProperties() {
+        return properties;
     }
     @Exclude
     public void setObjectLists(LinkedHashMap<String, List<String>> objectValues) {
-        this.objectValues = objectValues;
+        this.properties = objectValues;
+    }
+    @Exclude
+    public String getwModelClassKey() {
+        return WModelClass.findWModelFromKey(properties.get(WMODEL_CLASS).get(0)).getKey();
+    }
+    @Exclude
+    public void putToDb(Context context) {
+        DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
+        FirebaseHelper helper = new FirebaseHelper(context);
+        io.reactivex.Observable<DBResponse> dbObjectSave = helper.putDbObject(this);
+        dbObjectSave.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        Log.i("DbObject", "onNext: " + dbResponse.getCode());
+                        dbResponseHandler.onNext();
+                        onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dbResponseHandler.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

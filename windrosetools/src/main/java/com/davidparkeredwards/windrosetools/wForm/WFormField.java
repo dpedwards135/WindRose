@@ -17,8 +17,6 @@ public interface WFormField {
      */
 
     int getWRecyclerViewType(); //This applies to the property and value
-    boolean getIsEditable();
-    String getFieldID();
 
     int EXCLUDE = 0;
     int CHECKBOX = 1;

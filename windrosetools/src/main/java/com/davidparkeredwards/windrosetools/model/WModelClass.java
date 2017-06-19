@@ -10,6 +10,7 @@ public enum WModelClass {
     //Index logic, x has y. ie A company has vehicles. A user doesn't have vehicles.
     //A user has companies, but not business units. A company doesn't have companies.
 
+
     //WUser
     W_USER("w_user", true, true, false),
 

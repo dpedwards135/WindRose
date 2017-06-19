@@ -101,5 +101,11 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
     */
     public WRecyclerBundle getSavedBundle() { return bundle;}
+
+    /*
+    public DbObject getSavedDbObject() {
+        return DbObject.fromWRecyclerBundle(bundle);
+    }
+    */
 }
 

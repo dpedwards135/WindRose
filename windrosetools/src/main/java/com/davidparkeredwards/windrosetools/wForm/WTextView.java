@@ -32,13 +32,4 @@ public class WTextView implements WFormField {
         return (int) viewType;
     }
 
-    @Override
-    public boolean getIsEditable() {
-        return isEditable;
-    }
-
-    @Override
-    public String getFieldID() {
-        return fieldID;
-    }
 }
