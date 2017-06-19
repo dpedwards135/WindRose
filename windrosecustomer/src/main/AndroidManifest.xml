@@ -39,6 +39,9 @@
         <activity android:name="com.davidparkeredwards.windrosetools.activity.SignInActivity"
             android:label="Sign In"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.davidparkeredwards.windrosetools.activity.NewCompanySetUp"
+            android:label="New Company"
+            android:theme="@style/AppTheme.NoActionBar"/>
         
 
     </application>

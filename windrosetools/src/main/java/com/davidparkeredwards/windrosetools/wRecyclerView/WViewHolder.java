@@ -83,7 +83,9 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                 break;
 
             case WFormField.FINALIZE_BUTTONS:
+
                 WFinalizeButtons finalizeButtons = (WFinalizeButtons) wFormField;
+                Log.i("Finalize Buttons", "configureViewHolder: ");
                 textView = (TextView) v.findViewById(R.id.wviewholder_text);
                 textView.setVisibility(View.VISIBLE);
 

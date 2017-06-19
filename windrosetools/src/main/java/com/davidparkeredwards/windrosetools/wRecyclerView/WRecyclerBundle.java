@@ -21,7 +21,7 @@ public class WRecyclerBundle {
     private boolean isSubmitted;
 
 
-    public WRecyclerBundle(String uniqueId, WModelClass wModelClass, ArrayList<WFormField> recyclerObjects, boolean isSubmitted) {
+    public WRecyclerBundle(String uniqueId, ArrayList<WFormField> recyclerObjects) {
         this.uniqueId = uniqueId;
         this.wModelClass = wModelClass;
         if(recyclerObjects == null) {

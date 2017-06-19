@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
 
 /**
@@ -24,10 +25,17 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private WRecyclerBundle bundle;
 
+    public WRecyclerAdapter(DbObject dbObject) {
+        this.bundle = dbObject.toWRecyclerBundle(false);
+
+    }
+
+    /*
     public WRecyclerAdapter(WRecyclerBundle bundle) {
         this.bundle = bundle;
         Log.i(TAG, "WRecyclerAdapter: Bundle : " + bundle.getRecyclerObjectsArray().size());
     }
+    */
 
     @Override
     public int getItemViewType(int position) {

@@ -64,7 +64,7 @@ public class Company implements WFormSource {
         List<WCheckBox> checkBoxes = new ArrayList<>();
 
         List<WFinalizeButtons> finalizeButtons = new ArrayList<>();
-        finalizeButtons.add(new WFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, true, true));
+        //finalizeButtons.add(new WFinalizeButtons(COMPANY_FINALIZE_BUTTONS, true, true, true));
 
         List<WGeoStop> geoStops = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public class Company implements WFormSource {
         textEdits.add(new WTextEdit(EMAIL_ADDRESS, "Email Address", email, "name@example.com"));
 
         List<WTextView> textViews = new ArrayList<>();
-        textViews.add(new WTextView(COMPANYID, companyId));
+        //textViews.add(new WTextView(COMPANYID, companyId));
 
         String description = name;
 

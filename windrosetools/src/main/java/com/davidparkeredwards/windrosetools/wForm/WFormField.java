@@ -20,6 +20,7 @@ public interface WFormField {
     boolean getIsEditable();
     String getFieldID();
 
+    int EXCLUDE = 0;
     int CHECKBOX = 1;
     int FINALIZE_BUTTONS = 2;
     int GEOSTOP = 3;

@@ -1,6 +1,7 @@
 package com.davidparkeredwards.windrosetools.activity;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +53,7 @@ public class WLoginActivity extends AppCompatActivity {
     Spinner companyIdSpinner;
     ArrayAdapter companySpinnerAdapter;
     Button newCompanyButton;
+    Context context = this;
 
     private HashMap<String, String> companyIDList;
     private List<StringWithTag> companyNameList = new ArrayList<>();
@@ -62,6 +64,15 @@ public class WLoginActivity extends AppCompatActivity {
         setContentView(R.layout.wloginactivity);
 
         newCompanyButton = (Button) findViewById(R.id.new_company_button);
+        newCompanyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: Clicked");
+                Intent intent = new Intent();
+                intent.setClass(context, NewCompanySetUp.class);
+                startActivity(intent);
+            }
+        });
         if(WindroseApplication.getMultiCompanyApp() == WindroseApplication.MULTICOMPANY_APP
                 && WindroseApplication.getUserFocus() == WindroseApplication.BUSINESS_FOCUS) {
             newCompanyButton.setVisibility(View.VISIBLE);

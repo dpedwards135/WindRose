@@ -23,8 +23,7 @@
         android:id="@+id/new_company_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_new_company"
-        android:onClick="addNewCompany"/>
+        android:text="@string/add_new_company"/>
 
 
 </LinearLayout>

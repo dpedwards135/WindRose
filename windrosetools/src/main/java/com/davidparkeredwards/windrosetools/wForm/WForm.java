@@ -18,6 +18,8 @@ import java.util.List;
 
 public class WForm implements DbBody {
 
+
+
     @Exclude
     private static final String TAG = WForm.class.getSimpleName();
 
@@ -209,7 +211,7 @@ public class WForm implements DbBody {
             }
         }
         Log.i("WFORM", "toRecyclerBundle: ArrayList size = " + arrayList.size());
-        WRecyclerBundle bundle = new WRecyclerBundle(this.uniqueId, this.getWModelClass(), arrayList, isSubmitted);
+        WRecyclerBundle bundle = new WRecyclerBundle(this.uniqueId, arrayList);
         return bundle;
     }
 

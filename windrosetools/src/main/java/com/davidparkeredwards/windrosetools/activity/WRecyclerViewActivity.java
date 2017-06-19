@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
@@ -47,7 +48,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
         Log.i(TAG, "onCreate: RecyclerView Activity");
         //setContentView(R.layout.activity_main_customer);
         TextView contentText = (TextView) findViewById(R.id.content_text_view);
-        contentText.setText("Configure Recycler View Activity");
+        contentText.setText("");
 
         getSavedForm();
 
@@ -64,7 +65,8 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.wRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        recyclerAdapter = new WRecyclerAdapter(bundle);
+        recyclerAdapter = new WRecyclerAdapter(DbObject.getTestDbObject());
+        //recyclerAdapter = new WRecyclerAdapter(bundle);
         mRecyclerView.setAdapter(recyclerAdapter);
     }
 

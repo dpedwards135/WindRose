@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -415,6 +416,7 @@ public class FirebaseHelper {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
                             e.onNext(dbResponse);
+                            Log.i(TAG, "onDataChange: PUTWMODELOBJECT");
                             //Later change this to a more universal indexer
                             /*
                             if(modelObject.getWModelClass() == WModelClass.W_USER) {
@@ -427,6 +429,7 @@ public class FirebaseHelper {
                             return;
                         } else {
                             DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            Log.i(TAG, "onDataChange: PUTOBJECT - FAILED, ITEM NOT FOUND");
                             e.onNext(dbResponse);
                             return;
                         }
@@ -459,7 +462,7 @@ public class FirebaseHelper {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
 
 
-                            HashMap<String, List<String>> dbObjectValues = (HashMap<String, List<String>>) dataSnapshot.getValue();
+                            LinkedHashMap<String, List<String>> dbObjectValues = (LinkedHashMap<String, List<String>>) dataSnapshot.getValue();
                             //HashMap<String, String> modelObjectValue = (HashMap<String, String>) dataSnapshot.getValue();
                             String dbObjectKey = dataSnapshot.getKey();
                             DbObject dbObject = new DbObject(dbObjectKey, dbObjectValues);
@@ -582,9 +585,11 @@ public class FirebaseHelper {
                                  });
     }
 
+    /*
     private String getAbstractPath(ModelObject modelObject) {
         return modelString + wModelClass.getKey() + "/" + uniqueId;
     }
+    */
 
     public Observable<DBResponse> putAstractModelObject(ModelObject modelObject) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {

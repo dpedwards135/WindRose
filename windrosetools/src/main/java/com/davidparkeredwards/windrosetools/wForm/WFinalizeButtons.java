@@ -32,7 +32,7 @@ public class WFinalizeButtons implements WFormField {
 
     public WFinalizeButtons() {}
 
-    public WFinalizeButtons(String fieldID, boolean setCancel, boolean setSave, boolean setSubmit) {
+    public WFinalizeButtons(String fieldID, String displayText, boolean setCancel, boolean setSave, boolean setSubmit) {
         this.fieldID = fieldID;
         this.setCancel = setCancel;
         this.setSave = setSave;

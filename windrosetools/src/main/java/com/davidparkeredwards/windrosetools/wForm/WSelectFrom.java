@@ -14,18 +14,17 @@ public class WSelectFrom implements WFormField {
     public boolean isEditable;
     public String text;
     public List<String> selectableValues;
-    public double selectedValue;
+    public String selectedValue;
     public String spinnerPrompt;
 
     public WSelectFrom() {}
 
-    public WSelectFrom(String fieldID, boolean isEditable, String text, ArrayList<String> selectableValues, int selectedValue, String spinnerPrompt) {
+    public WSelectFrom(String fieldID, String text, String selectedValue, ArrayList<String> selectableValues) {
         this.fieldID = fieldID;
         this.isEditable = isEditable;
         this.text = text;
         this.selectableValues = selectableValues;
         this.selectedValue = selectedValue;
-        this.spinnerPrompt = spinnerPrompt;
     }
 
     @Override
@@ -47,11 +46,12 @@ public class WSelectFrom implements WFormField {
     }
 
     public void setSelectedValue(int position) {
-        selectedValue = position;
+        selectedValue = selectableValues.get(position);
     }
 
     public int getSelectedValue() {
-        return (int) selectedValue;
+
+        return selectableValues.indexOf(selectedValue);
     }
 
     public String getSpinnerPrompt() {

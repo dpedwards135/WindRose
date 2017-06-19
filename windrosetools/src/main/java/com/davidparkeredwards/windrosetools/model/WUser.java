@@ -14,6 +14,7 @@ import com.davidparkeredwards.windrosetools.wForm.WTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -81,7 +82,7 @@ public class WUser extends ModelObject implements WFormSource {
         List<WCheckBox> checkBoxes = new ArrayList<>();
 
         List<WFinalizeButtons> finalizeButtons = new ArrayList<>();
-        finalizeButtons.add(new WFinalizeButtons(WUSER_FINALIZE_BUTTONS, true, true, true));
+        //finalizeButtons.add(new WFinalizeButtons(WUSER_FINALIZE_BUTTONS, true, true, true));
 
         List<WGeoStop> geoStops = new ArrayList<>();
 
@@ -114,7 +115,7 @@ public class WUser extends ModelObject implements WFormSource {
         userValues.put("email_address", valueToList(emailAddress));
         userValues.put("fb_uid", valueToList(authUID));
         String uniqueId = wUserId;
-        return new DbObject(uniqueId, userValues);
+        return new DbObject(uniqueId, ((LinkedHashMap) userValues));
     }
 
     //PICK UP HERE - NEED TO FINISH CONVERTING TO DBOBJECT AND FIX OLD METHOD CALLS IN OTHER CLASSES ESPECIALLY HELPER
