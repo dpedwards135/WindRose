@@ -114,7 +114,7 @@ public class WLoginActivity extends AppCompatActivity {
                     public void onSuccess(DBResponse dbResponse) {
                         if (dbResponse.getCode() == FirebaseHelper.OK) {
                             String uniqueId = ((UniqueIds) dbResponse.getDbBody()).getUniqueIds().get(0);
-                            Observable<DBResponse> getUser = helper.getWModelObjectHashMap(WModelClass.W_USER, uniqueId);
+                            Observable<DBResponse> getUser = helper.getWModelObjectHashMap(WModelClass.W_USER, uniqueId, WRecyclerViewActivity.SUBMITTED);
                             getUser.subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new Observer<DBResponse>() {

@@ -60,7 +60,7 @@ public class WUser extends ModelObject {
         userValues.put("email_address", valueToList(emailAddress));
         userValues.put("fb_uid", valueToList(authUID));
         String uniqueId = wUserId;
-        return new DbObject(uniqueId, ((LinkedHashMap) userValues));
+        return new DbObject(uniqueId, emailAddress + " " + authUID, ((LinkedHashMap) userValues));
     }
 
     //PICK UP HERE - NEED TO FINISH CONVERTING TO DBOBJECT AND FIX OLD METHOD CALLS IN OTHER CLASSES ESPECIALLY HELPER

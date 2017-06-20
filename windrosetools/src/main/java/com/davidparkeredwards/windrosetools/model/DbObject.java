@@ -33,13 +33,19 @@ import io.reactivex.schedulers.Schedulers;
 public class DbObject implements DbBody{
 
     public final static String WMODEL_CLASS = "wmodel_class";
-    public final static int FORM_FIELD_TYPE = 0;
-    public final static int DISPLAY_TEXT = 1;
-    public final static int SELECTED_VALUE = 2;
+    public final static int PROPERTY_NAME = 0;
+    public final static int FORM_FIELD_TYPE = 1;
+    public final static int DISPLAY_TEXT = 2;
+    public final static int SELECTED_VALUE = 3;
+    public final static int CANCEL_BUTTON = 3;
+    public final static int SAVE_BUTTON = 4;
+    public final static int SUBMIT_BUTTON = 5;
+
 
 
     public String uniqueID;
-    public LinkedHashMap<String, List<String>> properties;
+    public String description;
+    public HashMap<String, List<String>> properties;
 
     /*
     Object Values in the following order within a list:
@@ -56,21 +62,25 @@ public class DbObject implements DbBody{
     public DbObject() {}
 
 
-    public DbObject(String uniqueID, LinkedHashMap<String, List<String>> objectValues) {
+    public DbObject(String uniqueID, String description, HashMap<String, List<String>> objectValues) {
         this.uniqueID = uniqueID;
+        this.description = description;
         this.properties = objectValues;
     }
 
     @Exclude
     public static DbObject getTestDbObject() {
+        //Change - Add description to object. Put property name as first item in String list. Key is the insertion/display order.
         String testId = "testDbObject";
+        String testDescription = "An example of DbObject";
         LinkedHashMap<String, List<String>> testValues = new LinkedHashMap<>();
 
 
         String property0name = WMODEL_CLASS;
         List<String> property0list = new ArrayList<>();
+        property0list.add(property0name);
         property0list.add("" + WFormField.EXCLUDE);
-        property0list.add(WModelClass.COMPANY.toString());
+        property0list.add(WModelClass.COMPANY.getKey());
 
 
         String property1name = "First Property";
@@ -78,6 +88,7 @@ public class DbObject implements DbBody{
         String property1fieldType = "" + WFormField.CHECKBOX;
         String property1DisplayText = "Property 1 text";
         String property1SelectedValue = "" + true;
+        property1list.add(property1name);
         property1list.add(property1fieldType);
         property1list.add(property1DisplayText);
         property1list.add(property1SelectedValue);
@@ -92,6 +103,7 @@ public class DbObject implements DbBody{
         String property2Value3 = "2";
         String property2Value4 = "3";
         String property2Value5 = "4";
+        property2list.add(property2name);
         property2list.add(property2fieldType);
         property2list.add(property2DisplayText);
         property2list.add(property2SelectedValue);
@@ -103,6 +115,7 @@ public class DbObject implements DbBody{
 
         String property3name = "Third Property";
         List<String> property3list = new ArrayList<>();
+        property3list.add(property3name);
         property3list.add( "" + WFormField.FINALIZE_BUTTONS);
         property3list.add("Property 3 Buttons");
         property3list.add(Boolean.toString(true));
@@ -112,6 +125,7 @@ public class DbObject implements DbBody{
 
         String property4name = "Fourth Property";
         List<String> property4list = new ArrayList<>();
+        property4list.add(property4name);
         property4list.add("" + WFormField.TEXT_EDIT);
         property4list.add("Property 4 text");
         property4list.add("This is the correct text");
@@ -119,26 +133,30 @@ public class DbObject implements DbBody{
 
         String property5name = "Fifth Property";
         List<String> property5list = new ArrayList<>();
+        property5list.add(property5name);
         property5list.add("" + WFormField.TEXT_VIEW);
         property5list.add("This is the display Text");
         property5list.add("This is the selected value");
 
 
-        testValues.put(property0name, property0list);
-        testValues.put(property1name, property1list);
-        testValues.put(property2name, property2list);
-        testValues.put(property4name, property4list);
-        testValues.put(property5name, property5list);
-        testValues.put(property3name, property3list);
+        testValues.put(WMODEL_CLASS, property0list);
+        testValues.put("1", property1list);
+        testValues.put("2", property2list);
+        testValues.put("3", property4list);
+        testValues.put("4", property5list);
+        testValues.put("5", property3list);
 
-        DbObject testObject = new DbObject(testId, testValues);
+        DbObject testObject = new DbObject(testId, testDescription, testValues);
         return testObject;
     }
 
     @Exclude
     public WRecyclerBundle toWRecyclerBundle(boolean viewOnly) {
         ArrayList<WFormField> formFields = new ArrayList<>();
-        for(String key : properties.keySet()) {
+        int keyCounter = 1;
+        while(properties.containsKey(String.valueOf(keyCounter))) {
+            String key = String.valueOf(keyCounter);
+        //for(String key : properties.keySet()) {
             List<String> list = properties.get(key);
             if (!viewOnly) {
                 switch (Integer.valueOf(list.get(FORM_FIELD_TYPE))) {
@@ -150,8 +168,8 @@ public class DbObject implements DbBody{
                         formFields.add(checkBox);
                         break;
                     case WFormField.FINALIZE_BUTTONS:
-                        WFinalizeButtons finalizeButtons = new WFinalizeButtons(key, list.get(DISPLAY_TEXT), Boolean.valueOf(list.get(2)),
-                                Boolean.valueOf(list.get(3)), Boolean.valueOf(list.get(4)));
+                        WFinalizeButtons finalizeButtons = new WFinalizeButtons(key, list.get(DISPLAY_TEXT), Boolean.valueOf(list.get(CANCEL_BUTTON)),
+                                Boolean.valueOf(list.get(SAVE_BUTTON)), Boolean.valueOf(list.get(SUBMIT_BUTTON)));
                         formFields.add(finalizeButtons);
                         Log.i("ToBundle", "toWRecyclerBundle: Finalize Save? " + list.get(2) + " " + finalizeButtons.isSetSave());
                         break;
@@ -191,6 +209,7 @@ public class DbObject implements DbBody{
                     continue;
                 }
             }
+            keyCounter ++;
         }
         return new WRecyclerBundle(uniqueID, formFields);
     }
@@ -218,13 +237,14 @@ public class DbObject implements DbBody{
     }
     @Exclude
     public String getwModelClassKey() {
-        return WModelClass.findWModelFromKey(properties.get(WMODEL_CLASS).get(0)).getKey();
+        Log.i("DbObject", "getwModelClassKey: " + properties.get(WMODEL_CLASS));
+        return WModelClass.findWModelFromKey(properties.get(WMODEL_CLASS).get(2)).getKey();
     }
     @Exclude
-    public void putToDb(Context context) {
+    public void putToDb(Context context, int listType) {
         DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
         FirebaseHelper helper = new FirebaseHelper(context);
-        io.reactivex.Observable<DBResponse> dbObjectSave = helper.putDbObject(this);
+        io.reactivex.Observable<DBResponse> dbObjectSave = helper.putDbObject(this, listType);
         dbObjectSave.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DBResponse>() {
@@ -242,6 +262,7 @@ public class DbObject implements DbBody{
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("DbObject", "onError: ", e);
                         dbResponseHandler.onError();
                     }
 
@@ -250,5 +271,10 @@ public class DbObject implements DbBody{
 
                     }
                 });
+    }
+
+    @Exclude
+    public String getDescription() {
+        return description;
     }
 }

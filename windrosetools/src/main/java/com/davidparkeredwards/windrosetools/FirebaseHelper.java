@@ -7,6 +7,7 @@ import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.IndexItem;
 import com.davidparkeredwards.windrosetools.model.ModelObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.journey.DbObjectList;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 import com.google.firebase.database.DataSnapshot;
@@ -132,30 +133,30 @@ public class FirebaseHelper {
 
     ////////////////////   Model Objects Direct Manipulation ////////////////////
 
-    public String getObjectPathWithUniqueID(String uniqueId, WModelClass wModelClass) {
+    public String getObjectPathWithUniqueID(String uniqueId, WModelClass wModelClass, int listType) {
         String path;
 
-        path = modelString + wModelClass.getKey() + "/" + uniqueId;
+        path = modelString + wModelClass.getKey() + listType + "/" + uniqueId;
 
         return path;
     }
 
-    public String getNewObjectKey(WModelClass wModelClass) {
-        String path = getObjectPathWithUniqueID("", wModelClass);
+    public String getNewObjectKey(WModelClass wModelClass, int listType) {
+        String path = getObjectPathWithUniqueID("", wModelClass, listType);
         DatabaseReference ref = database.getReference(path);
         String newId = ref.push().getKey();
         Log.i(TAG, "getNewId: " + newId);
         return newId;
     }
 
-    public Observable<DBResponse> putDbObject(DbObject dbObject) {
+    public Observable<DBResponse> putDbObject(DbObject dbObject, int listType) {
         //DbObject contains all the info to know where it goes.
 
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
                 String path = getObjectPathWithUniqueID(dbObject.getUniqueID(),
-                        WModelClass.findWModelFromKey(dbObject.getwModelClassKey()));
+                        WModelClass.findWModelFromKey(dbObject.getwModelClassKey()), listType);
 
                 DatabaseReference objectRef = database.getReference(path);
 
@@ -187,13 +188,88 @@ public class FirebaseHelper {
         });
     }
 
+    public Observable<DBResponse> getDbObject(String uniqueId, WModelClass wModelClass, int listType) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                String path = getObjectPathWithUniqueID(uniqueId, wModelClass, listType);
 
-    public Observable<DBResponse> putWModelObject(ModelObject modelObject) {
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+
+                            DbObject dbObject = dataSnapshot.getValue(DbObject.class);
+                            DBResponse dbResponse = new DBResponse(OK, dbObject, SUCCESS);
+                            e.onNext(dbResponse);
+                            Log.i(TAG, "onDataChange: GOTWMODELOBJECT");
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            Log.i(TAG, "onDataChange: GOTOBJECT - FAILED, ITEM NOT FOUND");
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+            }
+        });
+    }
+
+    public Observable<DBResponse> getDbObjectList(WModelClass wModelClass, int listType) {
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                String path = getObjectPathWithUniqueID("", wModelClass, listType);
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            ArrayList<DbObject> list = new ArrayList<>();
+                            //FIX THIS SO THAT IT CREATES A LIST PROPERLY
+                            DbObjectList dbObjectList = dataSnapshot.getValue(DbObjectList.class);
+                            DBResponse dbResponse = new DBResponse(OK, dbObjectList, SUCCESS);
+                            e.onNext(dbResponse);
+                            Log.i(TAG, "onDataChange: GOTWMODELOBJECT");
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            Log.i(TAG, "onDataChange: GOTOBJECT - FAILED, ITEM NOT FOUND");
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+            }
+        });
+    }
+
+
+    public Observable<DBResponse> putWModelObject(ModelObject modelObject, int listType) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
 
-                String path = getObjectPathWithUniqueID(modelObject.getKey(), modelObject.getWModelClass());
+                String path = getObjectPathWithUniqueID(modelObject.getKey(), modelObject.getWModelClass(), listType);
 
                 DatabaseReference objectRef = database.getReference(path);
 
@@ -234,12 +310,12 @@ public class FirebaseHelper {
         });
     }
 
-    public Observable<DBResponse> getWModelObjectHashMap(WModelClass wModelClass, String uniqueId) {
+    public Observable<DBResponse> getWModelObjectHashMap(WModelClass wModelClass, String uniqueId, int listType) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
 
-                String path = getObjectPathWithUniqueID(uniqueId, wModelClass);
+                String path = getObjectPathWithUniqueID(uniqueId, wModelClass, listType);
 
                 DatabaseReference objectRef = database.getReference(path);
 
@@ -252,7 +328,7 @@ public class FirebaseHelper {
                             LinkedHashMap<String, List<String>> dbObjectValues = (LinkedHashMap<String, List<String>>) dataSnapshot.getValue();
                             //HashMap<String, String> modelObjectValue = (HashMap<String, String>) dataSnapshot.getValue();
                             String dbObjectKey = dataSnapshot.getKey();
-                            DbObject dbObject = new DbObject(dbObjectKey, dbObjectValues);
+                            DbObject dbObject = new DbObject(dbObjectKey, "Null Description", dbObjectValues);
                             DBResponse dbResponse = new DBResponse(OK, dbObject, SUCCESS);
                             e.onNext(dbResponse);
                             return;

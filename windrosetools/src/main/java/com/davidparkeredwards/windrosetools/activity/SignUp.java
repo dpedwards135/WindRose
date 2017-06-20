@@ -195,12 +195,12 @@ public class SignUp extends AppCompatActivity {
 
     private void addNewWUser(String uid) {
         Log.i(TAG, "addNewWUser: ");
-        String newKey = helper.getNewObjectKey(WModelClass.W_USER);
+        String newKey = helper.getNewObjectKey(WModelClass.W_USER, WRecyclerViewActivity.SUBMITTED);
 
         WUser user = new WUser(full_name.getText().toString(), email_address.getText().toString(),
                 newKey, uid);
 
-        Observable<DBResponse> putObjectObservable = helper.putWModelObject(user);
+        Observable<DBResponse> putObjectObservable = helper.putWModelObject(user, WRecyclerViewActivity.SUBMITTED);
         putObjectObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DBResponse>() {
