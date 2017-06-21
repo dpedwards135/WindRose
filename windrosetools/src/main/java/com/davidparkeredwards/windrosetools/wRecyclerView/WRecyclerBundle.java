@@ -1,6 +1,5 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
-import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
 
 import java.util.ArrayList;
@@ -13,23 +12,18 @@ public class WRecyclerBundle {
     private static final String TAG = WRecyclerBundle.class.getSimpleName();
 
 
-    //private String classKey;
-    private String uniqueId;
-    private WModelClass wModelClass;
+
     private ArrayList<WFormField> recyclerObjects;
-    //private HashMap<String, WFormField> recyclerObjectMap;
-    private boolean isSubmitted;
 
 
-    public WRecyclerBundle(String uniqueId, ArrayList<WFormField> recyclerObjects) {
-        this.uniqueId = uniqueId;
-        this.wModelClass = wModelClass;
+
+    public WRecyclerBundle(ArrayList<WFormField> recyclerObjects) {
         if(recyclerObjects == null) {
             this.recyclerObjects = new ArrayList<>();
         } else {
             this.recyclerObjects = recyclerObjects;
         }
-        this.isSubmitted = isSubmitted;
+
     }
 
     /*
@@ -53,14 +47,6 @@ public class WRecyclerBundle {
     }
     */
 
-    public String getClassKey() {
-        return wModelClass.getKey();
-    }
-
-    /*public void setClassKey(String classKey) {
-        this.classKey = classKey;
-    }
-    */
 
     public ArrayList<WFormField> getRecyclerObjectsArray() {
         return recyclerObjects;
@@ -78,15 +64,4 @@ public class WRecyclerBundle {
         return recyclerObjects.get(index);
     }
 
-    public boolean getIsSubmitted() {
-        return isSubmitted;
-    }
-
-    public WModelClass getwModelClass() {
-        return wModelClass;
-    }
-
-    public String getUniqueId() {
-        return uniqueId;
-    }
 }

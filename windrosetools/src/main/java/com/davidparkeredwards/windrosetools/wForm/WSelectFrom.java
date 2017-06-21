@@ -49,6 +49,10 @@ public class WSelectFrom implements WFormField {
         return selectableValues.indexOf(selectedValue);
     }
 
+    public String getSelectedValueString() {
+        return selectedValue;
+    }
+
     public String getSpinnerPrompt() {
         return spinnerPrompt;
     }

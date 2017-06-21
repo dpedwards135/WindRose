@@ -179,7 +179,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         if(dbObject != null) {
-            recyclerAdapter = new WRecyclerAdapter(dbObject);
+            recyclerAdapter = new WRecyclerAdapter(dbObject, this);
             mRecyclerView.setAdapter(recyclerAdapter);
         } else {
             Log.e(TAG, "newRecyclerView: DbObject is null");
@@ -204,5 +204,13 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
+    }
+
+    public LinearLayoutManager getmLinearLayoutManager() {
+        return mLinearLayoutManager;
+    }
+
+    public RecyclerView getmRecyclerView() {
+        return mRecyclerView;
     }
 }

@@ -16,11 +16,11 @@ import android.widget.TextView;
 
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.wForm.WCheckBox;
-import com.davidparkeredwards.windrosetools.wForm.WFormField;
-import com.davidparkeredwards.windrosetools.wForm.WTextView;
 import com.davidparkeredwards.windrosetools.wForm.WFinalizeButtons;
+import com.davidparkeredwards.windrosetools.wForm.WFormField;
 import com.davidparkeredwards.windrosetools.wForm.WSelectFrom;
 import com.davidparkeredwards.windrosetools.wForm.WTextEdit;
+import com.davidparkeredwards.windrosetools.wForm.WTextView;
 
 /**
  * Created by davidedwards on 6/5/17.
@@ -96,7 +96,8 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                     submitButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            finalizeButtons.onClickSubmit(v.getContext(), adapter.getSavedBundle());
+                            adapter.saveAllRecyclerObjects();
+                            finalizeButtons.onClickSubmit(v.getContext(), adapter.getSavedBundle(), adapter.getDbObject());
                         }
                     });
                 }
@@ -107,7 +108,8 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                     saveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            finalizeButtons.onClickSave(v.getContext(), adapter.getSavedBundle());
+                            adapter.saveAllRecyclerObjects();
+                            finalizeButtons.onClickSave(v.getContext(), adapter.getSavedBundle(), adapter.getDbObject());
                         }
                     });
                 }
@@ -189,9 +191,11 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
         v.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View v) {
         Log.d("RecyclerView", "CLICK!" + textView.getText());
+
     }
 
     public void bindObject(WFormField wFormField) {

@@ -83,6 +83,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void signInFBUser() {
+        Log.i(TAG, "signInFBUser: ");
         WindroseApplication.auth.signInWithEmailAndPassword(email_address.getText().toString(), password.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

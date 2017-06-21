@@ -216,7 +216,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
+                        Log.e(TAG, "onCancelled: Cancelled", databaseError.toException());
                         e.onError(databaseError.toException());
                     }
                 };
@@ -239,7 +239,12 @@ public class FirebaseHelper {
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             ArrayList<DbObject> list = new ArrayList<>();
                             //FIX THIS SO THAT IT CREATES A LIST PROPERLY
-                            DbObjectList dbObjectList = dataSnapshot.getValue(DbObjectList.class);
+                            Iterable<DataSnapshot> alist = dataSnapshot.getChildren();
+                            for (DataSnapshot child : alist) {
+                                DbObject dbObject = child.getValue(DbObject.class);
+                                list.add(dbObject);
+                            }
+                            DbObjectList dbObjectList = new DbObjectList(list);
                             DBResponse dbResponse = new DBResponse(OK, dbObjectList, SUCCESS);
                             e.onNext(dbResponse);
                             Log.i(TAG, "onDataChange: GOTWMODELOBJECT");
@@ -254,7 +259,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.i(TAG, "onCancelled: Cancelled");
+                        Log.e(TAG, "onCancelled: Cancelled", databaseError.toException());
                         e.onError(databaseError.toException());
                     }
                 };

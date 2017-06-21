@@ -1,5 +1,7 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.davidparkeredwards.windrosetools.R;
+import com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity;
 import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.wForm.WFormField;
 
@@ -24,9 +27,13 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     //Rewrite to make bundle the foundation of the adapter and everything gets saved to it.
 
     private WRecyclerBundle bundle;
+    private DbObject dbObject;
+    private Context activity;
 
-    public WRecyclerAdapter(DbObject dbObject) {
+    public WRecyclerAdapter(DbObject dbObject, Context activity) {
         this.bundle = dbObject.toWRecyclerBundle(false);
+        this.dbObject = dbObject;
+        this.activity = activity;
 
     }
 
@@ -95,17 +102,27 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         super.onViewRecycled(holder);
     }
 
-    /*
-    public ArrayList<WFormField> getSavedObjects() {
-        return constructorObjects;
-    }
-    */
     public WRecyclerBundle getSavedBundle() { return bundle;}
 
-    /*
-    public DbObject getSavedDbObject() {
-        return DbObject.fromWRecyclerBundle(bundle);
+
+    public DbObject getDbObject() { return dbObject; }
+
+    public void saveAllRecyclerObjects() {
+
+        WRecyclerViewActivity activity1 = (WRecyclerViewActivity) activity;
+        LinearLayoutManager llm = activity1.getmLinearLayoutManager();
+        int start = llm.findFirstVisibleItemPosition();
+        int end = llm.findLastVisibleItemPosition();
+
+        int counter = start;
+        while(counter <= end) {
+            WViewHolder holder = (WViewHolder) activity1.getmRecyclerView().findViewHolderForLayoutPosition(counter);
+            WFormField object = holder.saveData();
+            int position = holder.getAdapterPosition();
+            bundle.saveRecyclerObject(position, object);
+            Log.i(TAG, "saveAllRecyclerObjects: Save");
+            counter++;
+        }
     }
-    */
 }
 

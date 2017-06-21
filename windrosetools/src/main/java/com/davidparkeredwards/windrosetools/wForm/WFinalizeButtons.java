@@ -1,8 +1,17 @@
 package com.davidparkeredwards.windrosetools.wForm;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.davidparkeredwards.windrosetools.FirebaseHelper;
+import com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity;
+import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by davidedwards on 6/4/17.
@@ -51,12 +60,70 @@ public class WFinalizeButtons implements WFormField {
 
     }
 
-    public void onClickSave(Context context, WRecyclerBundle bundle) {
+    public void onClickSave(Context context, WRecyclerBundle bundle, DbObject dbObject) {
+        DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
+        DbObject newDbObject = new DbObject(bundle, dbObject, WRecyclerViewActivity.SAVED);
+        FirebaseHelper helper = new FirebaseHelper(context);
 
+        io.reactivex.Observable<DBResponse> submitter = helper.putDbObject(newDbObject, WRecyclerViewActivity.SAVED);
+        submitter.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        dbResponseHandler.onNext();
+                        Log.i(TAG, "onNext: DBOBJECT HAS BEEN SAVED");
+                        onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
-    public void onClickSubmit(Context context, WRecyclerBundle bundle) {
+    public void onClickSubmit(Context context, WRecyclerBundle bundle, DbObject dbObject) {
+        DbResponseHandler dbResponseHandler = new DbResponseHandler(context);
+        DbObject newDbObject = new DbObject(bundle, dbObject, WRecyclerViewActivity.SUBMITTED);
+        FirebaseHelper helper = new FirebaseHelper(context);
 
+        io.reactivex.Observable<DBResponse> submitter = helper.putDbObject(newDbObject, WRecyclerViewActivity.SUBMITTED);
+        submitter.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        dbResponseHandler.onNext();
+                        Log.i(TAG, "onNext: DBOBJECT HAS BEEN SUBMITTED");
+                        onComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
+import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbBody;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
@@ -17,6 +18,7 @@ import com.davidparkeredwards.windrosetools.wRecyclerView.WRecyclerBundle;
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,11 +63,77 @@ public class DbObject implements DbBody{
 
     public DbObject() {}
 
-
     public DbObject(String uniqueID, String description, HashMap<String, List<String>> objectValues) {
         this.uniqueID = uniqueID;
         this.description = description;
         this.properties = objectValues;
+    }
+
+    public DbObject(WRecyclerBundle bundle, DbObject dbObject, int listType) {
+        FirebaseHelper helper = new FirebaseHelper(WindroseApplication.applicationContext);
+        String newID;
+        if(dbObject.uniqueID.contains(Contract.CONTRACT)) {
+            newID = helper.getNewObjectKey(WModelClass.findWModelFromKey(dbObject.getwModelClassKey()), listType);
+        } else {
+            newID = dbObject.getUniqueID();
+        }
+        String newDescription;
+        Date date = new Date();
+        if(dbObject.uniqueID.contains(Contract.CONTRACT)) {
+            newDescription = newID + " " + date;
+        } else {
+            newDescription = dbObject.getDescription();
+        }
+        HashMap<String, List<String>> newProperties = new HashMap<String, List<String>>();
+        ArrayList<WFormField> list = bundle.getRecyclerObjectsArray();
+        newProperties.put(WMODEL_CLASS, dbObject.getProperties().get(WMODEL_CLASS));
+        int keyCounter = 1;
+        int recyclerObjectsCounter = 0;
+        while (dbObject.getProperties().containsKey(String.valueOf(keyCounter))) {
+            WFormField formField = list.get(recyclerObjectsCounter);
+            String key = String.valueOf(keyCounter);
+            switch(Integer.valueOf(dbObject.getProperties().get(key).get(FORM_FIELD_TYPE))) {
+                case WFormField.CHECKBOX:
+                    ArrayList<String> newPropList = (ArrayList) dbObject.getProperties().get(key);
+                    newPropList.set(SELECTED_VALUE, String.valueOf(((WCheckBox) formField).getTrueOrFalse()));
+                    newProperties.put(key, newPropList);
+                    recyclerObjectsCounter ++;
+                    break;
+                case WFormField.FINALIZE_BUTTONS:
+                    newProperties.put(String.valueOf(keyCounter), dbObject.getProperties().get(key));
+                    recyclerObjectsCounter ++;
+                    break;
+                case WFormField.GEOSTOP:
+
+                    break;
+                case WFormField.SELECT_FROM:
+                    ArrayList<String> newPList = (ArrayList) dbObject.getProperties().get(key);
+                    newPList.set(SELECTED_VALUE, ((WSelectFrom) formField).getSelectedValueString());
+                    newProperties.put(key, newPList);
+                    recyclerObjectsCounter ++;
+                    break;
+                case WFormField.TEXT_EDIT:
+                    ArrayList<String> newPrList = (ArrayList) dbObject.getProperties().get(key);
+                    newPrList.set(SELECTED_VALUE, ((WTextEdit) formField).getUserInput());
+                    newProperties.put(key, newPrList);
+                    Log.i("DbOBject", "DbObject: Text Edit");
+                    recyclerObjectsCounter ++;
+                    break;
+                case WFormField.TEXT_VIEW:
+                    newProperties.put(String.valueOf(keyCounter), dbObject.getProperties().get(key));
+                    recyclerObjectsCounter ++;
+                    break;
+                default:
+                    newProperties.put(String.valueOf(keyCounter), dbObject.getProperties().get(key));
+                    break;
+
+            }
+            keyCounter ++;
+        }
+        this.uniqueID = newID;
+        this.description = newDescription;
+        this.properties = newProperties;
+        Log.i("DbObject", "DbObject: CREATED");
     }
 
     @Exclude
@@ -211,7 +279,7 @@ public class DbObject implements DbBody{
             }
             keyCounter ++;
         }
-        return new WRecyclerBundle(uniqueID, formFields);
+        return new WRecyclerBundle(formFields);
     }
 
     @Exclude

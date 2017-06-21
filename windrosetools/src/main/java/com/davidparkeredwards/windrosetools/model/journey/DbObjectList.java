@@ -14,7 +14,13 @@ public class DbObjectList implements DbBody {
 
     public List<DbObject> dbObjectList;
 
-    public DbObjectList() {}
+    public DbObjectList() {
+
+    }
+
+    public DbObjectList(List<DbObject> dbObjectList) {
+        this.dbObjectList = dbObjectList;
+    }
 
     @Exclude
     @Override
