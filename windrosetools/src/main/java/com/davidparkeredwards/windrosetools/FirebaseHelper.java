@@ -105,8 +105,8 @@ public class FirebaseHelper {
     }
 
     public void configureStrings() {
-        if(WindroseApplication.currentWUser != null) {
-            wUserId = WindroseApplication.currentWUser.getWUserId() + "/";
+        if(WindroseApplication.currentWUserId != null) {
+            wUserId = WindroseApplication.currentWUserId + "/";
         } else {
             wUserId = "Anonymous/";
         }
@@ -136,7 +136,11 @@ public class FirebaseHelper {
     public String getObjectPathWithUniqueID(String uniqueId, WModelClass wModelClass, int listType) {
         String path;
 
-        path = modelString + wModelClass.getKey() + listType + "/" + uniqueId;
+        if(wModelClass == WModelClass.W_USER) {
+            path = userIdString + uniqueId;
+        } else {
+            path = modelString + wModelClass.getKey() + listType + "/" + uniqueId;
+        }
 
         return path;
     }
@@ -226,6 +230,7 @@ public class FirebaseHelper {
     }
 
     public Observable<DBResponse> getDbObjectList(WModelClass wModelClass, int listType) {
+        Log.i(TAG, "getDbObjectList: ");
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {
             @Override
             public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
@@ -236,6 +241,7 @@ public class FirebaseHelper {
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.i(TAG, "onDataChange: ");
                         if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                             ArrayList<DbObject> list = new ArrayList<>();
                             //FIX THIS SO THAT IT CREATES A LIST PROPERLY
@@ -247,12 +253,14 @@ public class FirebaseHelper {
                             DbObjectList dbObjectList = new DbObjectList(list);
                             DBResponse dbResponse = new DBResponse(OK, dbObjectList, SUCCESS);
                             e.onNext(dbResponse);
+                            e.onComplete();
                             Log.i(TAG, "onDataChange: GOTWMODELOBJECT");
                             return;
                         } else {
                             DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
                             Log.i(TAG, "onDataChange: GOTOBJECT - FAILED, ITEM NOT FOUND");
                             e.onNext(dbResponse);
+                            e.onComplete();
                             return;
                         }
                     }

@@ -18,7 +18,6 @@ import com.davidparkeredwards.windrosetools.StringWithTag;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
-import com.davidparkeredwards.windrosetools.model.WUser;
 import com.davidparkeredwards.windrosetools.model.journey.DbObjectList;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
@@ -63,7 +62,7 @@ public class WLoginActivity extends AppCompatActivity {
             }
         });
 
-        getDbTagList();
+
 
         if (WindroseApplication.auth.getCurrentUser() != null) {
             setWUser();
@@ -199,10 +198,13 @@ public class WLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onNext(DBResponse dbResponse) {
                                             if (dbResponse.getCode() == FirebaseHelper.OK) {
-                                                WUser w = new WUser();
-                                                w.fromDbObject((DbObject) dbResponse.getDbBody());
-                                                WindroseApplication.currentWUser = w;
-                                                Log.i(TAG, "onNext: currentWUser : " + WindroseApplication.currentWUser.getWUserId());
+
+                                                DbObject o = (DbObject) dbResponse.getDbBody();
+
+                                                WindroseApplication.currentWUserId = o.getUniqueID();
+                                                Log.i(TAG, "onNext: currentWUserId : " + WindroseApplication.currentWUserId);
+
+                                                getDbTagList();
                                             } else {
                                                 Log.i(TAG, "onNext: SET WUSER FAILED");
                                             }
@@ -320,8 +322,8 @@ public class WLoginActivity extends AppCompatActivity {
                                             if (dbResponse.getCode() == FirebaseHelper.OK) {
                                                 WUser w = new WUser();
                                                 w.fromDbObject((DbObject) dbResponse.getDbBody());
-                                                WindroseApplication.currentWUser = w;
-                                                Log.i(TAG, "onNext: currentWUser : " + WindroseApplication.currentWUser.getWUserId());
+                                                WindroseApplication.currentWUserId = w;
+                                                Log.i(TAG, "onNext: currentWUserId : " + WindroseApplication.currentWUserId.getWUserId());
                                                 initializeCompany();
                                             } else {
                                                 Log.i(TAG, "onNext: SET WUSER FAILED");

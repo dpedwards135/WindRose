@@ -3,7 +3,6 @@ package com.davidparkeredwards.windrosetools;
 import android.app.Application;
 import android.content.Context;
 
-import com.davidparkeredwards.windrosetools.model.WUser;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,7 +43,7 @@ public class WindroseApplication extends Application {
     public static FirebaseDatabase firebaseDatabase;
     public static FirebaseAuth auth;
     public static String submissionKey;
-    public static WUser currentWUser;
+    public static String currentWUserId;
 
     private static final String TAG = WindroseApplication.class.getSimpleName();
 

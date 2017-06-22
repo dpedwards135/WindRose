@@ -13,14 +13,19 @@ import android.widget.Toast;
 import com.davidparkeredwards.windrosetools.FirebaseHelper;
 import com.davidparkeredwards.windrosetools.R;
 import com.davidparkeredwards.windrosetools.WindroseApplication;
+import com.davidparkeredwards.windrosetools.model.DbObject;
+import com.davidparkeredwards.windrosetools.model.WModelClass;
+import com.davidparkeredwards.windrosetools.model.journey.DbObjectList;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.DbResponseHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -100,28 +105,39 @@ public class SignInActivity extends AppCompatActivity {
 
     private void checkForExistingUser() {
         Log.i(TAG, "checkForExistingUser: ");
-        Single<DBResponse> newSingle = helper.checkPreExistingUser(email_address.getText().toString());
-        newSingle.subscribeOn(Schedulers.io())
+        Observable<DBResponse> getUsers = helper.getDbObjectList(WModelClass.W_USER, WRecyclerViewActivity.SUBMITTED);
+        getUsers.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<DBResponse>() {
+                .subscribe(new Observer<DBResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(DBResponse dbResponse) {
-
-                        Log.i(TAG, "onNext: Single ");
-                        if(dbResponse.getCode() == helper.OK) {
-                            signInFBUser();
-                        } else if(dbResponse.getCode() == helper.FAILED) {
-                            showToast();
+                    public void onNext(DBResponse dbResponse) {
+                        List<DbObject> list = ((DbObjectList) dbResponse.getDbBody()).getDbObjectList();
+                        for(DbObject dbObject : list) {
+                            if(dbObject.description.contains(email_address.getText().toString())) {
+                                signInFBUser();
+                                Log.i(TAG, "onNext: Contains email");
+                                onComplete();
+                                return;
+                            } else {
+                                Log.i(TAG, "onNext: does not contain email");
+                            }
                         }
+                        showToast();
+                        onComplete();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });
