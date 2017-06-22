@@ -1,9 +1,9 @@
 package com.davidparkeredwards.windrosetools.activity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,14 +19,11 @@ import com.davidparkeredwards.windrosetools.WindroseApplication;
 import com.davidparkeredwards.windrosetools.model.DbObject;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 import com.davidparkeredwards.windrosetools.model.WUser;
+import com.davidparkeredwards.windrosetools.model.journey.DbObjectList;
 import com.davidparkeredwards.windrosetools.wForm.DBResponse;
 import com.davidparkeredwards.windrosetools.wForm.UniqueIds;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -41,8 +38,205 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class WLoginActivity extends AppCompatActivity {
-
     private static final String TAG = "WLoginActivity";
+    public static final int CREATE_WUSER = 200;
+
+
+    private Spinner recyclerSpinner;
+    private ArrayAdapter<StringWithTag> recyclerSpinnerAdapter;
+    private FirebaseHelper helper;
+    private Button newCompanyButton;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        helper = new FirebaseHelper(this);
+
+
+        Log.i(TAG, "onCreate: Wlogin Activity");
+        setContentView(R.layout.wloginactivity);
+        newCompanyButton = (Button) findViewById(R.id.new_company_button);
+        newCompanyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewCompany();
+            }
+        });
+
+        getDbTagList();
+
+        if (WindroseApplication.auth.getCurrentUser() != null) {
+            setWUser();
+            Log.i(TAG, "onCreate: User is not null");
+        } else {
+            Log.i(TAG, "onCreate: User is not signed in");
+            Intent intent = new Intent();
+            intent.setClass(this, SignInActivity.class);
+            startActivityForResult(intent, CREATE_WUSER);
+        }
+    }
+    
+    public void getDbTagList() {
+
+        Observable<DBResponse> getDbOList = helper.getDbObjectList(WModelClass.COMPANY, WRecyclerViewActivity.SUBMITTED);
+        getDbOList.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DBResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DBResponse dbResponse) {
+                        if (dbResponse.getCode() == 200) {
+                            ArrayList<StringWithTag> stringWithTags = new ArrayList<>();
+                            DbObjectList dbol = (DbObjectList) dbResponse.getDbBody();
+                            ArrayList<DbObject> list = (ArrayList<DbObject>) dbol.getDbObjectList();
+                            Log.i(TAG, "onNext: " + list.toString());
+                            for (DbObject object : list) {
+                                if(object.getProperties().get("1") != null) {
+                                    String name = object.getProperties().get("1").get(3);
+                                    StringWithTag stringWithTag = new StringWithTag(name, object.getUniqueID());
+                                    stringWithTags.add(stringWithTag);
+                                }
+                            }
+                            configureSpinner(stringWithTags);
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
+    public void configureSpinner(ArrayList<StringWithTag> dbObjectList) {
+        recyclerSpinner = (Spinner) findViewById(R.id.company_spinner);
+        recyclerSpinnerAdapter = new ArrayAdapter<StringWithTag>(this, android.R.layout.simple_spinner_item, dbObjectList);
+        dbObjectList.add(0, new StringWithTag("Select one", "No Tag"));
+        recyclerSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        recyclerSpinner.setAdapter(recyclerSpinnerAdapter);
+        recyclerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                StringWithTag s = (StringWithTag) parent.getItemAtPosition(position);
+                String tag = (String) s.tag;
+                Log.i(TAG, "onItemSelected: CLICK " + tag);
+                if(!tag.equals("No Tag")) {
+                    WindroseApplication.setCompanyID(tag);
+                    startMainActivity();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent();
+        String packageName = getApplicationContext().getPackageName();
+        ComponentName componentName = new ComponentName(packageName,
+                packageName + ".WMainActivity");
+        intent.setComponent(componentName);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CREATE_WUSER) {
+            if (resultCode == RESULT_OK) {
+                setWUser();
+                Log.i(TAG, "onActivityResult: ");
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setWUser() {
+
+        Single<DBResponse> getWUserIDObservable = helper.checkPreExistingUser(WindroseApplication.auth.getCurrentUser().getUid());
+
+        getWUserIDObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<DBResponse>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onSuccess(DBResponse dbResponse) {
+                        if (dbResponse.getCode() == FirebaseHelper.OK) {
+
+                            //NEXT OBSERVABLE GETS THE USER OBJECT
+                            String uniqueId = ((UniqueIds) dbResponse.getDbBody()).getUniqueIds().get(0);
+                            Observable<DBResponse> getUser = helper.getDbObject(uniqueId, WModelClass.W_USER,
+                                    WRecyclerViewActivity.SUBMITTED);
+                            getUser.subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<DBResponse>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(DBResponse dbResponse) {
+                                            if (dbResponse.getCode() == FirebaseHelper.OK) {
+                                                WUser w = new WUser();
+                                                w.fromDbObject((DbObject) dbResponse.getDbBody());
+                                                WindroseApplication.currentWUser = w;
+                                                Log.i(TAG, "onNext: currentWUser : " + WindroseApplication.currentWUser.getWUserId());
+                                            } else {
+                                                Log.i(TAG, "onNext: SET WUSER FAILED");
+                                            }
+                                        }
+
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    public void addNewCompany() {
+        Intent intent = new Intent();
+        intent.setClass(this, NewCompanySetUp.class);
+        startActivity(intent);
+    }
+
+}
+
+
+
+
+    /*
+
     public static final int CREATE_WUSER = 200;
 
 
@@ -201,7 +395,7 @@ public class WLoginActivity extends AppCompatActivity {
                                }
                            });
     }
-    */
+
     }
 
     private boolean companyIdValid() {
@@ -259,5 +453,8 @@ public class WLoginActivity extends AppCompatActivity {
 
     }
 
+    */
 
-}
+
+
+

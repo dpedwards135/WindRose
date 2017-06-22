@@ -79,6 +79,7 @@ public class WFinalizeButtons implements WFormField {
                         dbResponseHandler.onNext();
                         Log.i(TAG, "onNext: DBOBJECT HAS BEEN SAVED");
                         onComplete();
+
                     }
 
                     @Override
@@ -111,7 +112,36 @@ public class WFinalizeButtons implements WFormField {
                     public void onNext(DBResponse dbResponse) {
                         dbResponseHandler.onNext();
                         Log.i(TAG, "onNext: DBOBJECT HAS BEEN SUBMITTED");
-                        onComplete();
+
+                        io.reactivex.Observable<DBResponse> saveDeleter =
+                                helper.deleteDbObject(newDbObject, WRecyclerViewActivity.SAVED);
+                        saveDeleter.subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<DBResponse>() {
+                                               @Override
+                                               public void onSubscribe(Disposable d) {
+
+                                               }
+
+                                               @Override
+                                               public void onNext(DBResponse dbResponse) {
+                                                    dbResponseHandler.onNext();
+                                                   Log.i(TAG, "onNext: Item Deleted");
+                                                   onComplete();
+                                               }
+
+                                               @Override
+                                               public void onError(Throwable e) {
+                                                   Log.e(TAG, "onError: ", e);
+                                               }
+
+                                               @Override
+                                               public void onComplete() {
+
+                                               }
+                                           });
+
+                                        onComplete();
                     }
 
                     @Override

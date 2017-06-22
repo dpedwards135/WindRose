@@ -1,6 +1,6 @@
 package com.davidparkeredwards.windrosetools.wRecyclerView;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,9 +28,9 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private WRecyclerBundle bundle;
     private DbObject dbObject;
-    private Context activity;
+    private Activity activity;
 
-    public WRecyclerAdapter(DbObject dbObject, Context activity) {
+    public WRecyclerAdapter(DbObject dbObject, Activity activity) {
         this.bundle = dbObject.toWRecyclerBundle(false);
         this.dbObject = dbObject;
         this.activity = activity;
@@ -123,6 +123,10 @@ public class WRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Log.i(TAG, "saveAllRecyclerObjects: Save");
             counter++;
         }
+    }
+
+    public Activity getActivity() {
+        return activity;
     }
 }
 

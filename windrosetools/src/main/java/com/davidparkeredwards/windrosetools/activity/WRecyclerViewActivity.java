@@ -39,7 +39,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
     WRecyclerBundle bundle;
     DbObject dbObject;
-    int listType = CONTRACT;
+    int listType;
     public final static int SAVED = 1;
     public final static int SUBMITTED = 2;
     public final static int CONTRACT = 3;
@@ -53,11 +53,13 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
 
     //Need to change all methods over to the new getter and setter and get this to pass Form instead of Bundle
     public abstract WModelClass defineModelClass();
+    public abstract int defineListType();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setModelClass();
+        listType = defineListType();
 
         helper = new FirebaseHelper(this);
 
@@ -117,6 +119,7 @@ public abstract class WRecyclerViewActivity extends WNavMenuActivity {
     public void configureSpinner(ArrayList<StringWithTag> dbObjectList) {
         //Later get all the contracts or saved objects and add to the list
         recyclerSpinnerAdapter = new ArrayAdapter<StringWithTag>(this, android.R.layout.simple_spinner_item, dbObjectList);
+        dbObjectList.add(0, new StringWithTag("Select one", "No Tag"));
         recyclerSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         recyclerSpinner.setAdapter(recyclerSpinnerAdapter);
         recyclerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

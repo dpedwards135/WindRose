@@ -1,7 +1,5 @@
 package com.davidparkeredwards.windrosecustomer;
 
-import android.os.Bundle;
-
 import com.davidparkeredwards.windrosetools.activity.WRecyclerViewActivity;
 import com.davidparkeredwards.windrosetools.model.WModelClass;
 
@@ -15,9 +13,7 @@ public class MainCustomerActivity extends WRecyclerViewActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main_customer);
-
+    public int defineListType() {
+        return CONTRACT;
     }
 }

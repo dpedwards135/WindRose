@@ -120,7 +120,8 @@ public class WViewHolder extends RecyclerView.ViewHolder implements View.OnClick
                     cancelButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            finalizeButtons.onClickCancel(v.getContext(), adapter.getSavedBundle());
+                            adapter.getActivity().onBackPressed();
+                            //finalizeButtons.onClickCancel(v.getContext(), adapter.getSavedBundle());
                         }
                     });
                 }

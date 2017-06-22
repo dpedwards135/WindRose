@@ -268,6 +268,45 @@ public class FirebaseHelper {
         });
     }
 
+    public Observable<DBResponse> deleteDbObject(DbObject dbObject, int listType) {
+        //DbObject contains all the info to know where it goes.
+
+        return Observable.create(new ObservableOnSubscribe<DBResponse>() {
+            @Override
+            public void subscribe(ObservableEmitter<DBResponse> e) throws Exception {
+                String path = getObjectPathWithUniqueID("",
+                        WModelClass.findWModelFromKey(dbObject.getwModelClassKey()), listType);
+
+                DatabaseReference objectRef = database.getReference(path);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                            DBResponse dbResponse = new DBResponse(OK, null, SUCCESS);
+                            e.onNext(dbResponse);
+                            Log.i(TAG, "onDataChange: PUTWMODELOBJECT");
+                            return;
+                        } else {
+                            DBResponse dbResponse = new DBResponse(FAILED, null, ITEM_NOT_FOUND);
+                            Log.i(TAG, "onDataChange: PUTOBJECT - FAILED, ITEM NOT FOUND");
+                            e.onNext(dbResponse);
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.i(TAG, "onCancelled: Cancelled");
+                        e.onError(databaseError.toException());
+                    }
+                };
+                objectRef.addValueEventListener(valueEventListener);
+                objectRef.child(dbObject.getUniqueID()).removeValue();
+            }
+        });
+    }
+
 
     public Observable<DBResponse> putWModelObject(ModelObject modelObject, int listType) {
         return Observable.create(new ObservableOnSubscribe<DBResponse>() {

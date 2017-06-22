@@ -11,4 +11,9 @@ public class NewCompanySetUp extends WRecyclerViewActivity {
     public WModelClass defineModelClass() {
         return WModelClass.COMPANY;
     }
+
+    @Override
+    public int defineListType() {
+        return CONTRACT;
+    }
 }
